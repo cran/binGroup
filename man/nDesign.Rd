@@ -1,0 +1,128 @@
+\name{nDesign}
+\alias{nDesign}
+
+\title{ Find a number of groups, for which a pre-specified power is reached, if the group size is fixed}
+\description{
+Increasing number of groups (assays, bulk samples) for a fixed group size in a binomial group testing design,
+until a pre-specified power is achieved. At the same time, bias of the estimator is controlled. A hypothetical
+threshold proportion p.hyp and the absolute difference delta to be detected have to be specified. 
+
+}
+\usage{
+nDesign(nmax, s, delta, p.hyp, conf.level = 0.95, power = 0.8, alternative = "two.sided", method = "CP", biasrest = 0.05)
+}
+
+\arguments{
+  \item{nmax}{  either a single integer giving the maximal number of individuals n allowed in the iteration,
+ or a vector of to integers giving the range of n in which power shall be iterated }
+  \item{s}{ integer, fixed group size (number of units per group) }
+  \item{delta}{ absolute difference between the threshold and the true proportion which shall be detectable with specified power }
+  \item{p.hyp}{ threshold proportion to test against in the hypothesis, specify as a value between 0 and 1 }
+  \item{conf.level}{ Confidence level of the decision, default is 0.95 }
+  \item{power}{ Level of power to be achieved to be specified as a probability between 0 and 1 }
+  \item{alternative}{ character string, defining the alternative hypothesis, either 'two.sided', 'less' or 'greater'
+	where 'less' calculates the 'power of the upper confidence limit' for a true proportion p.hyp-delta,
+	'greater' calculates the 'power of the lower confidence limit' for a true proportion of p.hyp+delta.
+	'two.sided' calculates min(power(p.hyp-delta, p.hyp+delta)) for a two.sided CI, thus can result in much lower power.
+	Note that coverage probability and power are not necessarily symmetric for upper and lower bound of binomial CI, 
+	especially for Wald, Wilson Score and Agresti-Coull CI. }
+
+  \item{method}{ character string specifying the CImethod to be used for evaluation, see argument method in bgtCI }
+  \item{biasrest}{ value between 0 and 1 specifying the absolute bias maximally allowed }
+}
+\details{
+The power of a confidence interval here is defined as the probability that a confidence interval or limit excludes the threshold parameter (p.hyp) of the hypothesis. 
+
+This function increases the number of groups (i.e. number of observations or assays in binomial group testing) until a pre-specified power is reached 
+or the maximal number of groups nmax (specified in the function call) is reached. 
+Since the power does not increase monotone with increasing n for binomial proportions but oscillates between local maxima and minima, 
+the simple iteration given here will generally result in selecting those n, for which the given CI method shows a local minimum of 
+coverage if the null hypothesis is true.
+Bias decreases monotone with increasing the number of groups (if other parameters are fixed)
+The resulting Problems of chosing a number of groups which results in satisfactory power, are solved in the following manner:
+
+In case that the pre-specified power can be reached within the given range of n, the smallest n will be returned for which at least this power is reached, as
+well as the actual power for this n.
+In case that the pre-specified power is not reached within the given value, that n is returned for which maximal power is achieved, and the corresponding value of power.
+In case that biasrestriction is violated even for the largest n within the given range of n, simply that n will be returned for which power was largest in the given range.
+Due to discreteness of binomial distribution, power can be zero for one-sided hypothesis over a range of n. 
+
+The power can be identical for different methods, depending on the particular combination of n, s, p.hyp, conf.level.
+
+Especially for large n, the calculation time may become large (particularly for Blaker). Then only the range of sample size which is of interest
+can be specified in nmax, f.e. as: nmax=c(150,300). Alternatively, the function bgtPower might be used instead
+to calculate power and bias only for some particular combinations of n, s, delta, p.hyp,... . 
+
+}
+\value{
+    A list containing
+  \item{nout }{the number of groups (assays or bulk samples) necessary reach the power with the specified parameters}
+  \item{powerout }{the power for the specified parameters and selected number of groups n}
+  \item{biasout }{the bias for the specified parameters and the selected number of groups n}
+ and a number of values specified in the function call or produced in the iteration, which are only necessary to apply
+the function plot() on objects of class 'nDesign' 
+}
+\references{
+For closed calculation of power see the closed calculation of coverage probability in: 
+Tebbs JM & Bilder CR, 2004: Confidence interval procedures for the probability of disease transmission in multiple-vector-transfer designs. Journal of Agricultural, Biological and Environmental Statistics, Vol.9, N.1, 75-90.
+
+For binomial group testing, problems of experimental design and calculation of bias see: 
+Swallow WH, 1985: Group testing for estimating infection rates and probabilities of disease transmission. Phytopathology Vol.75, N.8, 882-889.
+
+ }
+\author{ Frank Schaarschmidt, Bioinformatics Unit, University of Hannover, Germany}
+
+\seealso{
+\code{\link{plot.nDesign}} to plot the iteration of this function
+
+\code{\link{bgtPower}}: calculation of power and bias depending on n, s, delta, p.hyp, conf.level, method
+\code{\link{sDesign}}:  function for stepwise increasing group size s for a given n in order to achieve sufficient power within a biasrestriction
+\code{\link{estDesign}}:  function to choose group size s according to the minimal mse of the estimator, as given in Swallow (1985) }
+\examples{
+
+## We want to show that a proportion is smaller
+## 0.005 (i.e. 0.5 per cent) with a power 
+## of 0.80 (i.e. 80 per cent) if the unknown proportion
+## in the population is 0.003 (i.e. 0.3 per cent),
+## thus we want to detect a delta of 0.002.
+## The Clopper Pearson CI shall be used. 
+## The maximal group size because of limited
+## sensitivity of assay might be s=20 and we
+## can only afford to perform maximally 100 assays:
+
+nDesign(nmax=100, s=20, delta=0.002, p.hyp=0.005,
+ alternative="less", method="CP", power=0.8)
+
+## we don't reach 80 per cent power but only 30 percent
+## with n=100 (caution: power does not increase monotone)
+
+## we might accept to show significant only for a 
+## lower true proportion = 0.001 i.e we accept to be
+## able to show significance only if true proportion 
+## is delta=0.004 smaller than the threshold
+
+nDesign(nmax=100, s=20, delta=0.004, p.hyp=0.005,
+ alternative="less", method="CP", power=0.8)
+
+## and we find an assay method with higher sensitivity,
+## allowing to find identify a positive unit even in a
+## bulk sample of size s=30, and use a less conservative
+## confidence interval:
+
+nDesign(nmax=100, s=30, delta=0.004, p.hyp=0.005,
+ alternative="less", method="SOC", power=0.8)
+
+nDesign(nmax=100, s=30, delta=0.004, p.hyp=0.005,
+ alternative="less", method="Score", power=0.8)
+
+## plot the results:
+
+test<-nDesign(nmax=100, s=30, delta=0.004, p.hyp=0.005,
+ alternative="less", method="CP", power=0.8)
+
+plot(test)
+
+}
+\keyword{ htest }
+\concept{ group testing}
+\concept{ sample size }
