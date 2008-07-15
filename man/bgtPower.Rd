@@ -11,7 +11,8 @@ experiment using confidence intervals for decision. Closed calculation of bias o
   
 }
 \usage{
-bgtPower(n, s, delta, p.hyp, conf.level = 0.95, method = "CP", alternative = "two.sided")
+bgtPower(n, s, delta, p.hyp, conf.level = 0.95,
+ method = "CP", alternative = "two.sided")
 }
 \arguments{
   \item{n}{  integer, giving the number of groups i.e. assays i.e. observations, a vector of integers is also allowed }
@@ -47,12 +48,14 @@ In case that vectors are specified for n,s, and (or) delta, a matrix will be con
   \item{bias}{the bias of the estimator for the specified n, s, and the true proportion}
 }
 \references{
+
+\emph{Schaarschmidt, F. (2007).} Experimental design for one-sided confidence intervals or hypothesis tests in binomial group testing. Communications in Biometry and Crop Science 2 (1), 32-40.
+ http://agrobiol.sggw.waw.pl/cbcs/
+
 Swallow WH, 1985: Group testing for estimating infection rates and probabilities of disease transmission. Phytopathology Vol.75, N.8, 882-889.
 
 Tebbs JM & Bilder CR, 2004: Confidence interval procedures for the probability of disease transmission in multiple-vector-transfer designs. Journal of Agricultural, Biological and Environmental Statistics, Vol.9, N.1, 75-90.
 }
-
-\author{  Frank Schaarschmidt, Bioinformatics Unit, University of Hannover, Germany  }
 
 
 \seealso{ 

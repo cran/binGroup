@@ -12,11 +12,7 @@ Print function for results of nDesign
 
 \arguments{
   \item{x}{ An object of class "nDesign" }
-  \item{\dots}{ currently not used }
+  \item{\dots}{ currently only \code{digits} is passed to \code{signif} for appropriate rounding }
 }
 
-\author{ Frank Schaarschmidt, Bioinformatics Unit, University of Hannover, Germany}
-
-
-}
 \keyword{ print }

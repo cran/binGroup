@@ -6,9 +6,9 @@ Calculates confidence intervals for binomial group testing
 if groups of different size are evaluated
 }
 \usage{
-bgtvs(n, s, Y, conf.level = 0.95, alternative = "two.sided", maxiter = 100)
+bgtvs(n, s, Y, conf.level = 0.95, alternative = "two.sided",
+ maxiter = 100)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{n}{ numeric vector, specifying the number of groups of the different sizes }
   \item{s}{ numeric vector, specifying the group sizes, must be of same length as \code{n} }
@@ -30,7 +30,7 @@ groups becomes larger than 3. See Hepworth (1996) for application of the method
   moreover, some of the input arguments.
 }
 \references{ Hepworth, G (1996): Exact confidence intervals for proportions estimated by group testing. Biometrics 52, 1134-1146. }
-\author{ Frank Schaarschmidt }
+
 
 \examples{
 # Consider a very simple example,

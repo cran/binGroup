@@ -12,12 +12,10 @@ Print function for objects of class sDesign
 
 \arguments{
   \item{x}{ an object of class "sDesign" }
-  \item{\dots}{ currently not used }
+  \item{\dots}{ currently only \code{digits} is passed to \code{signif} for appropriate rounding}
   }
 
 \value{ A print out
 }
 
-\author{ Frank Schaarschmidt, Bioinformatics Unit, University of Hannover, Germany}
-}
 \keyword{ print }

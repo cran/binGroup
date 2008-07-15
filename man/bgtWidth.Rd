@@ -10,7 +10,8 @@ in dependence of the number of groups, group size, confidence level and an assum
 Available for the confidence interval methods in bgtCI(binGroup).  
 }
 \usage{
-bgtWidth(n, s, p, conf.level = 0.95, alternative = "two.sided", method = "CP")
+bgtWidth(n, s, p, conf.level = 0.95, alternative = "two.sided",
+ method = "CP")
 }
 \arguments{
   \item{n}{ integer, giving the number of groups i.e. assays i.e. observations, vector of integers is also allowed}
@@ -42,12 +43,14 @@ and the calculated
 }
 \references{
 
+\emph{Schaarschmidt, F. (2007).} Experimental design for one-sided confidence intervals or hypothesis tests in binomial group testing. Communications in Biometry and Crop Science 2 (1), 32-40.
+ http://agrobiol.sggw.waw.pl/cbcs/
+
 Tebbs JM & Bilder CR, 2004: Confidence interval procedures for the probability of disease transmission in multiple-vector-transfer designs. Journal of Agricultural, Biological and Environmental Statistics, Vol.9, N.1, 75-90.
 
 Brown LD, Cai TT, DasGupta A (2001): Interval estimation for a binomial proportion. Statistical Science 2001, Vol.16, No.2, 101-133.
  }
-\author{ Frank Schaarschmidt, Bioinformatics Unit, University of Hannover, Germany }
-\note{  }
+
 
 \examples{
 

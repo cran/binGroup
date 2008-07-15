@@ -9,7 +9,8 @@ until a pre-specified power is achieved. Control of bias during iteration. A hyp
 threshold proportion p.hyp and the absolute difference delta to be detected have to be specified. 
  }
 \usage{
-sDesign(n, smax, delta, p.hyp, conf.level = 0.95, power = 0.8, alternative = "two.sided", method = "CP", biasrest = 0.05)
+sDesign(n, smax, delta, p.hyp, conf.level = 0.95,
+ power = 0.8, alternative = "two.sided", method = "CP", biasrest = 0.05)
 }
 
 \arguments{
@@ -51,6 +52,10 @@ the function plot() on objects of class 'sDesign'
 
 }
 \references{ 
+
+\emph{Schaarschmidt, F. (2007).} Experimental design for one-sided confidence intervals or hypothesis tests in binomial group testing. Communications in Biometry and Crop Science 2 (1), 32-40.
+ http://agrobiol.sggw.waw.pl/cbcs/
+
 For closed calculation of power see the closed calculation of coverage probability in: 
 Tebbs JM & Bilder CR, 2004: Confidence interval procedures for the probability of disease transmission in multiple-vector-transfer designs. Journal of Agricultural, Biological and Environmental Statistics, Vol.9, N.1, 75-90.
 
@@ -59,8 +64,6 @@ Swallow WH, 1985: Group testing for estimating infection rates and probabilities
 
 
  }
-\author{ Frank Schaarschmidt, Bioinformatics Unit, University of Hannover, Germany}
-\note{ }
 
 \seealso{
 \code{\link{plot.sDesign}} can be used to plot th iteration of this function

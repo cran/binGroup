@@ -16,7 +16,6 @@ Plot function for objects of class "sDesign"
 
 \value{ A plot.}
 
-\author{ Frank Schaarschmidt, Bioinformatics Unit, University of Hannover, Germany}
 
 \seealso{
 \code{\link{bgtPower}}: calculation of power and bias depending on n, s, delta, p.hyp, conf.level, method

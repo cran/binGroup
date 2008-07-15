@@ -13,7 +13,8 @@ Calculates the exact Clopper-Pearson and Blaker, the asymptotic Second-Order Cor
 Wilson, Agresti-Coull and Wald confidence interval for a single binomial proportion
 }
 \usage{
-binCI(n, Y, conf.level = 0.95, alternative = "two.sided", method = "CP")
+binCI(n, Y, conf.level = 0.95, alternative = "two.sided",
+ method = "CP")
 
 binCP(n, Y, conf.level=0.95, alternative="two.sided")
 binBlaker(n,Y,conf.level=0.95, tolerance=1e-04, alternative="two.sided")
@@ -71,8 +72,7 @@ For the second-order corrected interval:
 Cai TT(2005): One-sided confidence intervals in discrete distributions. Journal of statistical planning and inference 131, 63-88.
 
 }
-\author{  Frank Schaarschmidt, Bioinformatics Unit, University of Hannover, Germany }
-\note{  }
+
 
 \seealso{ \code{\link{binom.test}} for the exact confidence interval and test,
 \code{\link{binTest}} to calculate p.values of the exact, Score and Wald test.

@@ -32,7 +32,6 @@ Up to now, specify n<1020.
 }
 \references{ Swallow WH, 1985: Group testing for estimating infection rates and probabilities of disease transmission. Phytopathology Vol.75, N.8, 882-889.
   }
-\author{  Frank Schaarschmidt, Bioinformatics Unit, University of Hannover, Germany }
 
 \seealso{ \code{\link{nDesign}}, \code{\link{sDesign}} for choice of the binomial group testing design according to the power in a hypothesis test }
 \examples{

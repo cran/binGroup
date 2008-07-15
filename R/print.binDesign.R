@@ -3,6 +3,11 @@ function(x,...)
 
 {
 
+args<-list(...)
+if(is.null(args$digits))
+ {digits<-4}
+else{digits<-args$digits}
+
  if(x$alternative=="less")
   {alt.hyp <- paste("true proportion is less than ",x$p.hyp )
    ptrue <- paste(" assumed true proportion = ", x$p.hyp - x$delta)}
@@ -18,7 +23,7 @@ function(x,...)
 
  if(x$power.reached==TRUE )
   {cat("\n", " Power was reached for n = ",x$nout,"\n")
-   cat(" with power = ",x$powerout,"\n")
+   cat(" with power = ",signif(x$powerout, digits),"\n")
 
    cat(" alternative hypothesis: ", alt.hyp ,"\n")
    cat( ptrue, "\n")
@@ -26,7 +31,7 @@ function(x,...)
 
  if(x$power.reached==FALSE && x$powerout!=0)
   {cat("\n", " Power of ", x$power," was not reached in the range of n = ",min(x$nit),",",max(x$nit),"\n")
-   cat(" Maximal power was reached for n = ",x$nout," with power = ",x$powerout,"\n")
+   cat(" Maximal power was reached for n = ",x$nout," with power = ",signif(x$powerout, digits),"\n")
 
    cat(" alternative hypothesis: ", alt.hyp ,"\n")
    cat( ptrue, "\n")

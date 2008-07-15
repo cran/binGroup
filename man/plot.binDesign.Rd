@@ -16,8 +16,6 @@ Plot function to visualize the power curve.
 
 \value{A plot. }
 
-\author{  Frank Schaarschmidt, Bioinformatics Unit, University of Hannover, Germany  }
-
 \seealso{ \code{\link{binPower}} for calculation of power }
 \examples{
 

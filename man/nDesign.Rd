@@ -9,7 +9,8 @@ threshold proportion p.hyp and the absolute difference delta to be detected have
 
 }
 \usage{
-nDesign(nmax, s, delta, p.hyp, conf.level = 0.95, power = 0.8, alternative = "two.sided", method = "CP", biasrest = 0.05)
+nDesign(nmax, s, delta, p.hyp, conf.level = 0.95, 
+power = 0.8, alternative = "two.sided", method = "CP", biasrest = 0.05)
 }
 
 \arguments{
@@ -70,7 +71,6 @@ For binomial group testing, problems of experimental design and calculation of b
 Swallow WH, 1985: Group testing for estimating infection rates and probabilities of disease transmission. Phytopathology Vol.75, N.8, 882-889.
 
  }
-\author{ Frank Schaarschmidt, Bioinformatics Unit, University of Hannover, Germany}
 
 \seealso{
 \code{\link{plot.nDesign}} to plot the iteration of this function

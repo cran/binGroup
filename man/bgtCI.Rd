@@ -17,7 +17,8 @@
 		units randomly assigned to the groups.
  }
 \usage{
-bgtCI(n, s, Y, conf.level = 0.95, alternative = "two.sided", method = "CP")
+bgtCI(n, s, Y, conf.level = 0.95,
+ alternative = "two.sided", method = "CP")
 }
 
 \arguments{
@@ -60,6 +61,12 @@ A list containing:
 }
 
 \references{
+
+\emph{Schaarschmidt, F. (2007).} Experimental design for one-sided confidence intervals or hypothesis tests in binomial group testing. Communications in Biometry and Crop Science 2 (1), 32-40.
+ http://agrobiol.sggw.waw.pl/cbcs/
+
+Further:
+
 For binomial group testing and the Wald interval: 
 Swallow WH, 1985: Group testing for estimating infection rates and probabilities of disease transmission. Phytopathology Vol.75, N.8, 882-889.
 
@@ -76,12 +83,9 @@ For the second-order corrected interval:
 Cai TT(2005): One-sided confidence intervals in discrete distributions. Journal of statistical planning and inference 131, 63-88.
 
  }
-\author{  Frank Schaarschmidt, Bioinformatics Unit, University of Hannover, Germany }
 
-
-
-
-\seealso{ \code{\link{bgtTest}}:  for hypothesis tests in binomial group testing 
+\seealso{ \code{\link{bgtvs}} for an exact confidence interval when designs with different group sizes are used
+\code{\link{bgtTest}}:  for hypothesis tests in binomial group testing 
 and the functions \code{\link{nDesign}}, \code{\link{sDesign}} and \code{\link{estDesign}} for sample size calculation in binomial group testing 
 binom.test(stats)
 }

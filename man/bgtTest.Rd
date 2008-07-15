@@ -12,7 +12,8 @@ the group is positive, individuals units randomly assigned to the groups.
  }
 
 \usage{
-bgtTest(n, Y, s, p.hyp, alternative = "two.sided", method = "Exact")
+bgtTest(n, Y, s, p.hyp, alternative = "two.sided",
+ method = "Exact")
 }
 
 \arguments{
@@ -27,8 +28,6 @@ can be one of "Exact" for an exact test corresponding to the Clopper-Pearson con
 "Wald" for a Wald test corresponding to the Wald confidence interval, not recommended}
 }
 
-\details{
-}
 
 \value{A list containing:
   \item{p.val }{the p value of the test}
@@ -36,6 +35,7 @@ can be one of "Exact" for an exact test corresponding to the Clopper-Pearson con
   
 }
 \references{ 
+
 Swallow WH, 1985: Group testing for estimating infection rates and probabilities of disease transmission. Phytopathology Vol.75, N.8, 882-889.
 
 Blyth, C and Still, H. (1983): Binomial confidence intervals. Journal of the American Statistical Association 78, 108-116.
@@ -45,8 +45,6 @@ Santner TJ and Duffy DE (1989): The statistical analysis of discrete data. Sprin
 Remund KM, Dixon DA, Wright DL, Holden LR. Statistical considerations on seed purity testing on transgenic traits. Seed Sci Res 2001; 11: 101-119.
 
  }
-\author{  Frank Schaarschmidt, Bioinformatics Unit, University of Hannover, Germany }
-\note{ }
 
 \seealso{ \code{\link{bgtCI}} for confidence intervals in binomial group testing}
 \examples{

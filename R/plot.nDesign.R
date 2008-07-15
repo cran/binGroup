@@ -5,6 +5,8 @@ function(x,...)
 
 args<-list(...)
 
+op<-par(no.readonly = TRUE)
+
  if(x$alternative=="less")
   {alt.hyp <- paste("true proportion is less than ",x$p.hyp )
    ptrue <- paste(" assumed true proportion = ", x$p.hyp - x$delta)}
@@ -22,9 +24,7 @@ args<-list(...)
  biasvec=x$biasit[1:stop.plot]
  nvec=x$nit[1:stop.plot]
 
-
 # set the parameters of plotting region 
-
 
 # Plot of power iteration
 
@@ -57,8 +57,10 @@ if(is.null(pargs$main))
 if(is.null(pargs$cex.lab))
  { pargs$cex.lab<-1.2}
 
- layout(mat=matrix(1:2,ncol=1), heights=c(2,1))
- par(mar=c(4,5,3,1), oma=c(0,0,0,0))
+# layout(mat=matrix(1:2,ncol=1), heights=c(2,1))
+ 
+
+par(mar=c(5,5,3,1), oma=c(0,0,0,0), mfrow=c(2,1))
 
 do.call("plot", pargs)
 
@@ -97,17 +99,18 @@ if(is.null(bargs$main))
 if(is.null(bargs$cex.lab))
  { bargs$cex.lab<-1.2}
 
- layout(mat=matrix(1:2,ncol=1), heights=c(2,1))
- par(mar=c(4,5,3,1), oma=c(0,0,0,0))
+# layout(mat=matrix(1:2,ncol=1), heights=c(2,1))
+# par(mar=c(4,5,3,1), oma=c(0,0,0,0))
 
- par(mar=c(5,5,2,1))
-
+# par(mar=c(5,5,2,1))
 
 do.call("plot", bargs)
 
  abline(h=x$bias.rest, lty=3)
  abline(v=x$nout, lty=2)
  abline(h=x$biasout, lty=2)
+
+par(op)
 
 }
 

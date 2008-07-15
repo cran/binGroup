@@ -11,7 +11,7 @@ Print objects of class binDesign
 }
 \arguments{
   \item{x}{ an object of class "binDesign"}
-  \item{\dots}{currently not used}
+  \item{\dots}{currently only \code{digits} is passed to \code{signif} for appropriate rounding}
  }
-}
+
 \keyword{ print }

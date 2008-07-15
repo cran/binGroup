@@ -10,7 +10,8 @@ hypothesis is rejected if the interval does not contain the threshold proportion
 
 }
 \usage{
-binDesign(nmax, delta, p.hyp, conf.level = 0.95, power = 0.8, method = "CP", alternative = "two.sided")
+binDesign(nmax, delta, p.hyp, conf.level = 0.95,
+ power = 0.8, method = "CP", alternative = "two.sided")
 }
 \arguments{
   \item{nmax}{ integer, maximal number of trials (individuals under observation) allowed in the iteration }
@@ -51,8 +52,12 @@ The results can be visualized by application of the function plot() to the retur
 
 and additional input and iteration values needed only for the function plot.binDesign. 
 }
-\references{   }
-\author{  Frank Schaarschmidt, Bioinformatics Unit, University of Hannover, Germany  }
+\references{ 
+
+\emph{Schaarschmidt, F. (2007).} Experimental design for one-sided confidence intervals or hypothesis tests in binomial group testing. Communications in Biometry and Crop Science 2 (1), 32-40.
+ http://agrobiol.sggw.waw.pl/cbcs/
+  }
+
 \seealso{ \code{\link{binPower}} for calculation of power, \code{\link{plot.binDesign}} for plot of the results }
 \examples{
 

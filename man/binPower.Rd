@@ -11,7 +11,8 @@ threshold parameter under the null hypothesis.
  Can be applied for the confidence interval methods given in binCI(). 
 }
 \usage{
-binPower(n, delta, p.hyp, conf.level = 0.95, alternative = "two.sided", method = "CP")
+binPower(n, delta, p.hyp, conf.level = 0.95, 
+alternative = "two.sided", method = "CP")
 }
 \arguments{
   \item{n}{ number of trials n in the binomial experiment, specify as a single integer  }
@@ -43,7 +44,6 @@ The power can be identical for different methods, depending on the particular co
   \item{power }{the power which is achieved for tzhe specified parameters and method}
 }
 
-\author{  Frank Schaarschmidt, Bioinformatics Unit, University of Hannover, Germany }
 
 \seealso{ \code{\link{binDesign}} for iteration of a sample size n for which a specified power is reached  }
 \examples{

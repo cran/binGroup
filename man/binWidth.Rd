@@ -10,7 +10,8 @@ Available for the confidence interval methods in binCI(binGroup).
 
 }
 \usage{
-binWidth(n, p, conf.level = 0.95, alternative = "two.sided", method = "CP")
+binWidth(n, p, conf.level = 0.95,
+ alternative = "two.sided", method = "CP")
 }
  
 \arguments{
@@ -46,10 +47,6 @@ and the alternative, p and n which are specified in the function call.
 \references{ Brown LD, Cai TT, DasGupta A (2001): Interval estimation for a binomial proportion. Statistical Science 2001, Vol.16, No.2, 101-133.
 
 }
-\author{ Frank Schaarschmidt, Bioinformatics Unit, University of Hannover, Germany }
-\note{  }
-
-
 
 \seealso{ \code{\link{binDesign}} for experimental design for hypothesis testing }
 \examples{

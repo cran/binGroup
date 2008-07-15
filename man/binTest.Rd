@@ -8,7 +8,8 @@ Exact test, Score test and Wald test(not recommended) are available methods.
 
 }
 \usage{
-binTest(n, Y, p.hyp, alternative = "two.sided", method = "Exact")
+binTest(n, Y, p.hyp, alternative = "two.sided",
+ method = "Exact")
 }
 
 \arguments{
@@ -31,9 +32,6 @@ can be one of "Exact" for an exact test corresponding to the Clopper-Pearson con
 and the alternative and threshold proportion p.hyp specified in the function call.
 }
 \references{ Santner, TJ and Duffy, DE (1989): The statistical analysis of discrete data. Springer Verlag New York Berlin Heidelberg. Chapter 2.1.  }
-\author{ Frank Schaarschmidt, Bioinformatics Unit, University of Hannover, Germany }
-\note{  }
-
 
 \seealso{ binom.test(stats) for the exact test and corresponding confindence interval }
 \examples{

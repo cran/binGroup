@@ -6,14 +6,13 @@
 Plot results of function nDesign
 }
 \usage{
+\method{plot}{nDesign}(x, \dots)
 }
 
 \arguments{
   \item{x}{ An object of class "nDesign" as can be created by \code{\link{nDesign}}}
   \item{\dots}{ further arguments to be passed to \code{\link{plot}} }
 }
-
-\author{ Frank Schaarschmidt, Bioinformatics Unit, University of Hannover, Germany}
 
 \examples{
 
