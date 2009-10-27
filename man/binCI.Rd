@@ -9,7 +9,7 @@
 
 \title{ Confidence interval methods for a single binomial proportion }
 \description{
-Calculates the exact Clopper-Pearson and Blaker, the asymptotic Second-Order Corected,
+Calculates the exact Clopper-Pearson and Blaker, the asymptotic second-order corrected,
 Wilson, Agresti-Coull and Wald confidence interval for a single binomial proportion
 }
 \usage{

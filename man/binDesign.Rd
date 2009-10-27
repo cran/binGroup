@@ -1,10 +1,10 @@
 \name{binDesign}
 \alias{binDesign}
 
-\title{ Find the sample size for which a pre-specified power is achieved  }
+\title{Sample Size Iteration for One Parameter Binomial Problem}
 
 \description{
-This function increases the sample size until a maximal sample size or a prespecified power is achieved,
+This function increases the sample size until a maximal sample size or a prespecified power is achieved.
 For the case that the confidence interval methods given in binCI() are used for hypothesis testing and the null
 hypothesis is rejected if the interval does not contain the threshold proportion specified in the null hypothesis
 
@@ -21,15 +21,14 @@ binDesign(nmax, delta, p.hyp, conf.level = 0.95,
   \item{power}{ Level of power to be achieved to be specified as a probability between 0 and 1 }
   \item{method}{ character string specifying the CImethod to be used for evaluation, see argument method in bgtCI }
 
-  \item{alternative}{ character string, defining the alternative hypothesis, either 'two.sided', 'less' or 'greater'
-	where 'less' calculates the 'power of the upper confidence limit' for a true proportion p.hyp-delta,
-	'greater' calculates the 'power of the lower confidence limit' for a true proportion of p.hyp+delta.
-	'two.sided' calculates min(power(p.hyp-delta, p.hyp+delta)) for a two.sided CI, thus can result in much lower power.
-	Note that coverage probability and power are not necessarily symmetric for upper and lower bound of binomial CI, 
-	especially for Wald, Wilson Score and Agresti-Coull CI. }
+  \item{alternative}{ character string, defining the alternative hypothesis, either \kbd{'two.sided'}, \kbd{'less'} or \kbd{'greater'}
+	where \kbd{'less'} calculates the 'power of the upper confidence limit' for a true proportion p.hyp-delta,
+	\kbd{'greater'} calculates the 'power of the lower confidence limit' for a true proportion of p.hyp+delta.
+	\kbd{'two.sided'} calculates min(power(p.hyp-delta, p.hyp+delta)) for a two.sided CI, thus can result in much lower power.
+	Note that coverage probability and power are not necessarily symmetric for upper and lower bound of binomial CI. }
   }
 \details{
-The power of a confidence interval here is defined as the probability that a confidence interval or limit excludes the threshold parameter (p.hyp) of the hypothesis. 
+The power of a confidence interval here is defined as the probability that a confidence interval or limit excludes the threshold parameter (\kbd{p.hyp}) of the hypothesis. 
 
 This function increases the number of trials (number of individuals under observation) until a pre-specified power is reached.
 Since the power does not increase monotone with increasing n for binomial proportions but oscillates between local maxima and minima, 
@@ -82,7 +81,8 @@ sasi
 # For larger sample sizes iteration can be very time consuming.
 # Better to use only a smaller range of n then:
 
-sasi<-binDesign( nmax=c(200,300), delta=0.03, p.hyp=0.1, alternative="less", method="CP", power=0.9)
+sasi<-binDesign( nmax=c(200,300), delta=0.03, p.hyp=0.1,
+ alternative="less", method="CP", power=0.9)
 sasi
 
 

@@ -1,9 +1,9 @@
 \name{print.bgtCI}
 \alias{print.bgtCI}
 
-\title{ Print objects of class "bgtCI" }
+\title{ Print Function for bgtCI }
 
-\description{ Print objects of class "bgtCI" }
+\description{ Print objects of class \kbd{"bgtCI"} }
 \usage{
 \method{print}{bgtCI}(x, \dots)
 }

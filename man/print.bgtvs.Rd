@@ -1,9 +1,9 @@
 \name{print.bgtvs}
 \alias{print.bgtvs}
 
-\title{ Print function for bgtvs }
+\title{Print Function for bgtvs}
 \description{
-  Print function for objects of class "bgtvs".
+  Print function for objects of class \kbd{"bgtvs"}.
 }
 \usage{
 

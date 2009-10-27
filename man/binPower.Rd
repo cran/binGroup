@@ -2,7 +2,7 @@
 \alias{binPower}
 \alias{binPowerI}
 
-\title{ Power to reject a hypothesis using confidence intervals in binomial testing  }
+\title{Power Calculation for One Parameter Binomial Problem}
 
 \description{
 Closed calculation of the Power to reject a hypothesis using confidence intervals for a single 
@@ -19,18 +19,18 @@ alternative = "two.sided", method = "CP")
   \item{delta}{ assumed absolute difference of the true proportion to the threshold proportion under the null hypothesis  }
   \item{p.hyp}{ threshold proportion under the null hypothesis }
   \item{conf.level}{ nominal confidence level of the interval }
-   \item{alternative}{ character string, defining the alternative hypothesis, either 'two.sided', 'less' or 'greater'
-where 'less' calculates the 'power of the upper confidence limit' for a true proportion p.hyp-delta,
-'greater' calculates the 'power of the lower confidece limit' for a true proportion of p.hyp+delta.
-'two.sided' calculates min(power(p.hyp-delta, p.hyp+delta)) for a two.sided CI, thus can result in much lower power.
+   \item{alternative}{ character string, defining the alternative hypothesis, either \kbd{'two.sided'}, \kbd{'less'} or \kbd{'greater'}
+where \kbd{'less'} calculates the 'power of the upper confidence limit' for a true proportion \kbd{p.hyp} - \kbd{delta},
+\kbd{'greater'} calculates the 'power of the lower confidece limit' for a true proportion of \kbd{p.hyp} + \kbd{delta}.
+\kbd{'two.sided'} calculates min(power(\kbd{p.hyp} - \kbd{delta}, \kbd{p.hyp} + \kbd{delta})) for a two-sided CI, thus can result in much lower power.
 Note that coverage probability and power are not necessarily symmetric for upper and lower bound of binomial CI, 
 especially for Wald, Wilson Score and Agresti-Coull CI. }
 
-  \item{method}{ Character string, specifying the confidence interval method (see ?bin.CI) to be used }
+  \item{method}{ Character string, specifying the confidence interval method (see \code{\link{binCI}}) to be used }
 
 }
 \details{
-The power of a confidence interval here is defined as the probability that a confidence interval or limit excludes the threshold parameter (p.hyp) of the null hypothesis. 
+The power of a confidence interval here is defined as the probability that a confidence interval or limit excludes the threshold parameter (\kbd{p.hyp}) of the null hypothesis. 
 F.e. the null hypothesis H0: p>= 0.005 can be rejected, if an upper confidence limit for p does not contain p.hyp=0.005.
 In case that a delta of 0.002 shall be detectable, this function calculates the probability, that an interval of a given method will
 exclude p.hyp=0.005 if the true proportion = 0.003.
@@ -41,7 +41,7 @@ The power can be identical for different methods, depending on the particular co
 }
 \value{ A list containing
   
-  \item{power }{the power which is achieved for tzhe specified parameters and method}
+  \item{power}{the power which is achieved for the specified parameters and method}
 }
 
 

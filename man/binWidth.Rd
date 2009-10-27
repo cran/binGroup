@@ -1,7 +1,7 @@
 \name{binWidth}
 \alias{binWidth}
 
-\title{ Calculate the expected width of a confidence interval for a single binomial proportion }
+\title{ Expected CI width for a Single Binomial Proportion }
 
 \description{
 Calculation of expected value of the width of confidence intervals in binomial group testing,
@@ -25,14 +25,14 @@ where 'less' calculates the expected width between the assumed true proportion p
 'two.sided' calculates the expected width between the lower and the upper bound of a two-sided conf.level*100 percent-CI.}
 
   \item{method}{ character string defining the method for CI calculation:
-		where "CP" is Clopper-Pearson, an exact tail interval showing symmetric coverage probability (inversion of two one-sided tests),
-		"Blaker" is the Blaker interval, an exact interval, inversion of one two.sided test, therefore defined only two.sided, but shorter
+		where \kbd{"CP"} is Clopper-Pearson, an exact tail interval showing symmetric coverage probability (inversion of two one-sided tests),
+		\kbd{"Blaker"} is the Blaker interval, an exact interval, inversion of one two.sided test, therefore defined only two.sided, but shorter
                      than the two-sided Clopper-Pearson CI. Both guarantee to contain the true parameter with at least conf.level*100 percent
                      probability,
-		"AC" is Agresti-Coull, generalized Agresti-Coull interval, asymptotic method,
-		"Score" is Wilson Score, asymptotic method derived from inversion of the Score test,
- 		"SOC" is the second order corrected interval, asymptotic method for one-sided problems (for details see Cai, 2005),
-		and "Wald" the Wald interval, which cannot be recommended.
+		\kbd{"AC"} is Agresti-Coull, generalized Agresti-Coull interval, asymptotic method,
+		\kbd{"Score"} is Wilson Score, asymptotic method derived from inversion of the Score test,
+ 		\kbd{"SOC"} is the second order corrected interval, asymptotic method for one-sided problems (for details see Cai, 2005),
+		and \kbd{"Wald"} the simple Wald-type interval.
 		}
 
 }
@@ -44,26 +44,33 @@ For calculation of expected interval width in the standard binomial estimation s
   
 and the alternative, p and n which are specified in the function call.
 }
-\references{ Brown LD, Cai TT, DasGupta A (2001): Interval estimation for a binomial proportion. Statistical Science 2001, Vol.16, No.2, 101-133.
 
-}
 
 \seealso{ \code{\link{binDesign}} for experimental design for hypothesis testing }
 \examples{
 
 
-# methods differ slightly in length:
+# methods differ slightly in length when sample sizes are large:
 
-binWidth(n=200,p=0.02,alternative="two.sided", method="CP")$expCIWidth
-binWidth(n=200,p=0.02,alternative="two.sided", method="Blaker")$expCIWidth
-binWidth(n=200,p=0.02,alternative="two.sided", method="Score")$expCIWidth
+binWidth(n=200,p=0.02,alternative="two.sided",
+ method="CP")$expCIWidth
+
+binWidth(n=200,p=0.02,alternative="two.sided",
+ method="Blaker")$expCIWidth
+
+binWidth(n=200,p=0.02,alternative="two.sided",
+ method="Score")$expCIWidth
 
 # but do more for small sample sizes and intermediate p:
 
-binWidth(n=20,p=0.2,alternative="two.sided", method="CP")$expCIWidth
-binWidth(n=20,p=0.2,alternative="two.sided", method="Blaker")$expCIWidth
-binWidth(n=20,p=0.2,alternative="two.sided", method="Score")$expCIWidth
+binWidth(n=20,p=0.2,alternative="two.sided",
+ method="CP")$expCIWidth
 
+binWidth(n=20,p=0.2,alternative="two.sided",
+ method="Blaker")$expCIWidth
+
+binWidth(n=20,p=0.2,alternative="two.sided",
+ method="Score")$expCIWidth
 
 }
 \keyword{ htest }

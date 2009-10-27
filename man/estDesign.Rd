@@ -1,7 +1,7 @@
 \name{estDesign}
 \alias{estDesign}
 \alias{msep}
-\title{ Planning of group size to achieve minimal mse in a binomial group testing experiment}
+\title{Sample Size Iteration Depending on Minimal MSE in One-Parameter Group Testing}
 \description{
   Find the group size s for a fixed number of assays n and an assumed true proportion p.tr for which
 the mse of the point estimator is minimal and bias is within a restriction. To optimze binomial group testing design 
@@ -30,7 +30,7 @@ Up to now, specify n<1020.
   \item{exp }{the expected value of the estimator }
 
 }
-\references{ Swallow WH, 1985: Group testing for estimating infection rates and probabilities of disease transmission. Phytopathology Vol.75, N.8, 882-889.
+\references{ \emph{Swallow, W.H. (1985)} Group testing for estimating infection rates and probabilities of disease transmission. Phytopathology Vol.75, N.8, 882-889.
   }
 
 \seealso{ \code{\link{nDesign}}, \code{\link{sDesign}} for choice of the binomial group testing design according to the power in a hypothesis test }

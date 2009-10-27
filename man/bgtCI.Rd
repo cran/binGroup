@@ -10,7 +10,7 @@
 
 \title{ Point estimator and Confidence intervals for a binomial proportion in binomial group testing  }
 
-\description{ Calculates the point estimator, the exact Clopper-Pearson and Blaker CI, the Score test derived 
+\description{ Calculates the point estimate, the exact Clopper-Pearson and Blaker CI, the Score test derived 
 		Wilson and Agresti-Coull CI, the asymptotic second-order corrected interval fo Cai and the Wald CI for
 		a single binomial proportion estimated from a binomial group testing trial. Assumes equal group sizes, 
 		an assay method classifying a group as positive if at least one unit in the group is positive, individuals
@@ -31,15 +31,15 @@ bgtCI(n, s, Y, conf.level = 0.95,
   'greater' gives the only a lower bound with confidence level=conf.level
    and 'two.sided' gives a two-sided confidence interval with confidence level=conf.level}
    \item{method}{ character string defining the method for CI calculation, where: 
-            "CP" is Clopper-Pearson, an exact tail interval showing symmetric coverage probability (inversion of two one-sided tests),
-		"Blaker" is the Blaker interval, an exact interval, inversion of one two.sided test, therefore defined only two.sided, but shorter
+     \kbd{"CP"} is Clopper-Pearson, an exact tail interval showing symmetric coverage probability (inversion of two one-sided tests),
+     \kbd{"Blaker"} is the Blaker interval, an exact interval, inversion of one two.sided test, therefore defined only two.sided, but shorter
              than the two-sided Clopper-Pearson CI. Both guarantee to contain the true parameter with at least conf.level*100 percent
              probability,
-		"AC" is Agresti-Coull, generalized Agresti-Coull interval, asymptotic method,
-		"Score" is Wilson Score, asymptotic method derived from inversion of the Score test,
- 		"SOC" is the second order corrected interval, asymptotic method for one-sided problems (for details see Cai, 2005),
-		and "Wald" the Wald interval, which cannot be recommended.
-		}
+     \kbd{"AC"} is the Agresti-Coull (generalized Agresti-Coull) interval, asymptotic method,
+     \kbd{"Score"} is Wilson Score, asymptotic method derived from inversion of the Score test,
+     \kbd{"SOC"} is the second order corrected interval, asymptotic method for one-sided problems (for details see Cai, 2005),
+		and \kbd{"Wald"} the Wald interval, which cannot be recommended.
+ }
 
 }
 \details{

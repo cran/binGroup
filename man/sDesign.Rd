@@ -1,12 +1,11 @@
 \name{sDesign}
 \alias{sDesign}
 
-
-\title{ Find a group size for which power achieves a specified level  }
+\title{Iterate Group Size for a One-Parameter Group Testing Problem}
 \description{
 Increasing of group size s for a fixed number of groups n in a binomial group testing design,
 until a pre-specified power is achieved. Control of bias during iteration. A hypothetical
-threshold proportion p.hyp and the absolute difference delta to be detected have to be specified. 
+threshold proportion \kbd{p.hyp} and the absolute difference \kbd{delta} to be detected have to be specified. 
  }
 \usage{
 sDesign(n, smax, delta, p.hyp, conf.level = 0.95,
@@ -21,13 +20,12 @@ sDesign(n, smax, delta, p.hyp, conf.level = 0.95,
   \item{conf.level}{ Confidence level of the decision, default is 0.95 }
   \item{power}{ Level of power to be achieved to be specified as a probability between 0 and 1 }
   \item{alternative}{ character string, defining the alternative hypothesis, either 'two.sided', 'less' or 'greater'
-where 'less' calculates the 'power of the upper confidence limit' for a true proportion p.hyp-delta,
-'greater' calculates the 'power of the lower confidece limit' for a true proportion of p.hyp+delta.
-'two.sided' calculates min(power(p.hyp-delta, p.hyp+delta)) for a two.sided CI, thus can result in much lower power.
-Note that coverage probability and power are not necessarily symmetric for upper and lower bound of binomial CI, 
-especially for Wald, Wilson Score and Agresti-Coull CI. }
+where \kbd{'less'} calculates the 'power of the upper confidence limit' for a true proportion \kbd{p.hyp} - \kbd{delta},
+\kbd{'greater'} calculates the 'power of the lower confidece limit' for a true proportion of \kbd{p.hyp} + \kbd{delta} .
+\kbd{'two.sided'} calculates min(power(\kbd{p.hyp} - \kbd{delta}, \kbd{p.hyp} + \kbd{delta})) for a two.sided CI, thus can result in much lower power.
+Note that coverage probability and power are not necessarily symmetric for upper and lower bound of binomial CI. }
 
-  \item{method}{ character string specifying the CImethod to be used for evaluation, see argument method in bgtCI }
+  \item{method}{ character string specifying the CImethod to be used for evaluation, see argument \kbd{method} in \code{\link{bgtCI}} }
   \item{biasrest}{ value between 0 and 1 specifying the absolute bias maximally allowed }
 }
 \details{
@@ -57,10 +55,10 @@ the function plot() on objects of class 'sDesign'
  http://agrobiol.sggw.waw.pl/cbcs/
 
 For closed calculation of power see the closed calculation of coverage probability in: 
-Tebbs JM & Bilder CR, 2004: Confidence interval procedures for the probability of disease transmission in multiple-vector-transfer designs. Journal of Agricultural, Biological and Environmental Statistics, Vol.9, N.1, 75-90.
+\emph{Tebbs, J.M. & Bilder, C.R. (2004)} Confidence interval procedures for the probability of disease transmission in multiple-vector-transfer designs. Journal of Agricultural, Biological and Environmental Statistics, Vol.9, N.1, 75-90.
 
 For binomial group testing, problems of experimental design and calculation of bias see: 
-Swallow WH, 1985: Group testing for estimating infection rates and probabilities of disease transmission. Phytopathology Vol.75, N.8, 882-889.
+\emph{Swallow, W.H. (1985)} Group testing for estimating infection rates and probabilities of disease transmission. Phytopathology Vol.75, N.8, 882-889.
 
 
  }
