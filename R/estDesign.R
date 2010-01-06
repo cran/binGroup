@@ -2,10 +2,10 @@
 function( n, smax, p.tr, biasrest=0.05)
 {
 
-if( n<=1 || length(n)!=1){stop("number of groups n must be specified as a single integer greater than 1")}
-if( p.tr>1 || p.tr<0 || length(p.tr)!=1){stop("true proportion p.tr must be specified as a single number between 0 and 1")}
-if( smax<=1 || length(smax)!=1){stop("the maximal group size allowed in calculations must be a single integer greater than 1")}
-if( biasrest>=1 || biasrest<0 ||length(biasrest)!=1){stop("the maximally allowed bias(p) specified in biasrest must be a single number between 0 and 1, usually should be close to 0")}
+if(length(n)!=1 || n<=1){stop("number of groups n must be specified as a single integer greater than 1")}
+if(length(p.tr)!=1 || p.tr>1 || p.tr<0){stop("true proportion p.tr must be specified as a single number between 0 and 1")}
+if(length(smax)!=1 || smax<=1){stop("the maximal group size allowed in calculations must be a single integer greater than 1")}
+if(length(biasrest)!=1 || biasrest>=1 || biasrest<0){stop("the maximally allowed bias(p) specified in biasrest must be a single number between 0 and 1, usually should be close to 0")}
 
  for (i in 2:smax)
   {

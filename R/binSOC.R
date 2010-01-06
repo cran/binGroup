@@ -1,14 +1,14 @@
 "binSOC" <-
-function(n,Y,conf.level=0.95,alternative="two.sided")
+function(n,y,conf.level=0.95,alternative="two.sided")
 
 {
-esti<-Y/n
+esti<-y/n
 kappa<-qnorm(conf.level)
 eta<-(kappa^2)/3 + 1/6
 gamma1<-((13/18)*kappa^2 + 17/18)*(-1)
 gamma2<-(kappa^2)/18 + 7/36
 
-midpo<-(Y+eta)/(n+2*eta)
+midpo<-(y+eta)/(n+2*eta)
 
 if(alternative=="less")
   {CI=c( 0 , midpo + kappa * sqrt(esti*(1-esti) + (gamma1*esti*(1-esti) + gamma2)/n)/sqrt(n) )}

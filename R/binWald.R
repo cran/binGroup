@@ -1,8 +1,8 @@
 "binWald" <-
-function(n, Y, conf.level=0.95, alternative="two.sided")
+function(n, y, conf.level=0.95, alternative="two.sided")
 {
 alpha=1-conf.level
-est=Y/n
+est=y/n
 z1s=qnorm(conf.level)
 z2s=qnorm(1-alpha/2)
 
@@ -17,7 +17,6 @@ else{if(alternative=="greater"){
 KI=c(est-z1s*sqrt(est*(1-est)/(n)), 1 )
 }
 else {stop("alternative mis-specified")}}}
-conf.int=KI
-conf.int
+KI
 }
 

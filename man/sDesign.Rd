@@ -13,15 +13,15 @@ sDesign(n, smax, delta, p.hyp, conf.level = 0.95,
 }
 
 \arguments{
-  \item{n}{ integer, fixed sample size (number of assays) }
-  \item{smax}{ integer, maximal group size allowed in planning of the design }
-  \item{delta}{ absolute difference between the threshold and the true proportion which shall be detectable with specified power }
-  \item{p.hyp}{ threshold proportion to test against in the hypothesis, specify as a value between 0 and 1 }
-  \item{conf.level}{ Confidence level of the decision, default is 0.95 }
-  \item{power}{ Level of power to be achieved to be specified as a probability between 0 and 1 }
-  \item{alternative}{ character string, defining the alternative hypothesis, either 'two.sided', 'less' or 'greater'
-where \kbd{'less'} calculates the 'power of the upper confidence limit' for a true proportion \kbd{p.hyp} - \kbd{delta},
-\kbd{'greater'} calculates the 'power of the lower confidece limit' for a true proportion of \kbd{p.hyp} + \kbd{delta} .
+  \item{n}{integer, fixed sample size (number of assays) }
+  \item{smax}{integer, maximal group size allowed in planning of the design }
+  \item{delta}{absolute difference between the threshold and the true proportion which shall be detectable with specified power }
+  \item{p.hyp}{threshold proportion to test against in the hypothesis, specify as a value between 0 and 1 }
+  \item{conf.level}{confidence level of the decision, default is 0.95 }
+  \item{power}{level of power to be achieved to be specified as a probability between 0 and 1 }
+  \item{alternative}{character string, defining the alternative hypothesis, either 'two.sided', 'less' or 'greater'
+where \kbd{'less'} calculates the probability that p.hyp is excluded by an upper confidence limit for a true proportion \kbd{p.hyp} - \kbd{delta},
+\kbd{'greater'} calculates the probability that p.hyp is excluded by a lower confidence limit for a true proportion of \kbd{p.hyp} + \kbd{delta} .
 \kbd{'two.sided'} calculates min(power(\kbd{p.hyp} - \kbd{delta}, \kbd{p.hyp} + \kbd{delta})) for a two.sided CI, thus can result in much lower power.
 Note that coverage probability and power are not necessarily symmetric for upper and lower bound of binomial CI. }
 
@@ -45,20 +45,15 @@ actual power of the last acceptable group size s is returned.
   \item{sout }{the group size necessary to met the conditions}
   \item{powerout }{the exact power for the specified parameters and the group size}
   \item{biasout }{the bias for the specified parameters and the iterated group size}
-  number of values specified in the function call or produced in the iteration, which are only necessary to apply
-the function plot() on objects of class 'sDesign' 
+   and a number of values specified in the function call or produced in the iteration.
 
 }
 \references{ 
 
-\emph{Schaarschmidt, F. (2007).} Experimental design for one-sided confidence intervals or hypothesis tests in binomial group testing. Communications in Biometry and Crop Science 2 (1), 32-40.
+\emph{Schaarschmidt F (2007)} Experimental design for one-sided confidence intervals or hypothesis tests in binomial group testing. Communications in Biometry and Crop Science 2 (1), 32-40.
  http://agrobiol.sggw.waw.pl/cbcs/
 
-For closed calculation of power see the closed calculation of coverage probability in: 
-\emph{Tebbs, J.M. & Bilder, C.R. (2004)} Confidence interval procedures for the probability of disease transmission in multiple-vector-transfer designs. Journal of Agricultural, Biological and Environmental Statistics, Vol.9, N.1, 75-90.
-
-For binomial group testing, problems of experimental design and calculation of bias see: 
-\emph{Swallow, W.H. (1985)} Group testing for estimating infection rates and probabilities of disease transmission. Phytopathology Vol.75, N.8, 882-889.
+\emph{Swallow WH (1985)} Group testing for estimating infection rates and probabilities of disease transmission. Phytopathology Vol.75, N.8, 882-889.
 
 
  }
@@ -74,8 +69,8 @@ For binomial group testing, problems of experimental design and calculation of b
 
 \examples{
 
-## We want to show that a proportion is smaller
-## than 0.005 (i.e. 0.5%) with a 
+## Assume that objective is to show that a proportion
+## is smaller than 0.005 (i.e. 0.5%) with a 
 ## power of 0.80 (i.e. 80%) if the unknown proportion
 ## in the population is 0.003 (i.e. 0.3%), thus a 
 ## delta = 0.002 shall be detected. A 95-per-cent 
@@ -87,8 +82,8 @@ For binomial group testing, problems of experimental design and calculation of b
 sDesign(smax=100, n=30, delta=0.002, p.hyp=0.005,
  alternative="less", method="CP", power=0.8)
 
-## We might accept to detect delta=0.004,
-## i.e. we accept to reject H0: p>=0.005 with 
+## One might accept to detect delta=0.004,
+## i.e. accepting to reject H0: p>=0.005 with 
 ## power 80 per cent when the true proportion is 0.001:
 
 sDesign(smax=100, n=30, delta=0.004, p.hyp=0.005,

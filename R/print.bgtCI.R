@@ -5,9 +5,24 @@ args<-list(...)
 if(is.null(args$digits))
  {digits<-4}
 else{digits<-args$digits}
-cat("\n The",x$conf.level*100," per cent ", x$method, "-confidence interval is:","\n")
-cat("  [",signif(x$conf.int, digits ),"] \n")
-cat(" point estimator = ", signif(x$estimate, digits), "\n")
+cat("\n")
+cat(x$conf.level*100,"percent", x$method, "confidence interval:\n", sep=" ")
+cat(" [",paste(signif(x$conf.int, digits), collapse=", "),"]\n", sep=" " )
+cat("Point estimate:", signif(x$estimate, digits), "\n", sep=" ")
+invisible(x)
+}
+
+"print.binCI" <-
+function(x, ...)
+{
+args<-list(...)
+if(is.null(args$digits))
+ {digits<-4}
+else{digits<-args$digits}
+cat("\n")
+cat(x$conf.level*100,"percent", x$method, "confidence interval\n", sep=" ")
+cat(" [",paste(signif(x$conf.int, digits), collapse=", "),"]\n", sep=" " )
+cat("Point estimate", signif(x$estimate, digits), "\n", sep=" ")
 invisible(x)
 }
 

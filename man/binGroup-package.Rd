@@ -15,8 +15,8 @@ Further, regression methods are implemented for simple pooling and matrix poolin
 \tabular{ll}{
 Package: \tab binGroup\cr
 Type: \tab Package\cr
-Version: \tab 1.0-3\cr
-Date: \tab 2009-10-27\cr
+Version: \tab 1.0-4\cr
+Date: \tab 2010-01-06\cr
 License: \tab GPL\cr
 LazyLoad: \tab no\cr
 }
@@ -79,7 +79,7 @@ Maintainer: Frank Schaarschmidt <schaarschmidt@biostat.uni-hannover.de>
 # by Tebbs and Bilder (2004) for the two-sided 95-percent 
 # exact (Clopper-Pearson) interval:
 
-bgtCI(n=24, Y=3, s=7, conf.level=0.95,
+bgtCI(n=24, y=3, s=7, conf.level=0.95,
  alternative="two.sided", method="CP")
 
 # 1.2) Confidence intervals for designs with unequal group size (pool size):
@@ -87,8 +87,8 @@ bgtCI(n=24, Y=3, s=7, conf.level=0.95,
 # group size s, the examples given in Hepworth (1996), Table 5 can be 
 # reproduced by calling:
 
- bgtvs(n=c(2,3), s=c(5,2), Y=c(0,0))
- bgtvs(n=c(2,3), s=c(5,2), Y=c(0,1))
+ bgtvs(n=c(2,3), s=c(5,2), y=c(0,0))
+ bgtvs(n=c(2,3), s=c(5,2), y=c(0,1))
 
 # 1.3) For experimental design based on the bias of the point estimate,
 # as proposed by Swallow (1985): The values in Table 1 (Swallow, 1985),

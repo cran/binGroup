@@ -1,10 +1,10 @@
 \name{binWidth}
 \alias{binWidth}
 
-\title{ Expected CI width for a Single Binomial Proportion }
+\title{Expected Confidence Interval Width for One Binomial Proportion }
 
 \description{
-Calculation of expected value of the width of confidence intervals in binomial group testing,
+Calculation of expected value of the width of confidence intervals in a binomial experiment,
 in dependence of the number of trials (number of individuals under observation),  confidence level and an assumed true proportion.
 Available for the confidence interval methods in binCI(binGroup).
 
@@ -37,7 +37,7 @@ where 'less' calculates the expected width between the assumed true proportion p
 
 }
 \details{
-For calculation of expected interval width in the standard binomial estimation see f.e. Brown et al. 2001.
+For calculation of expected interval width in the standard binomial estimation see Brown et al. (2001).
 }
 \value{ A list containing:
   \item{expCIWidth}{the expected value of the width of the confidence interval for the specified arguments}

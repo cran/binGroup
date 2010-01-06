@@ -7,17 +7,15 @@ function(n, s, delta, p.hyp, conf.level=0.95, method="CP", alternative="two.side
  
  if( any(s<1) ){stop("group size s must be specified as integers > 0")}
 
- if(conf.level<0 || conf.level>1 || length(conf.level)!=1)
-  {stop("conf.level must be a positive number between 0 and 1, usually 0.95")}
+ if( length(conf.level)!=1 || conf.level<0 || conf.level>1)
+  {stop("conf.level must be a positive number between 0 and 1")}
 
- if(method!="CP" && method!="Blaker"&& method!="AC"&& method!="Score"&& method!="Wald"&& method!="SOC")
-  {stop("argument method mis-specified")}
-
- if(alternative!="less" && alternative!="greater"&& alternative!="two.sided")
-  {stop("argument alternative mis-specified")}
-
- if( p.hyp>1 || p.hyp<0 || length(p.hyp)!=1)
+ if( length(p.hyp)!=1 || p.hyp>1 || p.hyp<0)
   {stop("true proportion p.hyp must be specified as a single number between 0 and 1")}
+
+  method<-match.arg(method, choices=c("CP","Blaker","AC","Score","Wald","SOC"))
+
+  alternative<-match.arg(alternative, choices=c("two.sided","less","greater"))
 
  if(alternative=="less")
   {if( any( p.hyp-delta < 0) || any(p.hyp-delta > 1) )
@@ -36,15 +34,15 @@ function(n, s, delta, p.hyp, conf.level=0.95, method="CP", alternative="two.side
 
 # calculations:
 
- ns <- n*s
- matnsp <- cbind(n,s,ns,delta)
- power <- numeric(length=length(matnsp[,1]))
- bias <- numeric(length=length(matnsp[,1]))
+ matnsp <- cbind(n,s,delta)
+ matnsp <- cbind("ns"=matnsp[,1]*matnsp[,2], matnsp)
+ power <- numeric(length=nrow(matnsp))
+ bias <- numeric(length=nrow(matnsp))
 
 
  for( i in 1:length(power))
   {
-  temp <- bgtPowerI(n=matnsp[i,1], s=matnsp[i,2], delta=matnsp[i,4], p.hyp=p.hyp, conf.level=conf.level, method=method, alternative=alternative)
+  temp <- bgtPowerI(n=matnsp[i,2], s=matnsp[i,3], delta=matnsp[i,4], p.hyp=p.hyp, conf.level=conf.level, method=method, alternative=alternative)
   power[i] <- temp$power
   bias[i] <- temp$bias
 

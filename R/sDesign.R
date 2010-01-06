@@ -3,19 +3,20 @@ function(n,smax,delta,p.hyp,conf.level=0.95, power=0.8, alternative="two.sided",
 
 {
 
- if( smax<3 || length(smax)!=1)
+ if(length(smax)!=1 || smax<3)
   {stop("the maximal group size smax allowed in calculations must be a single integer greater than 0")}
- if( n<=1 || length(n)!=1)
+ if(length(n)!=1 || n<=1)
   {stop("the number of groups n must be specified as a single integer>1")}
- if(conf.level<0 || conf.level>1 || length(conf.level)!=1)
-  {stop("conf.level must be a positive number between 0 and 1, usually 0.95")}
- if(power<0 || power>1 || length(power)!=1)
-  {stop(" desired power must be a positive number between 0 and 1, f.e. 0.8 for rejecting H0 in 80% of the cases")}
- if(method!="CP" && method!="Blaker"&& method!="AC"&& method!="Score"&& method!="Wald"&& method!="SOC")
-  {stop("argument method mis-specified")}
- if(alternative!="less" && alternative!="greater"&& alternative!="two.sided"){stop("argument alternative mis-specified")}
+ if(length(conf.level)!=1 || conf.level<0 || conf.level>1)
+  {stop("conf.level must be a positive number between 0 and 1")}
+ if(length(power)!=1 || power<0 || power>1)
+  {stop("desired power must be a positive number between 0 and 1, f.e. 0.8 for rejecting H0 in 80% of the cases")}
+
+  method<-match.arg(method, choices=c("CP","Blaker","AC","Score","Wald","SOC"))
+
+  alternative<-match.arg(alternative, choices=c("two.sided","less","greater"))
  
- if( p.hyp>1 || p.hyp<0 || length(p.hyp)!=1) 
+ if(length(p.hyp)!=1 || p.hyp>1 || p.hyp<0) 
   {stop("threshold p.hyp must be specified as a single number between 0 and 1")}
 
  if( length(delta)!=1)
@@ -38,7 +39,7 @@ function(n,smax,delta,p.hyp,conf.level=0.95, power=0.8, alternative="two.sided",
    {stop("alternative=two.sided: specify delta as a number between the threshold p.hyp and 1")} 
   }
 
- if( biasrest>=1 || biasrest<0 ||length(biasrest)!=1)
+ if(length(biasrest)!=1 || biasrest>=1 || biasrest<0)
   {stop("the maximally allowed bias(p) specified in biasrest must be a single number between 0 and 1, usually should be close to 0")}
 
 

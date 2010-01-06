@@ -14,6 +14,9 @@ if(p.hyp<0 || p.hyp>1 ) {stop(" p.hyp must be a value between 0 and 1")}
  
 if( delta<=0) {stop(" specify delta as absolute difference to p.hyp, thus as value greater than 0 ")} 
 
+method<-match.arg(method, choices=c("CP","Blaker","AC","Score","Wald","SOC"))
+alternative<-match.arg(alternative, choices=c("two.sided","less","greater"))
+
  if(alternative=="less") 
   {
   if( p.hyp-delta <= 0 || p.hyp-delta >= 1 )
@@ -36,35 +39,27 @@ if( delta<=0) {stop(" specify delta as absolute difference to p.hyp, thus as val
 
   }
 
-if(method!="CP" && method!="Blaker"&& method!="AC"&& method!="Score"&& method!="Wald"&& method!="SOC")
-  {stop("argument method mis-specified")}
-
-if(alternative!="less" && alternative!="greater"&& alternative!="two.sided")
-  {stop("argument alternative mis-specified")}
-
-
-
 
 
 # P.Ind gives TRUE or FALSE, depending on whether the interval includes the hypothetical proportion or not
 
- P.Ind.bin<-function(Y,n,p.hyp,conf.level,alternative,method)
+ P.Ind.bin<-function(y,n,p.hyp,conf.level,alternative,method)
  {
-  if(method=="Wald"){int=binWald(Y=Y,n=n, conf.level=conf.level, alternative=alternative)}
-  if(method=="Score"){int=binWilson(Y=Y,n=n, conf.level=conf.level, alternative=alternative)}
-  if(method=="AC"){int=binAC(Y=Y,n=n, conf.level=conf.level, alternative=alternative)}
-  if(method=="SOC"){int=binSOC(Y=Y,n=n, conf.level=conf.level, alternative=alternative)}
-  if(method=="CP"){int=binCP(Y=Y,n=n, conf.level=conf.level, alternative=alternative)}
-  if(method=="Blaker"){int=binBlaker(Y=Y,n=n, conf.level=conf.level)}
+  if(method=="Wald"){int=binWald(y=y,n=n, conf.level=conf.level, alternative=alternative)}
+  if(method=="Score"){int=binWilson(y=y,n=n, conf.level=conf.level, alternative=alternative)}
+  if(method=="AC"){int=binAC(y=y,n=n, conf.level=conf.level, alternative=alternative)}
+  if(method=="SOC"){int=binSOC(y=y,n=n, conf.level=conf.level, alternative=alternative)}
+  if(method=="CP"){int=binCP(y=y,n=n, conf.level=conf.level, alternative=alternative)}
+  if(method=="Blaker"){int=binBlaker(y=y,n=n, conf.level=conf.level)}
 
   return(int[1]>=p.hyp || int[2]<=p.hyp)
  }
 
 # Probability of a certain event
 
- bin.prob <- function(Y,n,p)
+ bin.prob <- function(y,n,p)
   {
-   exp( lchoose(n,Y) + Y*log(p) + (n-Y)*log(1-p) )
+   exp( lchoose(n,y) + y*log(p) + (n-y)*log(1-p) )
   }
 
 yvec<-0:n
@@ -76,8 +71,8 @@ yvec<-0:n
    probvec<-numeric(length=length(yvec))
 
    for(i in 1:length(yvec))
-    {powvec[i]<-P.Ind.bin(Y=yvec[i], n=n, p.hyp=p.hyp, conf.level=conf.level, alternative=alternative, method=method)
-     probvec[i]<-bin.prob(Y=yvec[i], n=n, p=p.tr)
+    {powvec[i]<-P.Ind.bin(y=yvec[i], n=n, p.hyp=p.hyp, conf.level=conf.level, alternative=alternative, method=method)
+     probvec[i]<-bin.prob(y=yvec[i], n=n, p=p.tr)
     }
   power=sum(powvec * probvec)
 
@@ -90,8 +85,8 @@ yvec<-0:n
    probvec<-numeric(length=length(yvec))
 
    for(i in 1:length(yvec))
-    {powvec[i]<-P.Ind.bin(Y=yvec[i], n=n, p.hyp=p.hyp, conf.level=conf.level, alternative=alternative, method=method)
-     probvec[i]<-bin.prob(Y=yvec[i], n=n, p=p.tr)
+    {powvec[i]<-P.Ind.bin(y=yvec[i], n=n, p.hyp=p.hyp, conf.level=conf.level, alternative=alternative, method=method)
+     probvec[i]<-bin.prob(y=yvec[i], n=n, p=p.tr)
     }
   power=sum(powvec * probvec)
   }
@@ -105,9 +100,9 @@ yvec<-0:n
    probvecu <- numeric(length=length(yvec))
 
    for(i in 1:length(yvec))
-    {powvec[i] <- P.Ind.bin(Y=yvec[i], n=n, p.hyp=p.hyp, conf.level=conf.level, alternative=alternative, method=method)
-     probvecl[i] <- bin.prob(Y=yvec[i], n=n, p=p.trl)
-     probvecu[i] <- bin.prob(Y=yvec[i], n=n, p=p.tru)
+    {powvec[i] <- P.Ind.bin(y=yvec[i], n=n, p.hyp=p.hyp, conf.level=conf.level, alternative=alternative, method=method)
+     probvecl[i] <- bin.prob(y=yvec[i], n=n, p=p.trl)
+     probvecu[i] <- bin.prob(y=yvec[i], n=n, p=p.tru)
     }
 
    powerl <- sum(powvec * probvecl)

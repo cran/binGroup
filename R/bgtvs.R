@@ -1,39 +1,39 @@
 
 
 "bgtvs" <- function
-(n, s, Y, conf.level = 0.95, alternative="two.sided", maxiter=100)
+(n, s, y, conf.level = 0.95, alternative="two.sided", maxiter=100)
 {
 
 alternative<-match.arg(alternative, choices=c("two.sided", "less", "greater"))
 
 # error checking:
 
-if (length(Y)!=length(n)||length(n)!=length(s))
- {stop("vectors n, s, Y must have exactly the same length")}
+if (length(y)!=length(n)||length(n)!=length(s))
+ {stop("vectors n, s, y must have exactly the same length")}
 
-if ( any(Y>n) )
- {stop("values of Y must be smaller than or equal to the corresponding values n") }
+if ( any(y>n) )
+ {stop("values of y must be smaller than or equal to the corresponding values n") }
 
 if(conf.level<=0 | conf.level>=1)
  {stop("conf.level must be a numeric value between 0, and 1, usually e.g. 0.95")}
 
 
 
- m <- length(Y)
+ m <- length(y)
  alpha <- 1-conf.level
 
 # # # Likelihood according to Hepworth 1996 (1):
 
-likHepI <- function(n, s, Y, p)
+likHepI <- function(n, s, y, p)
 {
- prod( choose(n,Y) * (( 1-(1-p)^s )^Y) * ( (1-p)^(s*(n-Y)) )  )
+ prod( choose(n,y) * (( 1-(1-p)^s )^y) * ( (1-p)^(s*(n-y)) )  )
 }
 
 # function to estimate the MLE:
 
-estBGTvgs2<-function(n, s, Y)
+estBGTvgs2<-function(n, s, y)
 {
-if (length(Y)!=length(n)||length(n)!=length(s)) {stop("vectors n, s, Y must have exactly the same length")}
+if (length(y)!=length(n)||length(n)!=length(s)) {stop("vectors n, s, y must have exactly the same length")}
 
 # total number of individuals in the trial
 
@@ -45,13 +45,13 @@ if (length(Y)!=length(n)||length(n)!=length(s)) {stop("vectors n, s, Y must have
 
 # Hepworth(1996), equation 2
  
-mindiff <- function(n,s,Y,p, total)
-{total - sum( (s*Y) / (1-(1-p)^(s)) )}
+mindiff <- function(n,s,y,p, total)
+{total - sum( (s*y) / (1-(1-p)^(s)) )}
 
-# check the case all Y=0 (equa 2 not defined),
+# check the case all y=0 (equa 2 not defined),
 # else iterate p
 
-if(all(Y==0))
+if(all(y==0))
  {esti<-0}
 
  else
@@ -60,17 +60,17 @@ if(all(Y==0))
    dir<-1
    crit<-numeric(length=maxiter)
 
-    if(any(Y==0))
+    if(any(y==0))
      {esti<-0+tol}
     else
      {esti<-0}
 
-     crit[1] <- mindiff(n=n, s=s, Y=Y, p=esti, total=total)
+     crit[1] <- mindiff(n=n, s=s, y=y, p=esti, total=total)
      step=0.5
 
      for(i in 2:maxiter)
       {
-       crit[i] <- mindiff(n=n, s=s, Y=Y, p=esti, total=total)
+       crit[i] <- mindiff(n=n, s=s, y=y, p=esti, total=total)
        if(sign(crit[i-1])!=sign(crit[i]))
         {dir <- dir*(-1); step <- step/2}
        if(esti>1 | esti<0)
@@ -84,25 +84,25 @@ return(esti)
 # # # Point estimate for the observed outcome:
 # Pobs (Hepworth)
 
-point.esti <- estBGTvgs2(n=n, s=s, Y=Y)
+point.esti <- estBGTvgs2(n=n, s=s, y=y)
 
 
-# # # calculate the MLE for all possible combinations of Y1, ..., Ym
+# # # calculate the MLE for all possible combinations of y1, ..., ym
 
-  possibleY<-list()
+  possibley<-list()
  
   for(i in 1:length(n))
   {
-  possibleY[[i]]<-0:n[i]
+  possibley[[i]]<-0:n[i]
   }
- allComb=expand.grid(possibleY)
+ allComb=expand.grid(possibley)
 
 
  MLEComb<-numeric(length=nrow(allComb) )
 
  for (comb in 1:nrow(allComb))
-  {Ytemp<-as.numeric(allComb[comb,])
-   MLEComb[comb] <- estBGTvgs2(n=n, s=s, Y=Ytemp)
+  {ytemp<-as.numeric(allComb[comb,])
+   MLEComb[comb] <- estBGTvgs2(n=n, s=s, y=ytemp)
   }
 
  out=cbind(allComb,MLEComb)
@@ -188,7 +188,7 @@ conf.level=conf.level,
 alternative=alternative,
 input=rbind("number of groups"=n,
 "group size"=s,
-"number of positive groups"=Y)
+"number of positive groups"=y)
 )
 
 class(out)<-"bgtvs"

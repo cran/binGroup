@@ -5,9 +5,6 @@
 
 \description{
 This function increases the sample size until a maximal sample size or a prespecified power is achieved.
-For the case that the confidence interval methods given in binCI() are used for hypothesis testing and the null
-hypothesis is rejected if the interval does not contain the threshold proportion specified in the null hypothesis
-
 }
 \usage{
 binDesign(nmax, delta, p.hyp, conf.level = 0.95,
@@ -22,10 +19,10 @@ binDesign(nmax, delta, p.hyp, conf.level = 0.95,
   \item{method}{ character string specifying the CImethod to be used for evaluation, see argument method in bgtCI }
 
   \item{alternative}{ character string, defining the alternative hypothesis, either \kbd{'two.sided'}, \kbd{'less'} or \kbd{'greater'}
-	where \kbd{'less'} calculates the 'power of the upper confidence limit' for a true proportion p.hyp-delta,
-	\kbd{'greater'} calculates the 'power of the lower confidence limit' for a true proportion of p.hyp+delta.
-	\kbd{'two.sided'} calculates min(power(p.hyp-delta, p.hyp+delta)) for a two.sided CI, thus can result in much lower power.
-	Note that coverage probability and power are not necessarily symmetric for upper and lower bound of binomial CI. }
+	where \kbd{'less'} calculates the probability that p.hyp is excluded by an upper confidence limit given that the true proportion is p.hyp-delta,
+	\kbd{'greater'} calculates the probability that p.hyp is excluded by a lower confidence limit given that the true proportion is p.hyp+delta.
+	\kbd{'two.sided'} calculates min(power(p.hyp-delta, p.hyp+delta)) for a two-sided CI, thus can result in much lower power.
+ }
   }
 \details{
 The power of a confidence interval here is defined as the probability that a confidence interval or limit excludes the threshold parameter (\kbd{p.hyp}) of the hypothesis. 
@@ -33,12 +30,13 @@ The power of a confidence interval here is defined as the probability that a con
 This function increases the number of trials (number of individuals under observation) until a pre-specified power is reached.
 Since the power does not increase monotone with increasing n for binomial proportions but oscillates between local maxima and minima, 
 the simple iteration given here will generally result in selecting those n, for which the given CI method shows a local minimum of 
-coverage if the null hypothesis is true.
-The power can be identical for different methods, depending on the particular combination of n, p.hyp, conf.level.
+coverage if the null hypothesis is true. The power can be identical for different methods, depending on the particular combination of n, p.hyp, conf.level.
 
 Especially for large n, the calculation time may become large (particularly for Blaker). Then only the range of sample size which is of interest
 can be specified in nmax, f.e. as: nmax=c(150,300). Alternatively, the function binPower might be used instead
 to calculate power and bias only for some particular combinations of n, delta, p.hyp,... . 
+
+Note that coverage probability and power are not necessarily symmetric for upper and lower bound of binomial CI.
 
 The results can be visualized by application of the function plot() to the returned object of this function.
 }

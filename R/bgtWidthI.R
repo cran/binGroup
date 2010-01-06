@@ -5,16 +5,16 @@ function(n, s, p, conf.level=0.95, alternative="two.sided", method="CP")
 # indicator function for the CI length at a special event
 # in one sided case: length is defined as absolute difference between estimator and confidence bound
 
- L.Ind<-function(Y, n, s, p, conf.level, alternative, method)
+ L.Ind<-function(y, n, s, p, conf.level, alternative, method)
 
  {
 
-  if(method=="Wald"){int=bgtWald(Y=Y, n=n, s=s, conf.level=conf.level, alternative=alternative)}
-  if(method=="Wilson"){int=bgtWilson(Y=Y, n=n, s=s, conf.level=conf.level, alternative=alternative)}
-  if(method=="AC"){int=bgtAC(Y=Y, n=n, s=s, conf.level=conf.level, alternative=alternative)}
-  if(method=="SOC"){int=bgtSOC(Y=Y, n=n, s=s, conf.level=conf.level, alternative=alternative)}
-  if(method=="CP"){int=bgtCP(Y=Y, n=n, s=s, conf.level=conf.level, alternative=alternative)}
-  if(method=="Blaker"){int=bgtBlaker(Y=Y, n=n, s=s, conf.level=conf.level)}
+  if(method=="Wald"){int=bgtWald(y=y, n=n, s=s, conf.level=conf.level, alternative=alternative)}
+  if(method=="Wilson"){int=bgtWilson(y=y, n=n, s=s, conf.level=conf.level, alternative=alternative)}
+  if(method=="AC"){int=bgtAC(y=y, n=n, s=s, conf.level=conf.level, alternative=alternative)}
+  if(method=="SOC"){int=bgtSOC(y=y, n=n, s=s, conf.level=conf.level, alternative=alternative)}
+  if(method=="CP"){int=bgtCP(y=y, n=n, s=s, conf.level=conf.level, alternative=alternative)}
+  if(method=="Blaker"){int=bgtBlaker(y=y, n=n, s=s, conf.level=conf.level)}
 
   if(alternative=="less")
     {CIlength <- int[[2]]-p}
@@ -29,10 +29,10 @@ function(n, s, p, conf.level=0.95, alternative="two.sided", method="CP")
 
 # Probability of a single event, the binomial group testing density:
 
- bgt.prob<-function(n,Y,s,p.tr)
+ bgt.prob<-function(n,y,s,p.tr)
   {
   theta<-1-(1-p.tr)^s
-  dbinom(x=Y,size=n, prob=theta)
+  dbinom(x=y,size=n, prob=theta)
   }
 
 
@@ -44,8 +44,8 @@ yvec<-0:n
    probvec<-numeric(length=length(yvec))
 
    for(i in 1:length(yvec))
-    {Lvec[i]<-L.Ind(Y=yvec[i], n=n, s=s, p=p, conf.level=conf.level, alternative=alternative, method=method)
-     probvec[i]<-bgt.prob(Y=yvec[i], n=n, s=s, p.tr=p)
+    {Lvec[i]<-L.Ind(y=yvec[i], n=n, s=s, p=p, conf.level=conf.level, alternative=alternative, method=method)
+     probvec[i]<-bgt.prob(y=yvec[i], n=n, s=s, p.tr=p)
     }
   expCILength=sum(Lvec * probvec)
 

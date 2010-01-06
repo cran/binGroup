@@ -1,10 +1,10 @@
 "bgtWilson" <-
-function(n, Y, s, conf.level=0.95, alternative="two.sided")
+function(n, y, s, conf.level=0.95, alternative="two.sided")
 { 
 alpha=1-conf.level 
-th=Y/n
-est.int=(Y+(qnorm(1-alpha/2)^2)/2)/(n+(qnorm(1-alpha/2))^2)
-est.int1s=(Y+(qnorm(1-alpha)^2)/2)/(n+(qnorm(1-alpha))^2)
+th=y/n
+est.int=(y+(qnorm(1-alpha/2)^2)/2)/(n+(qnorm(1-alpha/2))^2)
+est.int1s=(y+(qnorm(1-alpha)^2)/2)/(n+(qnorm(1-alpha))^2)
 
 if(alternative =="two.sided"){
     w.se=((qnorm(1-alpha/2))*sqrt(n*th*(1-th)+(qnorm(1-alpha/2)^2)/4))/(n+qnorm(1-alpha/2)^2)

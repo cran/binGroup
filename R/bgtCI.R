@@ -1,48 +1,37 @@
 "bgtCI" <-
-function(n, s, Y, conf.level=0.95, alternative="two.sided", method="CP")
+function(n, s, y, conf.level=0.95, alternative="two.sided", method="CP")
 
 {
-if( n<1 || length(n)!=1){stop("number of groups n must be specified as a single integer > 0")}
-if( s<1 || length(s)!=1){stop("group size s must be specified as a single integer > 0")}
-if( Y<0 || length(Y)!=1){stop("observed number of positive groups Y must be specified as a single integer>0")}
-if(Y>n) {stop("number of positive tests Y can not be greater than number of groups n")}
-if(conf.level<0 || conf.level>1 || length(conf.level)!=1){stop("conf.level must be a positive number between 0 and 1, usually 0.95")}
-if(method!="CP" && method!="Blaker"&& method!="AC"&& method!="Score"&& method!="Wald"&& method!="SOC"){stop("argument method mis-specified")}
-if(alternative!="less" && alternative!="greater"&& alternative!="two.sided"){stop("argument alternative mis-specified")}
+if(length(n)!=1 || n<1){stop("number of groups n must be specified as a single integer > 0")}
+if(length(s)!=1 || s<1){stop("group size s must be specified as a single integer > 0")}
+if(length(s)!=1 || y<0){stop("observed number of positive groups y must be specified as a single integer>0")}
+if(y>n) {stop("number of positive tests y can not be greater than number of groups n")}
+if(length(conf.level)!=1 || conf.level<0 || conf.level>1){stop("conf.level must be a positive number between 0 and 1")}
 
-estimate=1-(1-Y/n)^(1/s)
+method<-match.arg(method, choices=c("CP","Blaker","AC","Score","Wald","SOC"))
+alternative<-match.arg(alternative, choices=c("two.sided","less","greater"))
 
- if(method=="CP")
- {
- conf.int=bgtCP(n=n, s=s, Y=Y, conf.level=conf.level, alternative=alternative)
- }
+estimate=1-(1-y/n)^(1/s)
 
- if(method=="Blaker")
- {
- if(alternative=="less" || alternative=="greater"){cat("the Blaker CI is inherently two.sided","\n")}
+switch(method,
+"CP"={conf.int<-bgtCP(n=n, s=s, y=y, conf.level=conf.level, alternative=alternative)},
+
+"Blaker"={
+ if(alternative=="less" || alternative=="greater"){
+    warning("The Blaker CI is inherently two.sided")
+    conf.int<-c(NA, NA)}
  if(alternative=="two.sided")
-   {conf.int=bgtBlaker(n=n, s=s, Y=Y, conf.level=conf.level, alternative=alternative)}
- }
- 
- if(method=="Score")
- {
- conf.int=bgtWilson(n=n, s=s, Y=Y, conf.level=conf.level, alternative=alternative)
- }
+   {conf.int<-bgtBlaker(n=n, s=s, y=y, conf.level=conf.level)}
+ },
 
- if(method=="AC")
- {
- conf.int=bgtAC(n=n, s=s, Y=Y, conf.level=conf.level, alternative=alternative)
- }
+"Score"={conf.int<-bgtWilson(n=n, s=s, y=y, conf.level=conf.level, alternative=alternative)},
 
- if(method=="Wald")
- {
- conf.int=bgtWald(n=n, s=s, Y=Y, conf.level=conf.level, alternative=alternative)
- }
+"AC"={conf.int<-bgtAC(n=n, s=s, y=y, conf.level=conf.level, alternative=alternative)},
 
- if(method=="SOC")
- {
- conf.int=bgtSOC(n=n, s=s, Y=Y, conf.level=conf.level, alternative=alternative)
- }
+"Wald"={conf.int<-bgtWald(n=n, s=s, y=y, conf.level=conf.level, alternative=alternative)},
+
+"SOC"={conf.int<-bgtSOC(n=n, s=s, y=y, conf.level=conf.level, alternative=alternative)}
+)
 
 out<-list(conf.int=conf.int,
 	estimate=estimate,

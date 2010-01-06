@@ -3,17 +3,17 @@ function(n,s,p.tr)
 {
 
 expected=0
-for(Y in 0:n)
+for(y in 0:n)
   {
-  expected=expected+( (1-(1-Y/n)^(1/s)) * choose(n,Y) * ((1-(1-p.tr)^s)^Y) * ((1-p.tr)^(s*(n-Y)) ) )
+  expected=expected+( (1-(1-y/n)^(1/s)) * choose(n,y) * ((1-(1-p.tr)^s)^y) * ((1-p.tr)^(s*(n-y)) ) )
   }
 expected
 
 
 varsum=0
-for(Y in 0:n)
+for(y in 0:n)
   {
-  varsum=varsum+ ( ( (1-Y/n)^(2/s) ) * choose(n,n-Y) * ( ((1-p.tr)^s)^(n-Y) ) * ((1-(1-p.tr)^s)^Y) ) 
+  varsum=varsum+ ( ( (1-y/n)^(2/s) ) * choose(n,n-y) * ( ((1-p.tr)^s)^(n-y) ) * ((1-(1-p.tr)^s)^y) ) 
   }
 varp=varsum - (1-expected)^2
 

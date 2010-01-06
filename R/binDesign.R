@@ -11,6 +11,9 @@ if(p.hyp<0 || p.hyp>1 ) {stop(" p.hyp must be a value between 0 and 1")}
  
 if( delta<=0) {stop(" specify delta as absolute difference to p.hyp, thus as value greater than 0 ")} 
 
+method<-match.arg(method, choices=c("CP","Blaker","AC","Score","Wald","SOC"))
+alternative<-match.arg(alternative, choices=c("two.sided","less","greater"))
+
  if(alternative=="less") 
   {
   if( p.hyp-delta <= 0 || p.hyp-delta >= 1 )
@@ -32,12 +35,6 @@ if( delta<=0) {stop(" specify delta as absolute difference to p.hyp, thus as val
    {stop("For alternative 'two.sided': delta must be a positive value between 0 and p.hyp AND 0 and 1-p.hyp")} 
 
   }
-
-if(method!="CP" && method!="Blaker"&& method!="AC"&& method!="Score"&& method!="Wald"&& method!="SOC")
-  {stop("argument method mis-specified")}
-
-if(alternative!="less" && alternative!="greater"&& alternative!="two.sided")
-  {stop("argument alternative mis-specified")}
 
 
 

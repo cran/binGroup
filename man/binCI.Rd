@@ -7,25 +7,25 @@
 \alias{binWilson}
 \alias{binWald}
 
-\title{ Confidence interval methods for a single binomial proportion }
+\title{ Confidence Intervals for One Binomial Proportion }
 \description{
 Calculates the exact Clopper-Pearson and Blaker, the asymptotic second-order corrected,
 Wilson, Agresti-Coull and Wald confidence interval for a single binomial proportion
 }
 \usage{
-binCI(n, Y, conf.level = 0.95, alternative = "two.sided",
+binCI(n, y, conf.level = 0.95, alternative = "two.sided",
  method = "CP")
 
-binCP(n, Y, conf.level=0.95, alternative="two.sided")
-binBlaker(n,Y,conf.level=0.95, tolerance=1e-04, alternative="two.sided")
-binAC(n, Y, conf.level=0.95, alternative="two.sided")
-binSOC(n, Y,conf.level=0.95,alternative="two.sided")
-binWald(n, Y, conf.level=0.95, alternative="two.sided")
-binWilson(n, Y,conf.level=0.95,alternative="two.sided")
+binCP(n, y, conf.level=0.95, alternative="two.sided")
+binBlaker(n,y,conf.level=0.95, tolerance=1e-04, alternative="two.sided")
+binAC(n, y, conf.level=0.95, alternative="two.sided")
+binSOC(n, y,conf.level=0.95,alternative="two.sided")
+binWald(n, y, conf.level=0.95, alternative="two.sided")
+binWilson(n, y,conf.level=0.95,alternative="two.sided")
 }
 \arguments{
   \item{n}{ number of trials (number of individuals under observation) }
-  \item{Y}{ number of successes (nmber of individuals showing the trait of interest) }
+  \item{y}{ number of successes (number of individuals showing the trait of interest) }
   \item{conf.level}{ nominal confidence level }
   \item{alternative}{ character string defining the alternative hypothesis, either 'two.sided', 'less' or 'greater'
   where 'less' gives the only an upper bound with confidence level=conf.level
@@ -44,7 +44,7 @@ binWilson(n, Y,conf.level=0.95,alternative="two.sided")
 }
 
 \details{
-This function allows computation of confidence intervals for a binomial proportion from a standard binomial experiment(evaluating each unit separately).
+This function allows computation of confidence intervals for a binomial proportion from a standard binomial experiment.
 If an actual confidence level greater or equal to that specified in the conf.level argument shall always be guaranteed, the exact method of 
 Clopper-Pearson (method="CP") can be recommended for one-sided and the improved method of Blaker (method="Blaker") can be recommended for two-sided
 hypotheses. If a mean confidence level close to that specified in the argument conf.level is required, but moderate violation of this level is acceptable,
@@ -52,7 +52,7 @@ the Second-Order corrected (method="SOC"), Wilson Score (method="Wilson") or Agr
 coverage and Wilson and Agresti-Coull are in tendency conservative for the upper bound and proportions close to 0 and for the lower bound and proportions
 close to 1. The Wald CI might be used for large number of observations n>10000 or intermediate proportions.
 
-For discussion of CI for a single binomial proportion see Brown et al. 2001 for two-sided and Cai, 2005 for one-sided intervals.
+For discussion of CI for a single binomial proportion see Brown et al. (2001) for two-sided and Cai (2005) for one-sided intervals.
 
 }
 \value{ A list containing:
@@ -62,14 +62,10 @@ For discussion of CI for a single binomial proportion see Brown et al. 2001 for 
   And the method, conf.level and alternative specified in the function call.
 }
 \references{ 
-For the Blaker interval:
-Blaker H (2000): Confidence curves and improved exact confidence intervals for discrete distributions. The Canadian Journal of Statistics 28 (4): 783-798.
 
-For general discussion of the different binomial confidence intervals:
-Brown LD, Cai TT, DasGupta A (2001): Interval estimation for a binomial proportion. Statistical Science 2001, Vol.16, No.2, 101-133.
-
-For the second-order corrected interval:
-Cai TT(2005): One-sided confidence intervals in discrete distributions. Journal of statistical planning and inference 131, 63-88.
+\emph{Blaker H (2000)} Confidence curves and improved exact confidence intervals for discrete distributions. The Canadian Journal of Statistics 28 (4): 783-798.
+\emph{Brown LD, Cai TT, DasGupta A (2001)} Interval estimation for a binomial proportion. Statistical Science 2001, Vol.16, No.2, 101-133.
+\emph{Cai TT(2005)} One-sided confidence intervals in discrete distributions. Journal of statistical planning and inference 131, 63-88.
 
 }
 
@@ -81,13 +77,13 @@ Cai TT(2005): One-sided confidence intervals in discrete distributions. Journal 
 
 # Default method is the two-sided 95% Clopper-Pearson CI:
 
-binCI(n=200,Y=10)
+binCI(n=200, y=10)
 
 # other methods might result in 
 # shorter intervals (but asymetric coverage):
 
-binCI(n=200,Y=10, method="Blaker")
-binCI(n=200,Y=10, method="Score")
+binCI(n=200,y=10, method="Blaker")
+binCI(n=200,y=10, method="Score")
 
 }
 \keyword{ htest }

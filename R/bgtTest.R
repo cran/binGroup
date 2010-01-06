@@ -1,16 +1,17 @@
 "bgtTest" <-
-function(n, Y, s, p.hyp, alternative="two.sided", method="Exact")
+function(n, y, s, p.hyp, alternative="two.sided", method="Exact")
 {
 
-if( n<1 || length(n)!=1){stop("number of groups n must be specified as a single integer>0")}
-if( s<1 || length(s)!=1){stop("group size s must be specified as a single integer>0")}
-if( Y<0 || length(Y)!=1){stop("observed number of positive groups Y must be specified as a single integer>0")}
-if(Y>n) {stop("number of positive tests Y can not be greater than number of groups n")}
-if(p.hyp<0 || p.hyp>1 || length(p.hyp)!= 1){stop("the proportion in the hypothesis p.hyp must be specified as a single value between 0 and 1")}
-if(alternative!="less" && alternative!="greater"&& alternative!="two.sided"){stop("argument alternative mis-specified, must be either 'less', 'greater' or 'two.sided'")}
-if(method!="Exact" && method!="Score"&& method!="Wald"){stop("argument alternative mis-specified")}
+if(length(n)!=1 || n<1){stop("number of groups n must be specified as a single integer>0")}
+if(length(s)!=1 || s<1){stop("group size s must be specified as a single integer>0")}
+if(length(y)!=1 || y<0){stop("observed number of positive groups y must be specified as a single integer>0")}
+if(y>n) {stop("number of positive tests y can not be greater than number of groups n")}
+if(length(p.hyp)!=1 || p.hyp<0 || p.hyp>1){stop("the proportion in the hypothesis p.hyp must be specified as a single value between 0 and 1")}
 
-estimate=1-(1-Y/n)^(1/s)
+method<-match.arg(method, choices=c("Exact", "Score", "Wald"))
+alternative<-match.arg(alternative, choices=c("two.sided","less","greater"))
+
+estimate=1-(1-y/n)^(1/s)
 
 bgtsumProb<-function(x, n, s, p)
 {
@@ -22,54 +23,43 @@ for(i in x)
 sumprob
 }
 
-if (method=="Exact")
-{
+switch(method,
+
+"Exact"={
  if(alternative=="less")
-  {p.val = bgtsumProb(x=0:Y, n=n, s=s, p=p.hyp)}
-
+  {p.val = bgtsumProb(x=0:y, n=n, s=s, p=p.hyp)}
  if(alternative=="greater")
-  {p.val = bgtsumProb(x=Y:n, n=n, s=s, p=p.hyp)}
-
+  {p.val = bgtsumProb(x=y:n, n=n, s=s, p=p.hyp)}
  if (alternative=="two.sided")
-  {p.val = min( 2*(bgtsumProb(x=0:Y, n=n, s=s, p=p.hyp)), 2*(p.val = bgtsumProb(x=Y:n, n=n, s=s, p=p.hyp)), 1)}
+  {p.val = min( 2*(bgtsumProb(x=0:y, n=n, s=s, p=p.hyp)), 2*(p.val = bgtsumProb(x=y:n, n=n, s=s, p=p.hyp)), 1)}
+},
 
-}
 
-
-if (method=="Wald")
-{
-esti = 1-(1-Y/n)^(1/s)
-
+"Wald"={
+esti = 1-(1-y/n)^(1/s)
 varesti = (1-(1-esti)^s)/(n*(s^2)*(1-esti)^(s-2))  # variance estimator (see Swallow, 1985)
-
 teststat = (esti-p.hyp)/sqrt(varesti) 
 
-
  if(alternative=="less"){p.val = pnorm(q=teststat,lower.tail=TRUE)}
-
  if(alternative=="greater"){p.val = pnorm(q=teststat,lower.tail=FALSE)} 
-
  if(alternative=="two.sided"){p.val= min( 2*pnorm(q=teststat, lower.tail = FALSE) , 2*pnorm(q=teststat, lower.tail = TRUE), 1)} 
+},
 
-}
-
-if(method=="Score")
-{
-esti = Y/n
+"Score"={
+esti = y/n
 t.hyp = 1-(1-p.hyp)^s
 teststat = (esti-t.hyp)/(sqrt(t.hyp*(1-t.hyp)/n))
 
  if(alternative=="less"){p.val = pnorm(q=teststat,lower.tail=TRUE)}
-
  if(alternative=="greater"){p.val = pnorm(q=teststat,lower.tail=FALSE)} 
-
  if(alternative=="two.sided"){p.val= min( 2*pnorm(q=teststat, lower.tail = FALSE) , 2*pnorm(q=teststat, lower.tail = TRUE), 1)} 
-}
+})
 
-out<-list(p.val=p.val,
+out<-list(p.value=p.val,
 estimate=estimate,
 alternative=alternative,
-p.hyp=p.hyp)
+p.hyp=p.hyp,
+method=method)
 
 class(out)<-"bgtTest"
 out
