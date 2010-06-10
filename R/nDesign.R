@@ -2,9 +2,9 @@
 function(nmax,s,delta,p.hyp,conf.level=0.95, power=0.8, alternative="two.sided", method="CP", biasrest=0.05)
 {
 
- if(length(nmax)<1 || length(nmax)>2 || min(nmax)<=3)
+ if(length(nmax)<1 || length(nmax)>2 || ( min(nmax)<=3 | abs(round(nmax)-nmax) > 1e-07))
   {stop("the maximal number of groups n allowed in calculations must be one or two integer(s) greater than 1")}
- if(length(s)!=1 || s<1)
+ if(length(s)!=1 || (s<1 | abs(round(s)-s) > 1e-07))
   {stop("group size s must be specified as a single integer>0")}
  if(length(conf.level)!=1 || conf.level<0 || conf.level>1)
   {stop("conf.level must be a positive number between 0 and 1")}

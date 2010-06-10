@@ -3,9 +3,9 @@ function(n,smax,delta,p.hyp,conf.level=0.95, power=0.8, alternative="two.sided",
 
 {
 
- if(length(smax)!=1 || smax<3)
+ if(length(smax)!=1 || (smax<3 | abs(round(smax)-smax) > 1e-07))
   {stop("the maximal group size smax allowed in calculations must be a single integer greater than 0")}
- if(length(n)!=1 || n<=1)
+ if(length(n)!=1 || (n<=1 | abs(round(n)-n) > 1e-07))
   {stop("the number of groups n must be specified as a single integer>1")}
  if(length(conf.level)!=1 || conf.level<0 || conf.level>1)
   {stop("conf.level must be a positive number between 0 and 1")}

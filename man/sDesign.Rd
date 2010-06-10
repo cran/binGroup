@@ -50,11 +50,10 @@ actual power of the last acceptable group size s is returned.
 }
 \references{ 
 
-\emph{Schaarschmidt F (2007)} Experimental design for one-sided confidence intervals or hypothesis tests in binomial group testing. Communications in Biometry and Crop Science 2 (1), 32-40.
+\emph{Schaarschmidt F (2007)} Experimental design for one-sided confidence intervals or hypothesis tests in binomial group testing. \emph{Communications in Biometry and Crop Science 2 (1), 32-40.}
  http://agrobiol.sggw.waw.pl/cbcs/
 
-\emph{Swallow WH (1985)} Group testing for estimating infection rates and probabilities of disease transmission. Phytopathology Vol.75, N.8, 882-889.
-
+\emph{Swallow WH (1985)} Group testing for estimating infection rates and probabilities of disease transmission. \emph{Phytopathology 75 (8), 882-889.}
 
  }
 

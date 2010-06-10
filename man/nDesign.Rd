@@ -70,6 +70,10 @@ the function plot() on objects of class 'nDesign'
 \emph{Swallow WH (1985).} Group testing for estimating infection rates and probabilities of disease transmission. Phytopathology Vol.75, N.8, 882-889.
  }
 
+\author{
+Frank Schaarschmidt
+}
+
 \seealso{
 \code{\link{plot.nDesign}} to plot the iteration of this function
 

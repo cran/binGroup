@@ -1,6 +1,7 @@
 gtreg <-
-function(formula, data, groupn, sens=1, spec=1, linkf=c("logit","probit","cloglog"), 
-        method=c("Vansteelandt","Xie"), ...) {
+function(formula, data, groupn, sens = 1, spec = 1, 
+        linkf = c("logit", "probit", "cloglog"), 
+        method = c("Vansteelandt", "Xie"), start = NULL, control = EM.control(...), ...) {
 
     call <- match.call()
     mf <- match.call(expand.dots = FALSE)
@@ -10,8 +11,7 @@ function(formula, data, groupn, sens=1, spec=1, linkf=c("logit","probit","cloglo
     mf[[1]] <- as.name("model.frame")
     mf <- eval(mf, parent.frame())
     mt <- attr(mf, "terms")
-    last<-dim(mf)[2]
-    gr<-mf[,last]
+    gr <- model.extract(mf, "groupn")
     Y <- model.response(mf, "any")
     if (length(dim(Y)) == 1) {
         nm <- rownames(Y)
@@ -20,14 +20,15 @@ function(formula, data, groupn, sens=1, spec=1, linkf=c("logit","probit","cloglo
             names(Y) <- nm
     }
     X <- if (!is.empty.model(mt))
-        model.matrix(mt, mf)  #create design matrix
+        model.matrix(mt, mf)
     else matrix(, NROW(Y), 0)
-    linkf<-match.arg(linkf)
-    fit<-switch(method<-match.arg(method),
-          "Vansteelandt"=gtreg.fit(Y, X, gr, sens, spec, linkf, ...),
-          "Xie"=EM(Y, X, gr, sens, spec, linkf, ...))
-    fit <- c(fit, list(call = call, formula = formula, method = method, link=linkf, terms=mt))
-    class(fit)<-"gt"
+    linkf <- match.arg(linkf)
+    fit <- switch(method <- match.arg(method),
+          "Vansteelandt" = gtreg.fit(Y, X, gr, sens, spec, linkf, start),
+          "Xie" = EM(Y, X, gr, sens, spec, linkf, start, control))
+    fit <- c(fit, list(call = call, formula = formula, method = method, 
+          link = linkf, terms = mt))
+    class(fit) <- "gt"
     fit
         
 }

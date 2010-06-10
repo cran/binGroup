@@ -14,9 +14,18 @@ if (length(y)!=length(n)||length(n)!=length(s))
 if ( any(y>n) )
  {stop("values of y must be smaller than or equal to the corresponding values n") }
 
+if(any(abs(round(n)-n) > 1e-07) | any(n<1))
+ {stop("number of groups n must be a vector of integer values > 0")}
+
+if(any(abs(round(s)-s) > 1e-07) | any(s<1))
+ {stop("group sizes s must be a vector of integer values > 0")}
+
+if(any(abs(round(y)-y) > 1e-07) | any(y<0))
+ {stop("number of positive groups y must be a vector of non-negative integer values > 0")}
+
+
 if(conf.level<=0 | conf.level>=1)
  {stop("conf.level must be a numeric value between 0, and 1, usually e.g. 0.95")}
-
 
 
  m <- length(y)

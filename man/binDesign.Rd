@@ -51,9 +51,13 @@ and additional input and iteration values needed only for the function plot.binD
 }
 \references{ 
 
-\emph{Schaarschmidt, F. (2007).} Experimental design for one-sided confidence intervals or hypothesis tests in binomial group testing. Communications in Biometry and Crop Science 2 (1), 32-40.
+\emph{Schaarschmidt, F. (2007).} Experimental design for one-sided confidence intervals or hypothesis tests in binomial group testing. \emph{Communications in Biometry and Crop Science 2 (1), 32-40.}
  http://agrobiol.sggw.waw.pl/cbcs/
   }
+
+\author{
+Frank Schaarschmidt
+}
 
 \seealso{ \code{\link{binPower}} for calculation of power, \code{\link{plot.binDesign}} for plot of the results }
 \examples{

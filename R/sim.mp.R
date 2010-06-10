@@ -1,72 +1,93 @@
 sim.mp <-
-function(gshape=20, gscale=2, beta.par, rown, coln, sens=1, spec=1, sens.ind=NULL, spec.ind=NULL) {
-
-     if (is.null(sens.ind)) sens.ind<-sens
-     if (is.null(spec.ind)) spec.ind<-spec
-
-     number.sample<-sum(coln*rown)
-     len<-length(rown)
-     cova<-rgamma(n = number.sample, shape = gshape, scale = gscale)
-     pij<-as.vector(plogis(q = cbind(1, cova)%*%beta.par))
-     ind.binary<-rbinom(n = number.sample, size = 1, prob = pij)
-     individual<-col.groupn<-row.groupn<-numeric(0)
-     rep.row.resp<-rep.col.resp<-numeric(0)
-     ret<-rep(NA, number.sample)
-
-     for (i in 1:len) {
-         if (i>1) index<-seq(max(index)+1, length=(rown*coln)[i]) else index<-1:(rown*coln)[1]
-         ind<-matrix(ind.binary[index], nrow=rown[i])
-         col.resp<-apply(ind, MARGIN = 2, FUN = sum)
-         col.resp<-ifelse(col.resp>0,1,0)
-         col.terror<-ifelse(col.resp==1, rbinom(1, 1, sens), rbinom(1, 1, 1-spec))
-
-         row.resp<-apply(ind, MARGIN = 1, FUN = sum)
-         row.resp<-ifelse(row.resp>0,1,0)
-         row.terror<-ifelse(row.resp==1, rbinom(1, 1, sens), rbinom(1, 1, 1-spec))
-
-         temp.c<-rep(1:coln[i], each=rown[i])  #col group number
-         col.groupn<-c(col.groupn, temp.c)
-
-         temp.r<-rep(1:rown[i], coln[i])  #col group number
-         row.groupn<-c(row.groupn, temp.r)
-
-         temp2.c<-rep(col.terror, each=rown[i])  #repeated col group responses
-         rep.col.resp<-c(rep.col.resp, temp2.c)
-
-         temp2.r<-rep(row.terror, coln[i])  #repeated col group responses
-         rep.row.resp<-c(rep.row.resp, temp2.r)
-
-         if (all(rep.row.resp==0)) {
-             for (i in index) {
-                  if (rep.col.resp[i]==1) ret[i]<-ifelse(ind.binary[i]==1,
-                                                      rbinom(1, 1, sens.ind),
-                                                      rbinom(1, 1, 1-spec.ind))
-             }
-         }
-
-         if (all(rep.col.resp==0)) {
-             for (i in index) {
-                  if (rep.row.resp[i]==1) ret[i]<-ifelse(ind.binary[i]==1,
-                                                      rbinom(1, 1, sens.ind),
-                                                      rbinom(1, 1, 1-spec.ind))
-             }
-         }
-
-         individual<-c(individual, list(ind))
-     }
-
-     sq<-rep(1:len, coln*rown)
-
-     if (all(rep.col.resp==0) && all(rep.row.resp==0)) return(NULL)
-
-     for (i in 1:number.sample) {
-          if (rep.row.resp[i]==1 && rep.col.resp[i]==1) ret[i]<-ifelse(ind.binary[i]==1,
-                                                      rbinom(1, 1, sens.ind),
-                                                      rbinom(1, 1, 1-spec.ind))
-     }
-
-     list(dframe=data.frame(x=cova, col.resp=rep.col.resp, row.resp=rep.row.resp,
-          coln=col.groupn, rown=row.groupn, sqn=sq, retest=ret), ind=individual, prob=pij)
-
+function (x = NULL, gshape = 20, gscale = 2, par,
+    linkf = c("logit", "probit", "cloglog"),
+    n.row, n.col, sens = 1, spec = 1, sens.ind = NULL, spec.ind = NULL)
+{
+    if (is.null(sens.ind))
+        sens.ind <- sens
+    if (is.null(spec.ind))
+        spec.ind <- spec
+    if (length(n.row) != length(n.col))
+        stop("vector n.row and n.col must have the same length")
+    linkf <- match.arg(linkf)
+    if (is.null(x)) {
+        sample.size <- sum(n.col * n.row)
+        x <- rgamma(n = sample.size, shape = gshape, scale = gscale)
+        X <- cbind(1, x)
+    }
+    else {
+        X <- cbind(1, x)
+        sample.size <- nrow(X)
+        if (sum(n.col * n.row) != sample.size)
+            stop("n.row and n.col not consistent with the sample size")
+    }
+    len <- length(n.row)
+    pijk <- switch(linkf, logit = plogis(X %*% par),
+            probit = pnorm(X %*% par),
+            cloglog = 1 - exp(-exp(X %*% par)))
+    ind <- rbinom(n = sample.size, size = 1, prob = pijk)
+    individual <- col.groupn <- row.groupn <- numeric(0)
+    rowr <- colr <- numeric(0)
+    ret <- rep(NA, sample.size)
+    for (i in 1:len) {
+        if (i > 1)
+            index <- seq(max(index) + 1, length = (n.row * n.col)[i])
+        else index <- 1:(n.row * n.col)[1]
+        indm <- matrix(ind[index], nrow = n.row[i])
+        col.resp <- apply(indm, MARGIN = 2, FUN = sum)
+        col.resp <- ifelse(col.resp > 0, 1, 0)
+        col.err <- rep(NA, n.col[i])
+        for (j in 1:n.col[i])
+             col.err[j] <- ifelse(col.resp[j] == 1, rbinom(1, 1, sens),
+                                 1 - rbinom(1, 1, spec))
+        row.resp <- apply(indm, MARGIN = 1, FUN = sum)
+        row.resp <- ifelse(row.resp > 0, 1, 0)
+        row.err <- rep(NA, n.row[i])
+        for (j in 1:n.row[i])
+             row.err[j] <- ifelse(row.resp[j] == 1, rbinom(1, 1, sens),
+                                 1 - rbinom(1, 1, spec))
+        temp.c <- rep(1:n.col[i], each = n.row[i])
+        col.groupn <- c(col.groupn, temp.c)
+        temp.r <- rep(1:n.row[i], n.col[i])
+        row.groupn <- c(row.groupn, temp.r)
+        temp2.c <- rep(col.err, each = n.row[i])
+        colr <- c(colr, temp2.c)
+        temp2.r <- rep(row.err, n.col[i])
+        rowr <- c(rowr, temp2.r)
+        if (all(row.err == 0)) {
+            for (j in index) {
+                 if (colr[j] == 1)
+                     ret[j] <- ifelse(ind[j] == 1, rbinom(1,
+                        1, sens.ind), 1 - rbinom(1, 1, spec.ind))
+            }
+        }
+        else {
+            if (all(col.err == 0)) {
+                for (j in index) {
+                     if (rowr[j] == 1)
+                         ret[j] <- ifelse(ind[j] == 1, rbinom(1,
+                            1, sens.ind), 1 - rbinom(1, 1, spec.ind))
+                }
+            }
+            else {
+                for (j in index) {
+                     if (rowr[j] == 1 && colr[j] == 1)
+                         ret[j] <- ifelse(ind[j] == 1, rbinom(1, 1,
+                            sens.ind), 1 - rbinom(1, 1, spec.ind))
+                }
+            }
+        }
+        individual <- c(individual, list(indm))
+    }
+    sq <- rep(1:len, n.col * n.row)
+    if (all(colr == 0) && all(rowr == 0))
+        return(NULL)
+    grd <- data.frame(x = x, col.resp = colr,
+        row.resp = rowr, coln = col.groupn, rown = row.groupn,
+        arrayn = sq, retest = ret)
+    if (ncol(X) > 2)
+        for (i in 1:(ncol(X) - 1))
+             colnames(grd)[i] <- paste("x", i, sep="")
+    list(dframe = grd, ind = individual, prob = as.vector(pijk))
 }
 

@@ -15,8 +15,8 @@ Further, regression methods are implemented for simple pooling and matrix poolin
 \tabular{ll}{
 Package: \tab binGroup\cr
 Type: \tab Package\cr
-Version: \tab 1.0-4\cr
-Date: \tab 2010-01-06\cr
+Version: \tab 1.0-5\cr
+Date: \tab 2010-06-10\cr
 License: \tab GPL\cr
 LazyLoad: \tab no\cr
 }
@@ -45,14 +45,14 @@ Maintainer: Frank Schaarschmidt <schaarschmidt@biostat.uni-hannover.de>
 
 \references{
 
-\emph{Hepworth, G. (1996)} Exact confidence intervals for proportions estimated by group testing. Biometrics 52, 1134-1146.
+\emph{Hepworth, G. (1996)} Exact confidence intervals for proportions estimated by group testing. \emph{Biometrics 52, 1134-1146.}
 
-\emph{Schaarschmidt, F. (2007)} Experimental design for one-sided confidence intervals or hypothesis tests in binomial group testing. Communications in Biometry and Crop Science 2 (1), 32-40.
+\emph{Schaarschmidt, F. (2007)} Experimental design for one-sided confidence intervals or hypothesis tests in binomial group testing.  \emph{Communications in Biometry and Crop Science 2 (1), 32-40.}
  http://agrobiol.sggw.waw.pl/cbcs/
 
-\emph{Swallow, W.H. (1985)} Group testing for estimating infection rates and probabilities of disease transmission. Phytopathology Vol.75, N.8, 882-889.
+\emph{Swallow, W.H. (1985)} Group testing for estimating infection rates and probabilities of disease transmission.  \emph{Phytopathology 75 (8), 882-889.}
 
-\emph{Tebbs, J.M. & Bilder, C.R. (2004)} Confidence interval procedures for the probability of disease transmission in multiple-vector-transfer designs. Journal of Agricultural, Biological and Environmental Statistics, Vol.9, N.1, 75-90.
+\emph{Tebbs, J.M. & Bilder, C.R. (2004)} Confidence interval procedures for the probability of disease transmission in multiple-vector-transfer designs.  \emph{Journal of Agricultural, Biological and Environmental Statistics 9 (1), 75-90.}
 
 \emph{Vansteelandt, S., Goetghebeur, E., and Verstraeten, T. (2000)} Regression models for disease prevalence with diagnostic tests on pools of serum samples, \emph{Biometrics, 56, 1126-1133.}
 
@@ -114,15 +114,20 @@ summary(fit1)
 # The function sim.mp is used to simulate a matrix pooling data set:
 
 set.seed(9128)
-sa1a<-sim.mp(beta.par=c(-7,0.1), rown=c(5,4), coln=c(6,5),
+sa1a<-sim.mp(par=c(-7,0.1), n.row=c(5,4), n.col=c(6,5),
  sens=0.95, spec=0.95)
+
+str(sa1a)
 sa1<-sa1a$dframe
 
+
 \dontrun{
-fit1mp <- gtreg.mp(formula = cbind(col.resp, row.resp) ~ x, data = sa1, 
-  col.groupn = coln, row.groupn = rown, arrayn = sqn, 
-  sens = 0.95, spec = 0.95, linkf = "logit", n.gibbs = 1000, tol = 0.005)
-summary(fit1mp)
+fit2 <- gtreg.mp(formula = cbind(col.resp, row.resp) ~ x, data = sa1, 
+                 coln = coln, rown = rown, arrayn = arrayn, 
+                 sens = 0.95, spec = 0.95, n.gibbs = 2000, trace = TRUE)
+fit2
+summary(fit2)
 }
+
 
 }

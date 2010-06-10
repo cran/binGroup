@@ -15,13 +15,14 @@ Fitting Group Testing Models
 \usage{
 gtreg(formula, data, groupn, sens = 1,
  spec = 1, linkf = c("logit", "probit", "cloglog"),
- method = c("Vansteelandt", "Xie"), ...)
+ method = c("Vansteelandt", "Xie"), start=NULL,
+ control=EM.control(...), ...)
 
-gtreg.fit(resp, cova, groupn, sens, spec,
- linkf, optim.meth = "Nelder-Mead")
+gtreg.fit(Y, X, groupn, sens, spec,
+ linkf, start=NULL)
 
-EM(resp, cova, groupn, sens, spec, linkf,
- EM.maxiter = 1000)
+EM(Y, X, groupn, sens, spec, linkf,
+ start = NULL, control = EM.control())
 }
 
 
@@ -56,25 +57,25 @@ The method to fit the model, must be one of \kbd{"Vansteelandt"} (default) or \k
 \kbd{"Vansteelandt"} finds estimates by directly maximizing the likelihood function based on the group responses while the option \kbd{"Xie"} uses the EM algorithm to maximize the likelihood function in terms of the unobserved individual responses.
 }
 
-\item{resp}{
-For \kbd{gtreg.fit} and \kbd{EM}: the vector of the group response variable
+\item{start}{
+starting values for the parameters in the linear predictor.
 }
 
-\item{cova}{
-For \kbd{gtreg.fit} and \kbd{EM}: the design matrix of the covariates
+
+\item{control}{
+a list of parameters for controlling the fitting process in method \kbd{"Xie"}. See the documentation for \code{\link{EM.control}} for details.
 }
 
-\item{optim.meth}{
-For \kbd{gtreg.fit}: the method in optim to fit the full model (default is \kbd{"Nelder-Mead"})
+\item{Y}{
+For \kbd{gtreg.fit} and \kbd{EM}: the vector of the group responses.
 }
 
-\item{EM.maxiter}{
-For \kbd{EM}: The maximal number of iterations in the EM algorithm if \kbd{"Xie"} is chosen.
+\item{X}{
+For \kbd{gtreg.fit} and \kbd{EM}: the design matrix of the covariates.
 }
 
-\item{\dots}{
-In \kbd{gtreg}: arguments to be passed to \kbd{gtreg.fit} or \kbd{EM}.
-}
+\item{...}{arguments to be passed by default to \code{\link{EM.control}}: see argument \kbd{control} }
+
 
 }
 \details{
@@ -83,9 +84,11 @@ A typical predictor has the form \kbd{groupresp ~ covariates} where response is 
 
 A specification of the form \kbd{first:second} indicates the set of terms obtained by taking the interactions of all terms in \kbd{first} with all terms in \kbd{second}. The specification \kbd{first*second} indicates the cross of \kbd{first} and \kbd{second}. This is the same as \kbd{first + second + first:second}. 
 
-Two workhorse functions \kbd{gtreg.fit} and \kbd{EM}, which corresponds to Vansteelandt's and Xie's method respectively, are called by \kbd{gtreg} to carry out the model fitting. The \kbd{gtreg.fit} function uses the \kbd{optim} function to maximize the likelihood function written in terms of the group responses. The \kbd{EM} function applies Xie's EM algorithm to the likelihood function written in terms of the unobserved individual responses; the function uses \kbd{optim} to maximize the likelihood function in each M step. The EM algorithm usually converges more slowly than the method of Vansteelandt. There could be slight differences in the estimates between the two methods due to different convergence criteria.
+Two workhorse functions \kbd{gtreg.fit} and \kbd{EM}, corresponding to Vansteelandt's and Xie's methods, respectively, are called by \kbd{gtreg} to carry out the model fitting. The \kbd{gtreg.fit} function uses the \kbd{optim} function with default method \kbd{"Nelder-Mead"} to maximize the likelihood function of the observed group responses. If this optimization method produces a Hessian matrix of all zero elements, simulated-annealing method is employed to find the coefficients and Hessian matrix. 
 
-Note the data used here should be in the form of simple pooling - meaning that each individual appears in exactly one pool. Also, no individual tests or retests are used in the model fitting. 
+The \kbd{EM} function applies Xie's EM algorithm to the likelihood function written in terms of the unobserved individual responses; the function uses \kbd{glm.fit} to update the parameter estimates within each M step. There could be slight differences in the estimates between the Vansteelandt's and Xie's methods due to different convergence criteria.
+
+The data used here should be in the form of simple pooling - meaning that each individual appears in exactly one pool. Also, no individual tests or retests are used in the model fitting. 
 
 For the background on the use of \kbd{optim}, see \kbd{help(optim)}.
 
@@ -97,7 +100,7 @@ The group testing functions \kbd{predict} (i.e., \code{\link{predict.gt}}) and \
 An object of class \kbd{"gt"} is a list containing at least the following components: 
 
  \item{ coefficients }{ a named vector of coefficients }
- \item{ hessian }{ estimated Hessian matrix of the negative log likelihood function, as an estimator of the information matrix }
+ \item{ hessian }{ estimated Hessian matrix of the negative log likelihood function, serves as an estimate of the information matrix }
  \item{ residuals }{ the response residuals, difference of the observed group responses and the fitted group responses. }
  \item{ fitted.group.values }{ the fitted mean values of group responses. }
  \item{ deviance }{ the deviance between the fitted model and the saturated model. }
@@ -139,13 +142,14 @@ data(hivsurv)
 
 fit1 <- gtreg(formula = groupres ~ AGE + EDUC., data = hivsurv,
            groupn = gnum, sens = 0.9, spec = 0.9, method = "Xie")
+fit1
 
 ## --- Continuing the Example from  '?sim.g':
 
-set.seed(1125)
-gt.data<-sim.g(beta.par=c(-9,0.1), number.sample=279, group.size=9)
-fit2 <- gtreg(formula = groupres ~ x, data = gt.data, 
-           groupn = gnum, linkf = "probit")
+set.seed(46)
+gt.data <- sim.g(par = c(-12, 0.2), sample.size = 700, group.size = 5)
+fit2 <- gtreg(formula = gres ~ x, data = gt.data, groupn = groupn)
+fit2
 
 }
 

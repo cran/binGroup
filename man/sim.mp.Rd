@@ -9,24 +9,33 @@ Simulation Function for Group Testing Data with Matrix Pooling Design
 Simulates data in group testing form ready to be fit by \kbd{gtreg.mp}.
 }
 \usage{
-sim.mp(gshape = 20, gscale = 2, beta.par, rown, coln,
- sens = 1, spec = 1, sens.ind = NULL, spec.ind = NULL)
+sim.mp(x = NULL, gshape = 20, gscale = 2, par,
+    linkf = c("logit", "probit", "cloglog"),
+    n.row, n.col, sens = 1, spec = 1,
+    sens.ind = NULL, spec.ind = NULL)
+
 }
 
 \arguments{
+  \item{x}{
+a matrix of user-submitted covariates to simulate the data with, defaults to \kbd{NULL} in which case a gamma distribution is used to generate the covariates automatically.
+}
   \item{gshape}{
 shape parameter of gamma distribution, must be non-negative, set to be 20 by default
 }
   \item{gscale}{
 scale parameter of gamma distribution, must be strictly positive, set to be 2 by default
 }
-  \item{beta.par}{
+  \item{par}{
 the true coefficients in the linear predictor 
 }
-  \item{rown}{
+\item{linkf}{a character string specifying one of the three link functions to be used: \kbd{"logit"} (default) or \kbd{"probit"} or \kbd{"cloglog"}
+}
+
+  \item{n.row}{
 a vector that specifies the number of rows in each matrix, a scalar if only one matrix is simulated
 }
-  \item{coln}{
+  \item{n.col}{
 a vector that specifies the number of columns in each matrix, a scalar if only one matrix is simulated
 }
   \item{sens}{
@@ -45,8 +54,7 @@ specificity of the individual retests, set to be equal to spec if not specified 
 
 \details{
 
-\kbd{sim.mp} generates group testing data in matrix pooling form. To begin, the covariates are generated from a gamma distribution with given \kbd{gshape} and \kbd{gscale}. The individual probabilities are calculated with these covariates and the logit link using coefficients given in \kbd{beta.par}. The true individual responses are simulated next using Bernoulli distributions with these corresponding individual probabilities. The individuals are organized into (by column) one or more matrices specified by \kbd{rown} and \kbd{coln}, and the true group responses are found (i.e., if at least one response is positive, the group is positive; otherwise, the group response is negative). The row and column group responses are simulated from Bernoulli distributions using the given \kbd{sens} and \kbd{spec} values. Results of individual retests are simulated with \kbd{sens.ind} and \kbd{spec.ind} for individuals that lie on the intersection of an observed positive row and an observed positive column. 
-In the case where no column (row) tests positive in a matrix, all the individuals in any observed positive rows (columns) will be assigned a simulated retest result.
+\kbd{sim.mp} generates group testing data in matrix pooling form. The covariates are either specified by the \kbd{x} argument or they are generated from a gamma distribution with a given \kbd{gshape} and \kbd{gscale}. The individual probabilities are calculated from the covariates, the coefficients given in \kbd{par} and the link function specified through \kbd{linkf}. The true binary individual responses are then simulated from the individual probabilities. The individuals are organized into (by column) one or more matrices specified by \kbd{n.row} and \kbd{n.col}, and the true group responses are found (i.e., if at least one response is positive, the group is positive; otherwise, the group response is negative). The observed row and column group responses are then simulated using the given \kbd{sens} and \kbd{spec} values. Individual retests are simulated from \kbd{sens.ind} and \kbd{spec.ind} for individuals that lie on the intersection of an observed positive row and an observed positive column. In the case where no column (row) tests positive in a matrix, all the individuals in any observed positive rows (columns) will be assigned a simulated retest result. If no column or row is observed positive, \kbd{NULL} is returned. 
 
 }
 
@@ -61,7 +69,7 @@ In the case where no column (row) tests positive in a matrix, all the individual
 \item{col.resp}{the column group response}
 \item{row.resp}{the row group response}
 \item{x}{the covariate}
-\item{sqn}{the array number}
+\item{arrayn}{the array number}
 \item{coln}{the column group number}
 \item{rown}{the row group number}
 \item{retest}{the results of individual retests}
@@ -80,9 +88,10 @@ Boan Zhang
 
 # 5*6 and 4*5 matrix
 set.seed(9128)
-sa1a<-sim.mp(beta.par=c(-7,0.1), rown=c(5,4), coln=c(6,5),
+sa1a<-sim.mp(par=c(-7,0.1), n.row=c(5,4), n.col=c(6,5),
  sens=0.95, spec=0.95)
 sa1<-sa1a$dframe
+
 
 }
 

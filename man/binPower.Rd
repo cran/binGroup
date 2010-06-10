@@ -44,6 +44,9 @@ especially for Wald, Wilson Score and Agresti-Coull CI.
   \item{power}{the power which is achieved for the specified parameters and method}
 }
 
+\author{
+Frank Schaarschmidt
+}
 
 \seealso{ \code{\link{binDesign}} for iteration of a sample size n for which a specified power is reached  }
 \examples{

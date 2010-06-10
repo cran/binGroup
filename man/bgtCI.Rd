@@ -58,15 +58,21 @@ A list containing:
 
 \references{
 
-\emph{Schaarschmidt F (2007).} Experimental design for one-sided confidence intervals or hypothesis tests in binomial group testing. Communications in Biometry and Crop Science 2 (1), 32-40.
- http://agrobiol.sggw.waw.pl/cbcs/
-\emph{Tebbs JM & Bilder CR (2004)}. Confidence interval procedures for the probability of disease transmission in multiple-vector-transfer designs. Journal of Agricultural, Biological and Environmental Statistics, Vol.9, N.1, 75-90.
+\emph{Blaker H (2000)}. Confidence curves and improved exact confidence intervals for discrete distributions. \emph{The Canadian Journal of Statistics 28 (4), 783-798.}
 
-\emph{Blaker H (2000)}. Confidence curves and improved exact confidence intervals for discrete distributions. The Canadian Journal of Statistics 28 (4): 783-798.
-\emph{Brown LD, Cai TT, DasGupta A (2001)}. Interval estimation for a binomial proportion. Statistical Science 2001, Vol.16, No.2, 101-133.
-\emph{Cai TT (2005)}. One-sided confidence intervals in discrete distributions. Journal of statistical planning and inference 131, 63-88.
+\emph{Brown LD, Cai TT, DasGupta A (2001)}. Interval estimation for a binomial proportion. \emph{Statistical Science 16 (2), 101-133.}
+
+\emph{Cai TT (2005)}. One-sided confidence intervals in discrete distributions. \emph{Journal of Statistical Planning and Inference 131, 63-88.}
+
+\emph{Schaarschmidt F (2007).} Experimental design for one-sided confidence intervals or hypothesis tests in binomial group testing. \emph{Communications in Biometry and Crop Science 2 (1), 32-40.} http://agrobiol.sggw.waw.pl/cbcs/
+
+\emph{Tebbs JM & Bilder CR (2004)}. Confidence interval procedures for the probability of disease transmission in multiple-vector-transfer designs. \emph{Journal of Agricultural, Biological and Environmental Statistics, 9 (1), 75-90.}
 
  }
+
+\author{
+Frank Schaarschmidt
+}
 
 \seealso{ \code{\link{bgtvs}} for an exact confidence interval when designs with different group sizes are used
 \code{\link{bgtTest}}: for hypothesis tests in binomial group testing

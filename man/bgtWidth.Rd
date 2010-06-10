@@ -41,15 +41,19 @@ and the calculated
   \item{expCIWidth}{expected value of CI width as defined under argument alternative}
 }
 \references{
+\emph{Brown LD, Cai TT, DasGupta A (2001)} Interval estimation for a binomial proportion. \emph{Statistical Science 16 (2), 101-133.}
 
-\emph{Schaarschmidt F (2007)} Experimental design for one-sided confidence intervals or hypothesis tests in binomial group testing. Communications in Biometry and Crop Science 2 (1), 32-40.
+\emph{Schaarschmidt F (2007)} Experimental design for one-sided confidence intervals or hypothesis tests in binomial group testing. \emph{Communications in Biometry and Crop Science 2 (1), 32-40.}
  http://agrobiol.sggw.waw.pl/cbcs/
 
-\emph{Tebbs JM & Bilder CR (2004)} Confidence interval procedures for the probability of disease transmission in multiple-vector-transfer designs. Journal of Agricultural, Biological and Environmental Statistics, Vol.9, N.1, 75-90.
+\emph{Tebbs JM & Bilder CR (2004)} Confidence interval procedures for the probability of disease transmission in multiple-vector-transfer designs. \emph{Journal of Agricultural, Biological and Environmental Statistics 9 (1), 75-90.}
 
-\emph{Brown LD, Cai TT, DasGupta A (2001)} Interval estimation for a binomial proportion. Statistical Science 2001, Vol.16, No.2, 101-133.
+
  }
 
+\author{
+Frank Schaarschmidt
+}
 
 \examples{
 

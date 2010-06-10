@@ -2,9 +2,9 @@
 function(n, s, y, conf.level=0.95, alternative="two.sided", method="CP")
 
 {
-if(length(n)!=1 || n<1){stop("number of groups n must be specified as a single integer > 0")}
-if(length(s)!=1 || s<1){stop("group size s must be specified as a single integer > 0")}
-if(length(s)!=1 || y<0){stop("observed number of positive groups y must be specified as a single integer>0")}
+if(length(n)!=1 || (n<1 | abs(round(n)-n) > 1e-07)){stop("number of groups n must be specified as a single integer > 0")}
+if(length(s)!=1 || (s<1 | abs(round(s)-s) > 1e-07)){stop("group size s must be specified as a single integer > 0")}
+if(length(s)!=1 || (y<0 | abs(round(y)-y) > 1e-07)){stop("observed number of positive groups y must be specified as a single integer>0")}
 if(y>n) {stop("number of positive tests y can not be greater than number of groups n")}
 if(length(conf.level)!=1 || conf.level<0 || conf.level>1){stop("conf.level must be a positive number between 0 and 1")}
 

@@ -42,7 +42,7 @@ Boan Zhang
 
 \seealso{
 \code{\link{gtreg.mp}} for creating an object of class \kbd{"gtreg.mp"},
-\code{\link{print.summary.gt.mp}} gives some hints how to change teh print-out of \kbd{summary.gt.mp}
+\code{\link{print.summary.gt.mp}} gives some hints how to change the print-out of \kbd{summary.gt.mp}
 }
 \examples{
 
@@ -50,13 +50,13 @@ Boan Zhang
 # 5*6 and 4*5 matrix
 
 set.seed(9128)
-sa1a<-sim.mp(beta.par=c(-7,0.1), rown=c(5,4), coln=c(6,5),
+sa1a<-sim.mp(par=c(-7,0.1), n.row=c(5,4), n.col=c(6,5),
   sens=0.95, spec=0.95)
 sa1<-sa1a$dframe
 
 \dontrun{
 fit1mp <- gtreg.mp(formula = cbind(col.resp, row.resp) ~ x, data = sa1, 
-  col.groupn = coln, row.groupn = rown, arrayn = sqn, 
+  coln = coln, rown = rown, arrayn = arrayn, 
   sens = 0.95, spec = 0.95, linkf = "logit", n.gibbs = 1000, tol = 0.005)
 
 summary(fit1mp)

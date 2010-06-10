@@ -32,6 +32,10 @@ can be one of \kbd{"Exact"} for an exact test corresponding to the Clopper-Pears
 }
 \references{ \emph{Santner, T.J. and Duffy, D.E. (1989)} The statistical analysis of discrete data. Springer Verlag New York Berlin Heidelberg. Chapter 2.1.  }
 
+\author{
+Frank Schaarschmidt
+}
+
 \seealso{ \kbd{binom.test(stats)} for the exact test and corresponding confindence interval }
 \examples{
 

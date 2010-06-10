@@ -33,7 +33,13 @@ groups becomes larger than 3.
 
   moreover, some of the input arguments.
 }
-\references{ Hepworth, G (1996): Exact confidence intervals for proportions estimated by group testing. Biometrics 52, 1134-1146. }
+\references{ \emph{Hepworth, G (1996):} Exact confidence intervals for proportions estimated by group testing. \emph{Biometrics 52, 1134-1146.}
+ }
+
+
+\author{
+Frank Schaarschmidt
+}
 
 
 \examples{

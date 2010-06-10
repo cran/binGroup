@@ -46,6 +46,10 @@ and the alternative, p and n which are specified in the function call.
 }
 
 
+\author{
+Frank Schaarschmidt
+}
+
 \seealso{ \code{\link{binDesign}} for experimental design for hypothesis testing }
 \examples{
 

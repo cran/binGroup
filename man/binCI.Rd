@@ -63,12 +63,17 @@ For discussion of CI for a single binomial proportion see Brown et al. (2001) fo
 }
 \references{ 
 
-\emph{Blaker H (2000)} Confidence curves and improved exact confidence intervals for discrete distributions. The Canadian Journal of Statistics 28 (4): 783-798.
-\emph{Brown LD, Cai TT, DasGupta A (2001)} Interval estimation for a binomial proportion. Statistical Science 2001, Vol.16, No.2, 101-133.
-\emph{Cai TT(2005)} One-sided confidence intervals in discrete distributions. Journal of statistical planning and inference 131, 63-88.
+\emph{Blaker H (2000)} Confidence curves and improved exact confidence intervals for discrete distributions. \emph{The Canadian Journal of Statistics 28 (4), 783-798.}
+
+\emph{Brown LD, Cai TT, DasGupta A (2001)} Interval estimation for a binomial proportion. \emph{Statistical Science 16 (2), 101-133.}
+
+\emph{Cai TT(2005)} One-sided confidence intervals in discrete distributions. \emph{Journal of Statistical Planning and Inference 131, 63-88.}
 
 }
 
+\author{
+Frank Schaarschmidt
+}
 
 \seealso{ \code{\link{binom.test}} for the exact confidence interval and test,
 \code{\link{binTest}} to calculate p.values of the exact, Score and Wald test.

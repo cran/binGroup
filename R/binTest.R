@@ -2,8 +2,9 @@
 function(n, y, p.hyp, alternative="two.sided", method="Exact")
 {
 
-if(length(n)!=1 || n<1){stop("number of groups n must be specified as a single integer > 0")}
-if(length(y)!=1 || y<0){stop("observed number of positive groups y must be specified as a single integer>0")}
+if(length(n)!=1 || (n<1 | abs(round(n)-n) > 1e-07)){stop("number of groups n must be specified as a single integer > 0")}
+if(length(y)!=1 || (y<0 | abs(round(y)-y) > 1e-07)){stop("observed number of positive groups y must be specified as a single integer>0")}
+
 if(y>n) {stop("number of positive tests y can not be greater than number of groups n")}
 if(length(p.hyp)!=1 || p.hyp<0 || p.hyp>1){stop("p.hyp must be a positive number between 0 and 1")}
 

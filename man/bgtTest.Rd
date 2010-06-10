@@ -38,13 +38,13 @@ can be one of 'Exact' for an exact test corresponding to the Clopper-Pearson con
 }
 \references{ 
 
-\emph{Swallow WH (1985)} Group testing for estimating infection rates and probabilities of disease transmission. Phytopathology Vol.75, N.8, 882-889.
+\emph{Swallow WH (1985)} Group testing for estimating infection rates and probabilities of disease transmission. \emph{Phytopathology 75 (8), 882-889.}
 
-\emph{Blyth, C and Still, H. (1983)} Binomial confidence intervals. Journal of the American Statistical Association 78, 108-116.
+\emph{Blyth, C and Still, H. (1983)} Binomial confidence intervals. \emph{Journal of the American Statistical Association 78, 108-116.}
 
-\emph{Santner TJ and Duffy DE (1989)} The statistical analysis of discrete data. Springer Verlag New York Berlin Heidelberg.
+\emph{Santner TJ and Duffy DE (1989)} The statistical analysis of discrete data. Springer New York.
 
-\emph{Remund KM, Dixon DA, Wright DL, Holden LR (2001)} Statistical considerations on seed purity testing on transgenic traits. Seed Sci Res 2001; 11: 101-119.
+\emph{Remund KM, Dixon DA, Wright DL, Holden LR (2001)} Statistical considerations on seed purity testing on transgenic traits. \emph{Seed Science Research (11), 101-119.}
 
  }
 
