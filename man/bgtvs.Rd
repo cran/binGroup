@@ -41,6 +41,8 @@ groups becomes larger than 3.
 Frank Schaarschmidt
 }
 
+\seealso{ \code{\link{pooledBin}} for asymptotic methods to calculate confidence intervals for one proportion in designs with a number of different pool sizes. Note that \code{pooledBin} can handle larger number of different pool sizes than \code{bgtvs} }
+
 
 \examples{
 # Consider a very simple example,

@@ -7,16 +7,14 @@
 Statistical Methods for Group Testing.
 }
 \description{
-This package provides methods for estimation and hypothesis testing of proportions in group testing designs.
-Currently, methods of estimating a proportion in a single population, as well as hypothesis tests and functions for experimental design for this situation are provided.
-Further, regression methods are implemented for simple pooling and matrix pooling designs.
+This package provides methods for estimation and hypothesis testing of proportions in group testing designs. It involves methods for estimating a proportion in a single population (assuming  sensitivity and specificty 1 in designs with equal  group sizes), as well as hypothesis tests and functions for experimental design for this situation. For estimating one proportion or the difference of proportions, a number of confidence interval methods are included, which can deal with various different pool sizes. Further, regression methods are implemented for simple pooling and matrix pooling designs.
 }
 \details{
 \tabular{ll}{
 Package: \tab binGroup\cr
 Type: \tab Package\cr
-Version: \tab 1.0-5\cr
-Date: \tab 2010-06-10\cr
+Version: \tab 1.0-6\cr
+Date: \tab 2010-07-19\cr
 License: \tab GPL\cr
 LazyLoad: \tab no\cr
 }
@@ -25,11 +23,15 @@ LazyLoad: \tab no\cr
 
 Methods for calculating confidence intervals for a single population proportion from designs with equal group sizes (as described by Tebbs and Bilder, 2004 and Schaarschmidt, 2007) are implemented in the function \code{\link{bgtCI}}.
 
-If a confidence interval for a single proportion shall be calculated based on a design with a limited number of different group sizes, the exact method described by Hepworth (2004) is implemented in the function \code{\link{bgtvs}}.
-
 For the problem of choosing an adequate experimental design in the one-sample case with only one group size, the functions \code{\link{estDesign}}, \code{\link{sDesign}}, \code{\link{nDesign}} implement different iterative approaches, as examplified by Swallow (1985) and Schaarschmidt (2007).
 
-2) Regression models
+If a confidence interval for a single proportion shall be calculated based on a design involving groups of different group sizes, a number of methods described by Hepworth (1999) is available in the function \code{\link{pooledBin}}. The exact method described by Hepworth (1996) is implemented in the function \code{\link{bgtvs}}.
+
+2) Two-sample case
+
+The function \code{\link{pooledBinDiff}} provides a number of confidence interval methods for estimating the difference of proportions from two independent samples, allowing for groups of different group size (Biggerstaff, 2008).
+
+3) Regression models
 
 Two approaches (by Vansteelandt et al., 2000 and Xie, 2001) to estimate parameters of group testing regression models can be applied by calling \code{\link{gtreg}}. Once fitted, corresponding methods to extract residuals, calculate predictions and summarize the parameter estimates (including hypotheses tests) are available in the S3 methods \code{\link{residuals.gt}}, \code{\link{predict.gt}} and \code{\link{summary.gt}}.
 
@@ -38,17 +40,19 @@ Group testing regression models in settings with matrix pooling (Xie, 2001) can 
 
 }
 \author{
-Boan Zhang, Christopher Bilder, Frank Schaarschmidt
+Boan Zhang, Christopher Bilder, Brad Biggerstaff, Frank Schaarschmidt
 
 Maintainer: Frank Schaarschmidt <schaarschmidt@biostat.uni-hannover.de>
 }
 
 \references{
+\emph{Biggerstaff, B.J. (2008)}: Confidence interval for the difference of proportions estmimated from pooled samples. \emph{Journal of Agricultural Biological and Environmental Statistics, 13(4), 478-496.}
 
 \emph{Hepworth, G. (1996)} Exact confidence intervals for proportions estimated by group testing. \emph{Biometrics 52, 1134-1146.}
 
-\emph{Schaarschmidt, F. (2007)} Experimental design for one-sided confidence intervals or hypothesis tests in binomial group testing.  \emph{Communications in Biometry and Crop Science 2 (1), 32-40.}
- http://agrobiol.sggw.waw.pl/cbcs/
+\emph{Hepworth, G. (1999)}: \emph{Estimation of proportions by group testing.} PhD Dissertation. Melbourne, Australia: The University of Melbourne.
+
+\emph{Schaarschmidt, F. (2007)} Experimental design for one-sided confidence intervals or hypothesis tests in binomial group testing.  \emph{Communications in Biometry and Crop Science 2 (1), 32-40.} http://agrobiol.sggw.waw.pl/cbcs/
 
 \emph{Swallow, W.H. (1985)} Group testing for estimating infection rates and probabilities of disease transmission.  \emph{Phytopathology 75 (8), 882-889.}
 
@@ -73,7 +77,7 @@ Maintainer: Frank Schaarschmidt <schaarschmidt@biostat.uni-hannover.de>
 # where 
 #  n denotes the number of groups (pools),
 #  s denotes the common group size (number of individuals pooled per group),
-#  Y denotes the number of groups tested positive.
+#  y denotes the number of groups tested positive.
 
 # The following call reproduces the example given 
 # by Tebbs and Bilder (2004) for the two-sided 95-percent 
@@ -90,6 +94,14 @@ bgtCI(n=24, y=3, s=7, conf.level=0.95,
  bgtvs(n=c(2,3), s=c(5,2), y=c(0,0))
  bgtvs(n=c(2,3), s=c(5,2), y=c(0,1))
 
+# The function pooledBin provides different methods for the same problem,
+# where x is the number of positive groups, m is the size of the groups and
+# n is the number of groups with the correesponding sizes:
+
+pooledBin(x=c(0,1), m=c(5,2), n=c(2,3), ci.method="score")
+pooledBin(x=c(0,1), m=c(5,2), n=c(2,3), ci.method="lrt")
+pooledBin(x=c(0,1), m=c(5,2), n=c(2,3), ci.method="bc-skew-score")
+
 # 1.3) For experimental design based on the bias of the point estimate,
 # as proposed by Swallow (1985): The values in Table 1 (Swallow, 1985),
 # p.885 can be reproduced by calling:
@@ -97,8 +109,29 @@ bgtCI(n=24, y=3, s=7, conf.level=0.95,
 estDesign(n=10, smax=100, p.tr=0.001)
 estDesign(n=10, smax=100, p.tr=0.01)
 
+# 2) Two-sample comparison
 
-# 2.1) Fitting a regression model
+# Assume a design, where pools 5, 1, 1, 30, and 20 pools of size 10, 4, 1, 25, 50, 
+# respectively, are used to estimate the prevalence in two populations.
+# In population 1, one out of 5 pools with 10 units is positive,
+# while in population 2, two out of five pools with 10 units is positive as well as 
+# the one pool with only 1 unit.
+# The difference of proportions is to be estimated.
+
+x1 <- c(1,0,0,0,0)
+m1 <- c(10,4,1,25,50)
+n1 <- c(5,1,1,30,20)
+
+x2 <- c(2,0,1,0,0)
+m2 <- c(10,4,1,25,50)
+n2 <- c(5,1,1,30,20)
+
+pooledBinDiff(x1=x1, m1=m1,x2=x2, m2=m2, n1=n1, n2=n2, ci.method="lrt")
+
+
+# 3) Regression models
+
+# 3.1) Fitting a regression model
 # A HIV surveillance data (used by Vansteelandt et al. 2000)
 # can be analysed for the dependence of HIV prevalence
 # on covariates AGE and EDUC., with sensitivity and specificity
@@ -110,7 +143,7 @@ fit1 <- gtreg(formula = groupres ~ AGE + EDUC., data = hivsurv,
 summary(fit1)
 
 
-# 2.2) Fitting a regression model for matrix pooling data
+# 3.2) Fitting a regression model for matrix pooling data
 # The function sim.mp is used to simulate a matrix pooling data set:
 
 set.seed(9128)

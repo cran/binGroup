@@ -74,7 +74,9 @@ A list containing:
 Frank Schaarschmidt
 }
 
-\seealso{ \code{\link{bgtvs}} for an exact confidence interval when designs with different group sizes are used
+\seealso{ 
+\code{\link{pooledBin}} for asymptotic confidence intervals and \code{\link{bgtvs}} for an exact confidence interval when designs with different group sizes are used
+
 \code{\link{bgtTest}}: for hypothesis tests in binomial group testing
 }
 \examples{
