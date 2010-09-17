@@ -13,8 +13,8 @@ This package provides methods for estimation and hypothesis testing of proportio
 \tabular{ll}{
 Package: \tab binGroup\cr
 Type: \tab Package\cr
-Version: \tab 1.0-6\cr
-Date: \tab 2010-07-19\cr
+Version: \tab 1.0-7\cr
+Date: \tab 2010-09-17\cr
 License: \tab GPL\cr
 LazyLoad: \tab no\cr
 }
