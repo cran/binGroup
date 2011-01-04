@@ -15,12 +15,10 @@ Fitting Group Testing Models in Matrix Pooling Setting
 gtreg.mp(formula, data, coln, rown, arrayn, retest = NULL,
  sens = 1, spec = 1,  linkf = c("logit", "probit", "cloglog"),
  sens.ind = NULL, spec.ind = NULL,  start = NULL,
- control = mp.control(...), ...)
+ control = gt.control(...), ...)
 
-EM.mp(col.resp, row.resp, X, coln, rown,
- sqn, ret, sens, spec, linkf, 
- sens.ind, spec.ind, start = NULL,
- control = mp.control())
+EM.mp(col.resp, row.resp, X, coln, rown, sqn, ret, sens, spec,
+ linkf, sens.ind, spec.ind, start = NULL, control = gt.control())
 
 }
 
@@ -64,7 +62,7 @@ a character string specifying one of the three link functions for a binomial mod
 starting values for the parameters in the linear predictor.
 }
 
-\item{control}{a list of parameters for controlling the fitting process. See the documentation for \code{\link{mp.control}} for details.}
+\item{control}{a list of parameters for controlling the fitting process. See the documentation for \code{\link{gt.control}} for details.}
 
   \item{col.resp}{
 For \kbd{EM.mp}: vector of group responses of column pools for all samples. 0 denotes negative and 1 denotes positive.
@@ -81,7 +79,7 @@ For \kbd{EM.mp}: the design matrix of the covariates.
 \item{ret}{For \kbd{EM.mp}: a vector containing individual retest results}
 
 \item{\dots}{
-arguments to be passed to \code{\link{mp.control}}: see argument \kbd{control}}
+arguments to be passed to \code{\link{gt.control}}: see argument \kbd{control}}
 
 }
 

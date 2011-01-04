@@ -19,15 +19,13 @@ a fitted object of class \kbd{"gt.mp"}.
    \item{\dots}{currently not used.}
 }
 \details{
-\kbd{print.summary.gt.mp} is the print function that formats the coefficients, standard errors, etc. and additionally gives 'significance stars' if \kbd{signif.stars} is \kbd{TRUE}. The \kbd{coefficients} component of the result gives the estimated coefficients and their estimated standard errors, together with their ratio. This third column is labeled z ratio using Wald tests. A fourth column gives the two-tailed p-value corresponding to the \kbd{z ratio} based on a Wald test. (It is possible that there are no residual degrees of freedom from which to estimate it. In that case the estimate is \kbd{NaN}.) 
+\kbd{print.summary.gt.mp} is the print function that formats the coefficients, standard errors, etc. and additionally gives 'significance stars' if \kbd{signif.stars} is \kbd{TRUE}. The \kbd{coefficients} component of the result gives the estimated coefficients and their estimated standard errors, together with their ratio. This third column is labeled z ratio using Wald tests. A fourth column gives the two-tailed p-value corresponding to the \kbd{z ratio} based on a Wald test.) 
 }
 
 \value{
 \kbd{summary.gt.mp} returns an object of class \kbd{"summary.gt.mp"}, a list with components 
  \item{call}{the component from \kbd{object}.}
  \item{link}{the component from \kbd{object}.}
- \item{df.residual}{the component from \kbd{object}.}
- \item{df.null}{the component from \kbd{object}.}
  \item{coefficients}{the matrix of coefficients, standard errors, z-values and p-values.}
  \item{counts}{the component from \kbd{object}.}
  \item{Gibbs.sample.size}{the component from \kbd{object}.}

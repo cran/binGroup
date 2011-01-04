@@ -1,7 +1,7 @@
 Package: binGroup
 Title: Evaluation and experimental design for binomial group testing
-Version: 1.0-7
-Date: 2010-09-17
+Version: 1.0-8
+Date: 2011-01-04
 Author: Boan Zhang, Christopher Bilder, Brad Biggerstaff, Frank
         Schaarschmidt
 Description: This package provides methods for estimation and
@@ -17,6 +17,6 @@ Description: This package provides methods for estimation and
         designs.
 Maintainer: Frank Schaarschmidt <schaarschmidt@biostat.uni-hannover.de>
 License: GPL
-Packaged: 2010-09-17 12:18:26 UTC; manager
+Packaged: 2011-01-04 16:15:05 UTC; manager
 Repository: CRAN
-Date/Publication: 2010-09-19 17:37:01
+Date/Publication: 2011-01-04 16:57:11
