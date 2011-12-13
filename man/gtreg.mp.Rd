@@ -103,8 +103,6 @@ An object of class \kbd{"gt.mp"} is a list containing at least the following com
  \item{ hessian }{ estimated Hessian matrix of the negative log likelihood function, serves as an estimate of the information matrix }
  \item{ counts }{ the number of iterations performed in the EM algorithm. }
  \item{ Gibbs.sample.size }{ the number of Gibbs samples generated in each E step. }
- \item{ df.residual }{ the residual degrees of freedom. }
- \item{ df.null }{ the residual degrees of freedom for the null model. }
  \item{ call }{ the matched call. }
  \item{ formula }{ the formula supplied. }
  \item{ terms }{ the terms object used. }

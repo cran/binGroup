@@ -1,7 +1,7 @@
 export(bgtCI, bgtPower, bgtTest, bgtvs, 
 binCI, binTest, binCP, binBlaker, binWilson, binSOC, binAC, binWald, 
 estDesign, nDesign, sDesign, bgtWidth, binDesign, binPower, binWidth,
-gtreg.mp, EM.mp, gtreg, gtreg.fit, EM, sim.gt, sim.mp, gt.control,
+gtreg.mp, EM.mp, gtreg, gtreg.fit, EM, EM.ret, sim.gt, sim.mp, gt.control,
 residuals.gt, predict.gt,
 pooledBin, pooledBinDiff
 )

@@ -17,7 +17,7 @@ Fitting Group Testing Models
 gtreg(formula, data, groupn, retest = NULL, sens = 1,
  spec = 1, linkf = c("logit", "probit", "cloglog"),
  method = c("Vansteelandt", "Xie"), sens.ind = NULL,
- spec.ind = NULL, start=NULL, control=gt.control(...), ...)
+ spec.ind = NULL, start = NULL, control = gt.control(...), ...)
 
 gtreg.fit(Y, X, groupn, sens, spec, linkf, start=NULL)
 
@@ -46,7 +46,7 @@ frame) containing the variables in the model. If not found in data, the variable
 a vector, list or data frame of the group numbers that designates individuals to groups.
 }
   \item{retest}{
-a vector, list or data frame of individual retest results for Dorfman's retesting procedure. Default value is NULL for no retests. See 'Details' for how to code it.
+a vector, list or data frame of individual retest results for Dorfman's retesting procedure. Default value is \kbd{NULL} for no retests. See 'Details' for how to code it.
 }  
 
   \item{sens}{
@@ -103,9 +103,9 @@ A typical predictor has the form \kbd{groupresp ~ covariates} where response is 
 
 A specification of the form \kbd{first:second} indicates the set of terms obtained by taking the interactions of all terms in \kbd{first} with all terms in \kbd{second}. The specification \kbd{first*second} indicates the cross of \kbd{first} and \kbd{second}. This is the same as \kbd{first + second + first:second}. 
 
-Two workhorse functions \kbd{gtreg.fit}, \kbd{EM} and \kbd{EM.ret}, where the first corresponds to Vansteelandt's method and the last two corresponds to Xie's method, are called by gtreg to carry out the model fitting. The \kbd{gtreg.fit} function uses the \kbd{optim} function with default method \kbd{"Nelder-Mead"} to maximize the likelihood function of the observed group responses. If this optimization method produces a Hessian matrix of all zero elements, the \kbd{"SANN"} method in \kbd{optim} is employed to find the coefficients and Hessian matrix. For \kbd{"SANN"} method, the number of iterations in \kbd{optim} is set to be 10000.
+Three workhorse functions \kbd{gtreg.fit}, \kbd{EM} and \kbd{EM.ret}, where the first corresponds to Vansteelandt's method and the last two corresponds to Xie's method, are called by \kbd{gtreg} to carry out the model fitting. The \kbd{gtreg.fit} function uses the \kbd{optim} function with default method \kbd{"Nelder-Mead"} to maximize the likelihood function of the observed group responses. If this optimization method produces a Hessian matrix of all zero elements, the \kbd{"SANN"} method in \kbd{optim} is employed to find the coefficients and Hessian matrix. For \kbd{"SANN"} method, the number of iterations in \kbd{optim} is set to be 10000.
 
-The \kbd{EM} and \kbd{EM.ret} function apply Xie's EM algorithm to the likelihood function written in terms of the unobserved individual responses; the functions use \kbd{glm.fit} to update the parameter estimates within each M step. The \kbd{EM} function is used when there are no retests and \kbd{EM.ret} is used when individual retests are available. Thus, within \kbd{retest}, individual observations in observed positive groups are 0 (negative) or 1 (positive); the remaining individual observations are NAs meaning that no retest is performed for them. The \kbd{EM.ret} function uses Gibbs sampling in each E step to estimate the conditional probabilities. Retests cannot be used with Vansteelandt's method; a warning message will be given in this case, and the individual retests will be ignored in the model fitting. There could be slight differences in the estimates between the Vansteelandt's and Xie's methods (when retests are not available) due to different convergence criteria. 
+The \kbd{EM} and \kbd{EM.ret} function apply Xie's EM algorithm to the likelihood function written in terms of the unobserved individual responses; the functions use \kbd{glm.fit} to update the parameter estimates within each M step. The \kbd{EM} function is used when there are no retests and \kbd{EM.ret} is used when individual retests are available. Thus, within \kbd{retest}, individual observations in observed positive groups are 0 (negative) or 1 (positive); the remaining individual observations are \kbd{NA}s meaning that no retest is performed for them. The \kbd{EM.ret} function uses Gibbs sampling in each E-step to estimate the conditional probabilities. Retests cannot be used with Vansteelandt's method; a warning message will be given in this case, and the individual retests will be ignored in the model fitting. There could be slight differences in the estimates between the Vansteelandt's and Xie's methods (when retests are not available) due to different convergence criteria. 
 
 The data used here should be in the form of simple pooling - meaning that each individual appears in exactly one pool. When only the group responses are observed, the null degrees of freedom are the number of groups minus 1 and the residual degrees of freedom are the number of groups minus the number of parameters. When individual retests are observed too, it is an open research question for what the degrees of freedom should
 be; the degrees of freedom are given currently as if only the group responses are observed.
@@ -125,7 +125,7 @@ An object of class \kbd{"gt"} is a list containing at least the following compon
  \item{ fitted.values }{ the fitted mean values of group responses. }
  \item{ deviance }{ the deviance between the fitted model and the saturated model. }
  \item{ aic }{ Akaike's An Information Criterion, minus twice the maximized log-likelihood plus twice the number of coefficients }
- \item{ Gibbs.sample.size }{ If \kbd{retest} is used, this is the number of Gibbs samples generated in each E step. }
+ \item{ Gibbs.sample.size }{ If \kbd{retest} is used, this is the number of Gibbs samples generated in each E-step. }
  \item{ null.deviance }{ The deviance for the null model, comparable with \kbd{deviance}. The null model will include only the intercept if there is one in the model. }
  \item{ counts }{ For Vansteelandt's method: the number of iterations in \kbd{optim}; For Xie's method: the number of iterations in the EM algorithm.}
  \item{ df.residual }{ the residual degrees of freedom. }

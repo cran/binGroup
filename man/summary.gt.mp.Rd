@@ -19,7 +19,7 @@ a fitted object of class \kbd{"gt.mp"}.
    \item{\dots}{currently not used.}
 }
 \details{
-\kbd{print.summary.gt.mp} is the print function that formats the coefficients, standard errors, etc. and additionally gives 'significance stars' if \kbd{signif.stars} is \kbd{TRUE}. The \kbd{coefficients} component of the result gives the estimated coefficients and their estimated standard errors, together with their ratio. This third column is labeled z ratio using Wald tests. A fourth column gives the two-tailed p-value corresponding to the \kbd{z ratio} based on a Wald test.) 
+\kbd{print.summary.gt.mp} is the print function that formats the coefficients, standard errors, etc. and additionally gives 'significance stars' if \kbd{signif.stars} is \kbd{TRUE}. The \kbd{coefficients} component of the result gives the estimated coefficients and their estimated standard errors, together with their ratio. This third column is labeled z ratio using Wald tests. A fourth column gives the two-tailed p-value corresponding to the \kbd{z ratio} based on a Wald test. 
 }
 
 \value{

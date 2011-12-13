@@ -62,7 +62,7 @@ gtreg.fit <- function (Y, X, groupn, sens, spec, linkf, start = NULL)
             optim.meth <- "BFGS"
         } 
         else {
-            temp <- by(X, groupn, mean)
+            temp <- by(X, groupn, colMeans)
             cova.mean <- do.call(rbind, temp)
             optim.meth <- "Nelder-Mead"
         }
@@ -126,7 +126,7 @@ EM <- function (Y, X, groupn, sens, spec, linkf, start = NULL, control = gt.cont
         if (K == 1)
             cova.mean <- as.matrix(tapply(X, groupn, mean))
         else {
-            temp <- by(X, groupn, mean)
+            temp <- by(X, groupn, colMeans)
             cova.mean <- do.call(rbind, temp)
         }
         beta.old <- lm.fit(cova.mean, z)$coefficients
@@ -243,7 +243,7 @@ EM.ret <- function (Y, X, groupn, ret, sens, spec, linkf,
         if (K == 1)
             cova.mean <- as.matrix(tapply(X, groupn, mean))
         else {
-            temp <- by(X, groupn, mean)
+            temp <- by(X, groupn, colMeans)
             cova.mean <- do.call(rbind, temp)
         }
         beta.old <- lm.fit(cova.mean, z)$coefficients
