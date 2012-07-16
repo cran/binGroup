@@ -30,7 +30,6 @@ a fitted object of class \kbd{"gt"}.
  \item{df.residual}{the component from \kbd{object}.}
  \item{null.deviance}{the component from \kbd{object}.}
  \item{df.null}{the component from \kbd{object}.}
- \item{Gibbs.sample.size}{the component from \kbd{object} if simple pooling with retests (Dorfman's procedure) is used.}
  \item{deviance.resid}{the deviance residuals: see \code{\link{residuals.gt}}}
  \item{coefficients}{the matrix of coefficients, standard errors, z-values and p-values. Aliased coefficients are omitted.}
  \item{counts}{the component from \kbd{object}.}

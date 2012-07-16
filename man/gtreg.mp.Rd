@@ -133,7 +133,7 @@ sa1<-sa1a$dframe
 \dontrun{
 fit1 <- gtreg.mp(formula = cbind(col.resp, row.resp) ~ x, data = sa1, 
                  coln = coln, rown = rown, arrayn = arrayn, 
-                 sens = 0.95, spec = 0.95, n.gibbs = 2000, trace = TRUE)
+                 sens = 0.95, spec = 0.95, tol = 0.005, n.gibbs = 2000, trace = TRUE)
 fit1
 summary(fit1)
 
@@ -150,7 +150,7 @@ sa2<-sa2a$dframe
 \dontrun{
 fit2 <- gtreg.mp(formula = cbind(col.resp, row.resp) ~ x, data = sa2, 
                  coln = coln, rown = rown, arrayn = arrayn, retest = retest,
-                 sens = 0.95, spec = 0.95, start = c(-7, 0.1))
+                 sens = 0.95, spec = 0.95, start = c(-7, 0.1), tol = 0.005)
 
 fit2
 summary(fit2)

@@ -1,6 +1,5 @@
-\name{print.gt.mp}
+\name{print.gt}
 \Rdversion{1.1}
-\alias{print.gt.mp}
 \alias{print.gt}
 \title{
 Print methods for objects of classes "gt" and "gt.mp"
@@ -9,7 +8,6 @@ Print methods for objects of classes "gt" and "gt.mp"
 Print methods for objects of classes \kbd{"gt"} and \kbd{"gt.mp"}
 }
 \usage{
-\method{print}{gt.mp}(x, digits = max(3, getOption("digits") - 3), ...)
 \method{print}{gt}(x, digits = max(3, getOption("digits") - 3), ...)
 }
 

@@ -4,11 +4,11 @@
 Auxiliary for Controlling Group Testing Regression
 }
 \description{
-Auxiliary function to control fitting parameters of EM algorithm used internally in \code{\link{gtreg.mp}} and \code{\link{EM.mp}} or \code{\link{gtreg}} and \code{\link{gtreg.fit}} with method = "Xie".
+Auxiliary function to control fitting parameters of EM algorithm used internally in \code{\link{gtreg.mp}} and \code{\link{EM.mp}} or \code{\link{gtreg}}, \code{\link{EM}}, and \code{\link{EM.ret}}.
 }
 \usage{
 
-gt.control(tol = 0.005, n.gibbs = 1000, n.burnin = 20,
+gt.control(tol = 0.0001, n.gibbs = 1000, n.burnin = 20,
  maxit = 500, trace = FALSE, time = TRUE)
 
 }
@@ -18,10 +18,10 @@ gt.control(tol = 0.005, n.gibbs = 1000, n.burnin = 20,
 convergence criterion 
 }
   \item{n.gibbs}{
-the Gibbs sample size to be used in each E step for the EM algorithm (default is 1000), for matrix pooling or simple pooling with retests (Dorfman's procedure)
+the Gibbs sample size to be used in each E step for the EM algorithm (default is 1000), for matrix pooling
 }
   \item{n.burnin}{
-the number of samples in the burn-in period (default is 20), for matrix pooling or simple pooling with retests (Dorfman's procedure) 
+the number of samples in the burn-in period (default is 20), for matrix pooling
 }
   \item{maxit}{
 maximal number of iterations in the EM algorithm

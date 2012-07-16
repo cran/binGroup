@@ -1,5 +1,5 @@
-91ad5194fee67e244fb4645d86da56a8 *DESCRIPTION
-64ff98305ee26d3d611e3a7bb5fcbc8e *NAMESPACE
+9504fd52c6f4e0a797b9765420229742 *DESCRIPTION
+fdbecc2ddd71172509de11e50ca8b08a *NAMESPACE
 fac26c3b8aa8e0901669592aed5d4c03 *R/bgtCI.R
 15a16984d347b55f11da7d4033b1b01b *R/bgtPower.R
 1f2cdb9adb395ddac9f68192b9115275 *R/bgtTest.R
@@ -8,7 +8,7 @@ b3b0ec42759c3691c9b85db55854634f *R/bgtvs.R
 23581e962863602ec816bf3ad230eeda *R/binCI.R
 e4966402e080e6d59bd24fb1270e457e *R/binDesign.R
 74c1e2309f720a35a4b7987268933dc7 *R/binGroup-internal.R
-855f63609d97c28cff360b0e2b5db090 *R/binGroupBoanChris.r
+329fcef2aa08d803c760802873adda62 *R/binGroupReg.r
 a7f15f3f40f1c54253bbfe1a3c445297 *R/binPower.R
 5bddace69e1683d4684d733280280ef9 *R/binTest.R
 e9faa4c3e707fa866672aaae1e6e0f30 *R/binWidth.R
@@ -24,7 +24,6 @@ eaed4f849fe71edf900cf7347557caba *R/msep.R
 444dbde1d707dc5f6e3f334f12df0e98 *R/print.bgtCI.R
 706dc5a3893ad63798589d722147c94f *R/print.bgtTest.R
 fee62520884fc1b5735a3f1e8c5dcd4b *R/print.binDesign.R
-8bad5d482548ab70e9fa7960768b918e *R/print.gt.R
 dca325bb8a5bd36d8c584ce350ebcc69 *R/print.nDesign.R
 a78fe518c01894621ac8cd30eef3ee79 *R/print.poolbin.R
 abc02e77f30ed0540ef6eb6171fd4785 *R/print.poolbindiff.R
@@ -45,9 +44,9 @@ e68e6361ff5348b9b2cfbd260faca248 *man/binPower.Rd
 8bca8a060695800b851a9fb2fcfba1c0 *man/binTest.Rd
 2249b448c2f14a1b064f727d6788efba *man/binWidth.Rd
 d53b6b41bb130084423c3b2eb51722a5 *man/estDesign.Rd
-0d7492f083bc9089a420069167504357 *man/gt.control.Rd
-41abac9b78dc2a164600600f021140e1 *man/gtreg.Rd
-2994da14fcfb9f5112548600e258f86f *man/gtreg.mp.Rd
+27abae3f6a37e62a5fea59fcaeda8b7e *man/gt.control.Rd
+cdc8ca75d8b93ca35be541bf46ec30b5 *man/gtreg.Rd
+86379fc579a9dcd71ac7d257edb5c36f *man/gtreg.mp.Rd
 7afe6c5fbc06339c2f9aefd40724d910 *man/hivsurv.Rd
 8b1d78f0ba4ad59ceac288a06803dea7 *man/nDesign.Rd
 b09b35069beea8dd28874e575aac44a2 *man/plot.bgtDesign.Rd
@@ -58,13 +57,13 @@ d0d67a4a1df35e2380d3ef4726291a9a *man/predict.gt.Rd
 31bfb29d01e1e9db7f7da2ee36418aa4 *man/print.bgt.Rd
 3cef4fcd8c1ed1157237dba0175ef74e *man/print.bgtDesign.Rd
 f4c52a2b1b6611d37a31e96c69037ade *man/print.binDesign.Rd
-7755cd5d53044c71a26fd8b288e653b2 *man/print.gt.mp.Rd
+c8469e1ace083b0ccca204ee3b2fb725 *man/print.gt.Rd
 5b709ef2c75033c095ba40e388293361 *man/print.poolbindiff.Rd
 2e6a6fb2eccca84d8b81744e49d92e61 *man/print.summary.gt.mp.Rd
 0093f7210abf11bd16fae2142116fbd1 *man/residuals.gt.Rd
 3d28590a8e1ca455015387f0fe3a075e *man/sDesign.Rd
 802c53c2ab45ac5a095670eb4bd83878 *man/sim.gt.Rd
 553ea6eb3c4bfb4f3a0ca35d4622e523 *man/sim.mp.Rd
-60ff13b1221ae4ffddfcab8be081552b *man/summary.gt.Rd
+5052f10d7c5766f5e2db91e0a745998a *man/summary.gt.Rd
 f3f58a98dccbe031a7b747d7af6a604d *man/summary.gt.mp.Rd
 225f0c0d752e7cea0f6dea194253f526 *man/summary.poolbindiff.Rd

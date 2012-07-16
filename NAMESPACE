@@ -30,7 +30,6 @@ S3method(print, sDesign)
 S3method(print, binDesign)
 
 S3method(print, gt)
-S3method(print, gt.mp)
 S3method(print, summary.gt)
 S3method(print, summary.gt.mp)
 

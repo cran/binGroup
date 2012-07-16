@@ -1,6 +1,3 @@
-#newest version
-
-
 gtreg <- function(formula, data, groupn, retest = NULL, sens = 1, spec = 1,
         linkf = c("logit", "probit", "cloglog"),
         method = c("Vansteelandt", "Xie"), sens.ind = NULL, spec.ind = NULL,
@@ -45,9 +42,6 @@ gtreg <- function(formula, data, groupn, retest = NULL, sens = 1, spec = 1,
     fit
 
 }
-
-
-
 
 
 gtreg.fit <- function (Y, X, groupn, sens, spec, linkf, start = NULL)
@@ -112,7 +106,6 @@ gtreg.fit <- function (Y, X, groupn, sens, spec, linkf, start = NULL)
         null.deviance = nulld, df.null = num.g - 1, aic = aic, counts = counts,
         residuals = residual, z = z)
 }
-
 
 
 EM <- function (Y, X, groupn, sens, spec, linkf, start = NULL, control = gt.control())
@@ -256,7 +249,7 @@ EM.ret <- function (Y, X, groupn, ret, sens, spec, linkf,
     counts <- 1
     extra.loop <- FALSE
     next.loop <- TRUE
-    a <- ifelse(ret == 1, sens.ind, 1 - sens.ind)
+    a0 <- ifelse(ret == 1, sens.ind, 1 - sens.ind)
     a1 <- ifelse(ret == 0, spec.ind, 1 - spec.ind)
     while (next.loop) {
         xib <- X %*% beta.old
@@ -269,43 +262,33 @@ EM.ret <- function (Y, X, groupn, ret, sens, spec, linkf,
             group.sizes)
         expect <- rep(NA, times = sam)
         i <- 1
-        mat2 <- 0
         while (i <= sam) {
             if (Y[i] == 0)
                 expect[i] <- (1 - sens) * pijk[i]/den2[i]
             else {
                 vec1 <- vec[groupn == groupn[i]]
-                y <- rep(0, length(vec1))
-                mat <- matrix(NA, nrow = length(vec1), ncol = control$n.gibbs)
-                for (k in 1:(control$n.gibbs + control$n.burnin)) {
-                     for (l in vec1) {
-                         num <- a[l] * sens * pijk[l]
-                         temp <- ifelse(sum(y) - y[l - i + 1] > 0,
-                             sens, 1 - spec)
-                         den <- num + a1[l] * temp * (1 - pijk[l])
-                         if (den != 0) {
-                             cond.p <- num/den
-                             y[l - i + 1] <- rbinom(1, 1, cond.p)
-                         } else y[l - i + 1] <- 0
-                     }
-                     if (k > control$n.burnin) {
-                         mat[, k - control$n.burnin] <- y
-                         if (extra.loop)
-                             for (i1 in vec1[y == 1]) for (j1 in vec1[y == 1]) {
-                                  bq <- switch(linkf, logit = 1, probit = 8 *
-                                      exp(-(xib[i1]^2 + xib[j1]^2)/2)/((1 - erf[i1]^2) *
-                                      (1 - erf[j1]^2) * pi), cloglog = exp(xib[i1] +
-                                      xib[j1])/((exp(-exp(xib[i1])) - 1) * (exp(-exp(xib[j1])) -
-                                      1))) * X[i1, ] %*% t(X[j1, ])
-                                  mat2 <- mat2 + bq
-                             }
-                     }
+                mb2 <- 1
+                for (l in vec1) {
+                     temp <- a0[l] * pijk[l] + a1[l] * (1 - pijk[l])
+                     mb2 <- mb2 * temp
                 }
-                i <- l
-                expect[vec1] <- apply(mat, 1, mean)
+                null <- 1
+                for (l in vec1) {
+                     temp <- a1[l] * (1 - pijk[l])
+                     null <- null * temp
+                }                                                       
+                den <- mb2 * sens + null * (1 - sens - spec)
+                for (l1 in vec1) {                         
+                     temp <- a0[l1] * pijk[l1] + a1[l1] * (1 - pijk[l1])
+                     num <- mb2/temp * a0[l1] * pijk[l1] * sens
+                     expect[l1] <- num/den
+                }
+                i <- l1
             }
             i <- i + 1
         }
+        expect[expect > 1] <- 1
+        expect[expect < 0] <- 0
         if (!extra.loop) {
             suppress <- function(w)
                 if (any(grepl("non-integer #successes in a binomial glm", w)))
@@ -335,8 +318,7 @@ EM.ret <- function (Y, X, groupn, ret, sens, spec, linkf,
     nn <- as.vector(sqrt(abs(nm)))
     x2 <- X * nn
     m <- (t(x2) %*% (sign1 * x2))
-    first <- mat2/control$n.gibbs
-    m2 <- second <- 0
+    m1 <- 0    
     for (i in vec) {
         vec1 <- vec[groupn == groupn[i]]
         if (Y[i] == 0) {
@@ -348,37 +330,45 @@ EM.ret <- function (Y, X, groupn, ret, sens, spec, linkf,
                  wii <- ifelse(i == j, expect[i] - expect[i]^2, expect[i] *
                     (pijk[j] - expect[j]))
                  tim <- wii * coe * X[i, ] %*% t(X[j, ])
-                 m2 <- m2 + tim
-            }
-        }
-        else {
-            for (j in vec1) {
+                 m1 <- m1 + tim
+            }                
+        }        
+        else {         
+            for (j in vec1) {      
+                 temp <- a0[j] * pijk[j] + a1[j] * (1 - pijk[j])
+                 eii <- expect[i]/temp * a0[j] * pijk[j]
+                 wii <- ifelse(i == j, expect[i] - expect[i]^2, eii - expect[i] * expect[j])
                  coe <- switch(linkf, logit = 1, probit = 8 * exp(-(xib[i]^2 +
-                     xib[j]^2)/2)/((1 - erf[i]^2) * (1 - erf[j]^2) * pi),
-                     cloglog = exp(xib[i] + xib[j])/((exp(-exp(xib[i])) -
-                     1) * (exp(-exp(xib[j])) - 1)))
-                 tim <- expect[i] * expect[j] * coe * X[i, ] %*% t(X[j, ])
-                 second <- second + tim
+                      xib[j]^2)/2)/((1 - erf[i]^2) * (1 - erf[j]^2) * pi),
+                      cloglog = exp(xib[i] + xib[j])/((exp(-exp(xib[i])) -
+                        1) * (exp(-exp(xib[j])) - 1)))
+                 tim <- wii * coe * X[i, ] %*% t(X[j, ])
+                 m1 <- m1 + tim
             }
         }
     }
-    m1 <- first - second + m2
     H <- -(m + m1)
     zhat <- sens + (1 - sens - spec) * prodp
     residual <- z - zhat
-    residd <- -2 * sum(z * log(zhat) + (1 - z) * log(1 - zhat))
-    logL0 <- function(beta) {
-        inter <- rep(beta, sam)
-        pijk <- switch(linkf, logit = plogis(inter), probit = pnorm(inter),
-            cloglog = 1 - exp(-exp(inter)))
-        prodp <- tapply(1 - pijk, groupn, prod)
-        -sum(z * log(sens + (1 - sens - spec) * prodp) +
-            (1 - z) * log(1 - sens - (1 - sens - spec) * prodp))
+    logl <- 0
+    for (grn in 1:num.g) {
+         if (z[grn] == 1) {
+             vec1 <- vec[groupn == grn]
+             mb2 <- 1
+             for (l in vec1) {
+                  temp <- a0[l] * pijk[l] + a1[l] * (1 - pijk[l])
+                  mb2 <- mb2 * temp
+             }
+             null <- 1
+             for (l in vec1) {
+                  temp <- a1[l] * (1 - pijk[l])
+                  null <- null * temp
+             }                                                       
+             prob1 <- mb2 * sens + null * (1 - sens - spec)
+         } else prob1 <- 1 - zhat[grn]
+         logl <- logl - log(prob1)
     }
-    mod.fit0 <- optim(par = .Call("logit_link", mean(z), PACKAGE = "stats"), fn = logL0,
-        method = "BFGS", control = list(trace = 0, maxit = 1000))
-    nulld <- 2 * mod.fit0$value
-    aic <- residd + 2 * K
+    aic <- 2 * logl + 2 * K
     if (diff > control$tol && counts > control$maxit)
         warning("EM algorithm did not converge.")
     if (control$time) {
@@ -387,14 +377,12 @@ EM.ret <- function (Y, X, groupn, ret, sens, spec, linkf,
         cat("\n Number of minutes running:", round(save.time[3]/60, 2), "\n \n")
     }
     list(coefficients = beta.old, hessian = H, fitted.values = zhat,
-        deviance = residd, df.residual = num.g - K, null.deviance = nulld,
-        df.null = num.g - 1, aic = aic, Gibbs.sample.size = control$n.gibbs, 
-        counts = counts - 1, residuals = residual, z = z)
+        deviance = 2 * logl, aic = aic, counts = counts - 1, residuals = residual, 
+        z = z)
 }
 
 
-
-gt.control <- function (tol = 0.005, n.gibbs = 1000, n.burnin = 20, 
+gt.control <- function (tol = 0.0001, n.gibbs = 1000, n.burnin = 20, 
     maxit = 500, trace = FALSE, time = TRUE) 
 {
     if (!is.numeric(tol) || tol <= 0) 
@@ -628,7 +616,6 @@ EM.mp <- function (col.resp, row.resp, X, coln, rown, sqn, ret, sens,
 }
 
 
-
 sim.gt <- function (x = NULL, gshape = 20, gscale = 2, par,
     linkf = c("logit", "probit", "cloglog"),
     sample.size, group.size, sens = 1, spec = 1, sens.ind = NULL, spec.ind = NULL)
@@ -650,9 +637,9 @@ sim.gt <- function (x = NULL, gshape = 20, gscale = 2, par,
             probit = pnorm(X %*% par),
             cloglog = 1 - exp(-exp(X %*% par)))
     ind <- rbinom(n = sample.size, size = 1, prob = pijk)
-    upper <- ceiling(sample.size/group.size)
-    groupn <- rep(1:upper, each = group.size)[1:sample.size]
-    num.g <- max(groupn)
+    num.g <- ceiling(sample.size/group.size)
+    vec <- 1:sample.size
+    groupn <- rep(1:num.g, each = group.size)[vec]
     save.sum <- tapply(ind, groupn, sum)
     save.group <- as.vector(ifelse(save.sum > 0, 1, 0))
     save.obs <- rep(NA, num.g)
@@ -660,8 +647,8 @@ sim.gt <- function (x = NULL, gshape = 20, gscale = 2, par,
     for (i in 1:num.g)
          save.obs[i] <- ifelse(save.group[i] == 1, rbinom(1, 1, sens),
                 1 - rbinom(1, 1, spec))
-    gres <- rep(save.obs, each = group.size)[1:sample.size]
-    for (i in 1:sample.size) {
+    gres <- rep(save.obs, each = group.size)[vec]
+    for (i in vec) {
         if (gres[i] == 1)
             ret[i] <- ifelse(ind[i] == 1, rbinom(1,
                  1, sens.ind), 1 - rbinom(1, 1, spec.ind))
@@ -672,7 +659,6 @@ sim.gt <- function (x = NULL, gshape = 20, gscale = 2, par,
              colnames(grd)[i] <- paste("x", i - 1, sep="")
     grd
 }
-
 
 
 sim.mp <- function (x = NULL, gshape = 20, gscale = 2, par,
@@ -768,8 +754,6 @@ sim.mp <- function (x = NULL, gshape = 20, gscale = 2, par,
 }
 
 
-
-
 summary.gt <- function (object, ...)
 {
     coef.p <- object$coefficients
@@ -784,15 +768,13 @@ summary.gt <- function (object, ...)
     dimnames(coef.table) <- list(names(coef.p), c(dn, "z value",
         "Pr(>|z|)"))
     keep <- match(c("call", "link", "aic", "deviance", "df.residual",
-        "null.deviance", "df.null", "Gibbs.sample.size", "counts", "method"),
+        "null.deviance", "df.null", "counts", "method", "z"),
         names(object), 0)
     ans <- c(object[keep], list(coefficients = coef.table, deviance.resid = residuals(object,
         type = "deviance"), cov.mat = cov.mat))
     class(ans) <- "summary.gt"
     return(ans)
 }
-
-
 
 
 print.summary.gt <- function (x, digits = max(3, getOption("digits") - 3),
@@ -803,7 +785,7 @@ print.summary.gt <- function (x, digits = max(3, getOption("digits") - 3),
     cat(paste(deparse(obj$call), sep = "\n", collapse = "\n"),
         "\n\n", sep = "")
     cat("Deviance Residuals: \n")
-    if (obj$df.residual > 5) {
+    if (length(obj$z) > 5) {
         obj$deviance.resid <- quantile(obj$deviance.resid, na.rm = TRUE)
         names(obj$deviance.resid) <- c("Min", "1Q", "Median",
             "3Q", "Max")
@@ -814,26 +796,22 @@ print.summary.gt <- function (x, digits = max(3, getOption("digits") - 3),
     coefs <- obj$coefficients
     printCoefmat(coefs, digits = digits, signif.stars = signif.stars,
         na.print = "NA", ...)
-    cat("\n", apply(cbind(paste(format(c("Null", "Residual"),
-        justify = "right"), "deviance:"), format(unlist(obj[c("null.deviance",
-        "deviance")]), digits = 4), " on", format(unlist(obj[c("df.null",
-        "df.residual")])), " degrees of freedom\n"), 1, paste,
-        collapse = " "), sep = "")
+    if (!is.null(unlist(obj["df.null"])))
+        cat("\n", apply(cbind(paste(format(c("Null", "Residual"),
+            justify = "right"), "deviance:"), format(unlist(obj[c("null.deviance",
+            "deviance")]), digits = 4), " on", format(unlist(obj[c("df.null",
+            "df.residual")])), " degrees of freedom\n"), 1, paste,
+            collapse = " "), sep = "")
     if (obj$method == "Vansteelandt")
         cat("AIC: ", format(obj$aic, digits = 4), "\n\n", "Number of iterations in optim(): ",
             obj$counts, "\n", sep = "")
     else {
         cat("AIC: ", format(obj$aic, digits = 4), "\n\n", "Number of iterations in EM: ",
-        obj$counts, "\n", sep = "")
-        if (!is.null(obj$Gibbs.sample.size))
-            cat("Number of Gibbs samples generated in each E step: ",
-                obj$Gibbs.sample.size, "\n")
+            obj$counts, "\n", sep = "")
     }
     cat("\n")
     invisible(obj)
 }
-
-
 
 
 predict.gt <- function (object, newdata, type = c("link", "response"), se.fit = FALSE, 
@@ -894,7 +872,6 @@ predict.gt <- function (object, newdata, type = c("link", "response"), se.fit = 
 }
 
 
-
 residuals.gt <- function (object, type = c("deviance", "pearson", "response"), 
     ...) 
 {
@@ -907,7 +884,6 @@ residuals.gt <- function (object, type = c("deviance", "pearson", "response"),
         z) * log(1 - zhat))) * sign(z - zhat))
     res
 }
-
 
 
 summary.gt.mp <- function (object, ...) 
@@ -930,7 +906,6 @@ summary.gt.mp <- function (object, ...)
 }
 
 
-
 print.summary.gt.mp <- function (x, digits = max(3, getOption("digits") - 3), 
        signif.stars = getOption("show.signif.stars"), 
        ...) 
@@ -951,7 +926,7 @@ print.summary.gt.mp <- function (x, digits = max(3, getOption("digits") - 3),
 }
 
 
-print.gt.mp <- function (x, digits = max(3, getOption("digits") - 3), ...) 
+print.gt <- function (x, digits = max(3, getOption("digits") - 3), ...) 
 {
     cat("\nCall:\n", deparse(x$call), "\n\n", sep = "")
     if (length(coef(x))) {
@@ -960,6 +935,12 @@ print.gt.mp <- function (x, digits = max(3, getOption("digits") - 3), ...)
             quote = FALSE)
     }
     else cat("No coefficients\n")
+    if (!is.null(x$df.null)) {
+        cat("\nDegrees of Freedom:", x$df.null, "Total (i.e. Null); ", 
+            x$df.residual, "Residual\n")
+        cat("Null Deviance:\t   ", format(signif(x$null.deviance, 
+            digits)), "\nResidual Deviance:", format(signif(x$deviance, 
+            digits)), "\tAIC:", format(signif(x$aic, digits)), "\n")
+    }
     invisible(x)
 }
-
