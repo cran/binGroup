@@ -1,5 +1,5 @@
-9504fd52c6f4e0a797b9765420229742 *DESCRIPTION
-fdbecc2ddd71172509de11e50ca8b08a *NAMESPACE
+e61dfdae48074510cd97193463cdf5b6 *DESCRIPTION
+d34ee71bbe4d72bf8f624201c3b9447c *NAMESPACE
 fac26c3b8aa8e0901669592aed5d4c03 *R/bgtCI.R
 15a16984d347b55f11da7d4033b1b01b *R/bgtPower.R
 1f2cdb9adb395ddac9f68192b9115275 *R/bgtTest.R
@@ -8,7 +8,7 @@ b3b0ec42759c3691c9b85db55854634f *R/bgtvs.R
 23581e962863602ec816bf3ad230eeda *R/binCI.R
 e4966402e080e6d59bd24fb1270e457e *R/binDesign.R
 74c1e2309f720a35a4b7987268933dc7 *R/binGroup-internal.R
-329fcef2aa08d803c760802873adda62 *R/binGroupReg.r
+11b24d76c8d028bdf16c9a1d60ea0c48 *R/binGroupReg.r
 a7f15f3f40f1c54253bbfe1a3c445297 *R/binPower.R
 5bddace69e1683d4684d733280280ef9 *R/binTest.R
 e9faa4c3e707fa866672aaae1e6e0f30 *R/binWidth.R
@@ -39,13 +39,14 @@ e468aa51ae936d8331a3be9717dacbd2 *man/bgtWidth.Rd
 1784078a3e7bcf53807962bfac883f0e *man/bgtvs.Rd
 e7ae4c7e2d38b11951fa399e8016dad1 *man/binCI.Rd
 80be26fa37c735b387d744821d73cc3a *man/binDesign.Rd
-f23dd03e32035a7a053c0e5250498994 *man/binGroup-package.Rd
+2d6ad161987b9904a93e216762890159 *man/binGroup-package.Rd
 e68e6361ff5348b9b2cfbd260faca248 *man/binPower.Rd
 8bca8a060695800b851a9fb2fcfba1c0 *man/binTest.Rd
 2249b448c2f14a1b064f727d6788efba *man/binWidth.Rd
 d53b6b41bb130084423c3b2eb51722a5 *man/estDesign.Rd
 27abae3f6a37e62a5fea59fcaeda8b7e *man/gt.control.Rd
-cdc8ca75d8b93ca35be541bf46ec30b5 *man/gtreg.Rd
+aa81c2eaff960b7b2532bd0858b55102 *man/gtreg.Rd
+be1b8ef1a07cf79d6ff06b021b3a8de4 *man/gtreg.halving.Rd
 86379fc579a9dcd71ac7d257edb5c36f *man/gtreg.mp.Rd
 7afe6c5fbc06339c2f9aefd40724d910 *man/hivsurv.Rd
 8b1d78f0ba4ad59ceac288a06803dea7 *man/nDesign.Rd
@@ -63,6 +64,7 @@ c8469e1ace083b0ccca204ee3b2fb725 *man/print.gt.Rd
 0093f7210abf11bd16fae2142116fbd1 *man/residuals.gt.Rd
 3d28590a8e1ca455015387f0fe3a075e *man/sDesign.Rd
 802c53c2ab45ac5a095670eb4bd83878 *man/sim.gt.Rd
+b189d6fcac8ecae10204c7f85be3a552 *man/sim.halving.Rd
 553ea6eb3c4bfb4f3a0ca35d4622e523 *man/sim.mp.Rd
 5052f10d7c5766f5e2db91e0a745998a *man/summary.gt.Rd
 f3f58a98dccbe031a7b747d7af6a604d *man/summary.gt.mp.Rd

@@ -87,7 +87,7 @@ gtreg.fit <- function (Y, X, groupn, sens, spec, linkf, start = NULL)
         -sum(z * log(sens + (1 - sens - spec) * prodp) +
             (1 - z) * log(1 - sens - (1 - sens - spec) * prodp))
     }
-    mod.fit0 <- optim(par = .Call("logit_link", mean(z), PACKAGE = "stats"), 
+    mod.fit0 <- optim(par = binomial()$linkfun(mean(z)), 
         fn = logL0, method = "BFGS", control = list(trace = 0, maxit = 1000))
     nulld <- 2 * mod.fit0$value
     residd <- 2 * mod.fit$value
@@ -201,7 +201,7 @@ EM <- function (Y, X, groupn, sens, spec, linkf, start = NULL, control = gt.cont
         -sum(z * log(sens + (1 - sens - spec) * prodp) +
             (1 - z) * log(1 - sens - (1 - sens - spec) * prodp))
     }
-    mod.fit0 <- optim(par = .Call("logit_link", mean(z), PACKAGE = "stats"), fn = logL0,
+    mod.fit0 <- optim(par = binomial()$linkfun(mean(z)), fn = logL0,
         method = "BFGS", control = list(trace = 0, maxit = 1000))
     nulld <- 2 * mod.fit0$value
     aic <- residd + 2 * K
@@ -943,4 +943,494 @@ print.gt <- function (x, digits = max(3, getOption("digits") - 3), ...)
             digits)), "\tAIC:", format(signif(x$aic, digits)), "\n")
     }
     invisible(x)
+}
+
+
+gtreg.halving <- function(formula, data, groupn, subg, retest, sens = 1, spec = 1,
+        linkf = c("logit", "probit", "cloglog"),
+        sens.ind = NULL, spec.ind = NULL,
+        start = NULL, control = gt.control(...), ...) {
+
+    call <- match.call()
+    mf <- match.call(expand.dots = FALSE)
+    m <- match(c("formula", "data", "groupn"), names(mf), 0)
+    mf <- mf[c(1, m)]
+    mf$drop.unused.levels <- TRUE
+    mf[[1]] <- as.name("model.frame")
+    mf <- eval(mf, parent.frame())
+    mt <- attr(mf, "terms")
+    gr <- model.extract(mf, "groupn")
+    if (!is.na(pos <- match(deparse(substitute(retest)), names(data))))
+        retest <- data[, pos]
+    if (!is.na(pos <- match(deparse(substitute(subg)), names(data))))
+        subg <- data[, pos]
+    Y <- model.response(mf, "any")
+    if (length(dim(Y)) == 1) {
+        nm <- rownames(Y)
+        dim(Y) <- NULL
+        if (!is.null(nm))
+            names(Y) <- nm
+    }
+    X <- if (!is.empty.model(mt))
+        model.matrix(mt, mf)
+    else matrix(, NROW(Y), 0)
+    linkf <- match.arg(linkf)
+    fit <-  EM.halving(Y, X, gr, subg, retest, sens, spec, linkf,
+             sens.ind, spec.ind, start, control)
+    fit <- c(fit, list(call = call, formula = formula, method = "Xie",
+          link = linkf, terms = mt))
+    class(fit) <- "gt"
+    fit
+
+}
+
+
+EM.halving <- function (Y, X, groupn, subg, ret, sens, spec, linkf,
+    sens.ind, spec.ind,
+    start = NULL, control = gt.control())
+{
+    if (control$time)
+        start.time <- proc.time()
+    if (is.null(sens.ind))
+        sens.ind <- sens
+    if (is.null(spec.ind))
+        spec.ind <- spec
+    z <- tapply(Y, groupn, tail, n = 1)
+    num.g <- max(groupn)
+    K <- ncol(X)
+    if (is.null(start)) {
+        if (K == 1)
+            cova.mean <- as.matrix(tapply(X, groupn, mean))
+        else {
+            temp <- by(X, groupn, colMeans)
+            cova.mean <- do.call(rbind, temp)
+        }
+        beta.old <- lm.fit(cova.mean, z)$coefficients
+    } else beta.old <- start
+    sam <- length(Y)
+    vec <- 1:sam
+    group.sizes <- tapply(Y, groupn, length)
+    diff <- 1
+    counts <- 1
+    extra.loop <- FALSE
+    next.loop <- TRUE
+    a0 <- ifelse(ret == 1, sens.ind, 1 - sens.ind)
+    a1 <- ifelse(ret == 0, spec.ind, 1 - spec.ind)
+    while (next.loop) {
+        xib <- X %*% beta.old
+        pijk <- switch(linkf, logit = plogis(xib),
+            probit = pnorm(xib), cloglog = 1 -
+                exp(-exp(xib)))
+        erf <- 2 * pijk - 1
+        prodp <- tapply(1 - pijk, groupn, prod)
+        den2 <- rep(spec * prodp + (1 - sens) * (1 - prodp),
+            group.sizes)
+        expect <- rep(NA, times = sam)
+        i <- 1
+        while (i <= sam) {
+            if (Y[i] == 0)
+                expect[i] <- (1 - sens) * pijk[i]/den2[i]
+            else {
+            if (subg[i] == 0) {
+                vec1 <- vec[groupn == groupn[i]]
+                gs <- length(vec1)
+                sub1 <- vec1[1:ceiling(gs/2)]
+                sub2 <- vec1[(ceiling(gs/2) + 1):gs]
+                if (subg[vec1[gs]] == 0) {
+                    den <- (1-spec)*spec^2*prod(1-pijk[sub1])*prod(1-pijk[sub2])+
+                           spec*(1-sens)*sens*prod(1-pijk[sub1])*(1-prod(1-pijk[sub2]))+
+                           spec*(1-sens)*sens*prod(1-pijk[sub2])*(1-prod(1-pijk[sub1]))+
+                           (1-sens)^2*sens*(1-prod(1-pijk[sub1]))*(1-prod(1-pijk[sub2]))
+                    ab1 <- (1-sens)*sens*(spec*prod(1-pijk[sub2])+
+                                  (1-sens)*(1-prod(1-pijk[sub2])))
+                    ab2 <- (1-sens)*sens*(spec*prod(1-pijk[sub1])+
+                                  (1-sens)*(1-prod(1-pijk[sub1])))
+                    for (l1 in sub1) {
+                        expect[l1]<-ab1*pijk[l1]/den
+                    }
+                    for (l1 in sub2) {
+                        expect[l1]<-ab2*pijk[l1]/den
+                    }
+                }
+                if (subg[vec1[gs]] == 1) {
+                    mb2 <- 1
+                    for (l in sub2) {
+                         temp <- a0[l] * pijk[l] + a1[l] * (1 - pijk[l])
+                         mb2 <- mb2 * temp
+                    }
+                    null <- 1
+                    for (l in sub2) {
+                         temp <- a1[l] * (1 - pijk[l])
+                         null <- null * temp
+                    }
+                    den <- (1-spec)^2*spec*null*prod(1-pijk[sub1])+
+                           (1-spec)*(1-sens)*sens*null*(1-prod(1-pijk[sub1]))+
+                           spec*sens^2*(mb2-null)*prod(1-pijk[sub1])+
+                           (1-sens)*sens^2*(mb2-null)*(1-prod(1-pijk[sub1]))
+                    ab1 <- (1-sens)*sens*(mb2*sens+null*(1-sens-spec))
+                    for (l1 in sub1) {
+                        expect[l1]<-ab1*pijk[l1]/den
+                    }
+                    for (l1 in sub2) {
+                        temp <- a0[l1] * pijk[l1] + a1[l1] * (1 - pijk[l1])
+                        num <- mb2/temp * a0[l1] * pijk[l1] * sens^2*(spec*prod(1-pijk[sub1])+
+                                  (1-sens)*(1-prod(1-pijk[sub1])))
+                        expect[l1]<-num/den
+                    }
+                }
+                i <- l1
+            } else {
+                vec1 <- vec[groupn == groupn[i]]
+                gs <- length(vec1)
+                sub1 <- vec1[1:ceiling(gs/2)]
+                sub2 <- vec1[(ceiling(gs/2) + 1):gs]
+                if (subg[vec1[gs]] == 0) {
+                    mb2 <- 1
+                    for (l in sub1) {
+                         temp <- a0[l] * pijk[l] + a1[l] * (1 - pijk[l])
+                         mb2 <- mb2 * temp
+                    }
+                    null <- 1
+                    for (l in sub1) {
+                         temp <- a1[l] * (1 - pijk[l])
+                         null <- null * temp
+                    }
+                    den <- (1-spec)^2*spec*null*prod(1-pijk[sub2])+
+                           (1-spec)*(1-sens)*sens*null*(1-prod(1-pijk[sub2]))+
+                           spec*sens^2*(mb2-null)*prod(1-pijk[sub2])+
+                           (1-sens)*sens^2*(mb2-null)*(1-prod(1-pijk[sub2]))
+                    ab1 <- (1-sens)*sens*(mb2*sens+null*(1-sens-spec))
+                    for (l1 in sub1) {
+                        temp <- a0[l1]*pijk[l1]+a1[l1]*(1-pijk[l1])
+                        num <- mb2/temp*a0[l1]*pijk[l1]*sens^2*(spec*prod(1-pijk[sub2])+
+                                  (1-sens)*(1-prod(1-pijk[sub2])))
+                        expect[l1]<-num/den
+
+                    }
+                    for (l1 in sub2) {
+                        expect[l1]<-ab1*pijk[l1]/den
+                    }
+                }
+                if (subg[vec1[gs]] == 1) {
+                    mb2 <- 1
+                    for (l in sub1) {
+                         temp <- a0[l] * pijk[l] + a1[l] * (1 - pijk[l])
+                         mb2 <- mb2 * temp
+                    }
+                    null <- 1
+                    for (l in sub1) {
+                         temp <- a1[l] * (1 - pijk[l])
+                         null <- null * temp
+                    }
+                    mb2a <- 1
+                    for (l in sub2) {
+                         temp <- a0[l] * pijk[l] + a1[l] * (1 - pijk[l])
+                         mb2a <- mb2a * temp
+                    }
+                    nulla <- 1
+                    for (l in sub2) {
+                         temp <- a1[l] * (1 - pijk[l])
+                         nulla <- nulla * temp
+                    }
+                    den <- (1-spec)^3*null*nulla+
+                           (1-spec)*sens^2*null*(mb2a-nulla)+
+                           (1-spec)*sens^2*(mb2-null)*nulla+
+                           sens^3*(mb2-null)*(mb2a-nulla)
+                    for (l1 in sub1) {
+                        temp <- a0[l1]*pijk[l1]+a1[l1]*(1-pijk[l1])
+                        num <- mb2/temp*a0[l1]*pijk[l1]*sens^2*(mb2a*sens+nulla*(1-sens-spec))
+                        expect[l1]<-num/den
+                    }
+                    for (l1 in sub2) {
+                        temp <- a0[l1]*pijk[l1]+a1[l1]*(1-pijk[l1])
+                        num <- mb2a/temp*a0[l1]*pijk[l1]*sens^2*(mb2*sens+null*(1-sens-spec))
+                        expect[l1]<-num/den
+                    }
+                }
+                i <- l1
+            }
+            }
+            i <- i + 1
+        }
+        expect[expect > 1] <- 1
+        expect[expect < 0] <- 0
+        if (!extra.loop) {
+            suppress <- function(w)
+                if (any(grepl("non-integer #successes in a binomial glm", w)))
+                   invokeRestart("muffleWarning")
+            mod.fit <- withCallingHandlers(glm.fit(X, expect,
+                family = binomial(link = linkf)), warning = suppress)
+            diff <- max(abs((beta.old - mod.fit$coefficients)/beta.old))
+            beta.old <- mod.fit$coefficients
+            if (control$trace)
+                cat("beta is", beta.old, "\tdiff is", diff, "\n")
+            counts <- counts + 1
+            if (diff <= control$tol || counts > control$maxit)
+                extra.loop <- TRUE
+        }
+        else next.loop <- FALSE
+    }
+    pt1 <- switch(linkf, logit = -exp(xib)/(1 + exp(xib))^2,
+        probit = sqrt(2) * xib * exp(-xib^2/2)/(sqrt(pi) * (1 -
+            erf)) - 2 * exp(-xib^2)/(pi * (1 - erf)^2), cloglog = -exp(xib))
+    pt2 <- switch(linkf, logit = 0, probit = (8 * exp(-xib^2/2) *
+        erf + 2 * xib * sqrt(2 * pi) * erf^2 - 2 * xib * sqrt(2 *
+        pi)) * exp(-xib^2/2)/((1 + erf)^2 * pi * (1 - erf)^2),
+        cloglog = -(exp(xib - exp(xib)) + exp(2 * xib - exp(xib)) -
+            exp(xib))/(exp(-exp(xib)) - 1)^2)
+    nm <- pt1 + expect * pt2
+    sign1 <- as.vector(sign(nm))
+    nn <- as.vector(sqrt(abs(nm)))
+    x2 <- X * nn
+    m <- (t(x2) %*% (sign1 * x2))
+    m1 <- 0
+    i <- 1
+    while (i <= sam) {
+        vec1 <- vec[groupn == groupn[i]]
+        gs <- length(vec1)
+        if (Y[i] == 0) {
+            for (j in vec1) {
+                 wii <- ifelse(i == j, expect[i] - expect[i]^2, expect[i] *
+                    (pijk[j] - expect[j]))
+                 tim <- wii * X[i, ] %*% t(X[j, ])
+                 m1 <- m1 + tim
+            }
+        } else {
+            sub1 <- vec1[1:ceiling(gs/2)]
+            sub2 <- vec1[(ceiling(gs/2) + 1):gs]
+            for (i in sub1) {
+                 for (j in sub1) { 
+                     if (subg[j] == 0) { 
+                         eii <- expect[i] * pijk[j]
+                     } else { 
+                         temp <- a0[j] * pijk[j] + a1[j] * (1 - pijk[j])
+                         eii <- expect[i]/temp * a0[j] * pijk[j]
+                     }
+                     wii <- ifelse(i == j, expect[i] - expect[i]^2, eii - expect[i] * expect[j])
+                     tim <- wii * X[i, ] %*% t(X[j, ])
+                     m1 <- m1 + tim
+                 }
+                 for (j in sub2) { 
+                     if (subg[j] == 0) { 
+                         temp<-spec*prod(1-pijk[sub2])+(1-sens)*(1-prod(1-pijk[sub2]))
+                         eii <- expect[i]*(1-sens)*pijk[j]/temp
+                     } else { 
+                         mb2a <- 1
+                         for (l in sub2) {
+                              temp <- a0[l] * pijk[l] + a1[l] * (1 - pijk[l])
+                              mb2a <- mb2a * temp
+                         }
+                         nulla <- 1
+                         for (l in sub2) {
+                              temp <- a1[l] * (1 - pijk[l])
+                              nulla <- nulla * temp
+                         }
+                         temp <- a0[j]*pijk[j]+a1[j]*(1-pijk[j])
+                         tempa <- mb2a * sens + nulla * (1 - sens - spec)
+                         eii <- expect[i]/tempa*sens*a0[j]*pijk[j]*mb2a/temp
+                     }
+                     wii <- ifelse(i == j, expect[i] - expect[i]^2, eii - expect[i] * expect[j])
+                     tim <- wii * X[i, ] %*% t(X[j, ])
+                     m1 <- m1 + tim
+                 }
+            }
+            for (i in sub2) {
+                 for (j in sub1) { 
+                     if (subg[j] == 0) { 
+                         temp<-spec*prod(1-pijk[sub1])+(1-sens)*(1-prod(1-pijk[sub1]))
+                         eii <- expect[i] * (1-sens)* pijk[j]/temp
+                     } else { 
+                         mb2 <- 1
+                         for (l in sub1) {
+                              temp <- a0[l] * pijk[l] + a1[l] * (1 - pijk[l])
+                              mb2 <- mb2 * temp
+                         }
+                         null <- 1
+                         for (l in sub1) {
+                              temp <- a1[l] * (1 - pijk[l])
+                              null <- null * temp
+                         }
+                         temp <- a0[j]*pijk[j]+a1[j]*(1-pijk[j])
+                         tempa <- mb2*sens+null*(1-sens-spec)
+                         eii <- expect[i]/tempa*sens*a0[j]*pijk[j]*mb2/temp
+                     }
+                     wii <- ifelse(i == j, expect[i] - expect[i]^2, eii - expect[i] * expect[j])
+                     tim <- wii * X[i, ] %*% t(X[j, ])
+                     m1 <- m1 + tim
+                 }
+                 for (j in sub2) { 
+                     if (subg[j] == 0) { 
+                         eii <- expect[i] * pijk[j]
+                     } else { 
+                         temp <- a0[j] * pijk[j] + a1[j] * (1 - pijk[j])
+                         eii <- expect[i]/temp * a0[j] * pijk[j]
+                     }
+                     wii <- ifelse(i == j, expect[i] - expect[i]^2, eii - expect[i] * expect[j])
+                     tim <- wii * X[i, ] %*% t(X[j, ])
+                     m1 <- m1 + tim
+                 }
+            }
+        }
+        i <- i + 1
+    }
+    H <- -(m + m1)
+    zhat <- sens + (1 - sens - spec) * prodp
+    residual <- z - zhat
+    logl <- 0
+    for (grn in 1:num.g) {
+         if (z[grn] == 1) {
+            vec1 <- vec[groupn == grn]
+            gs <- length(vec1)
+            sub1 <- vec1[1:ceiling(gs/2)]
+            sub2 <- vec1[(ceiling(gs/2) + 1):gs]
+            if (subg[vec1[1]] == 0) {
+                if (subg[vec1[gs]] == 0) {
+                    prob1 <- (1-spec)*spec^2*prod(1-pijk[sub1])*prod(1-pijk[sub2])+
+                           spec*(1-sens)*sens*prod(1-pijk[sub1])*(1-prod(1-pijk[sub2]))+
+                           spec*(1-sens)*sens*prod(1-pijk[sub2])*(1-prod(1-pijk[sub1]))+
+                           (1-sens)^2*sens*(1-prod(1-pijk[sub1]))*(1-prod(1-pijk[sub2]))
+                }
+                if (subg[vec1[gs]] == 1) {
+                    mb2 <- 1
+                    for (l in sub2) {
+                         temp <- a0[l] * pijk[l] + a1[l] * (1 - pijk[l])
+                         mb2 <- mb2 * temp
+                    }
+                    null <- 1
+                    for (l in sub2) {
+                         temp <- a1[l] * (1 - pijk[l])
+                         null <- null * temp
+                    }
+                    prob1 <- (1-spec)^2*spec*null*prod(1-pijk[sub1])+
+                           (1-spec)*(1-sens)*sens*null*(1-prod(1-pijk[sub1]))+
+                           spec*sens^2*(mb2-null)*prod(1-pijk[sub1])+
+                           (1-sens)*sens^2*(mb2-null)*(1-prod(1-pijk[sub1]))
+                }
+            } else {
+                if (subg[vec1[gs]] == 0) {
+                    mb2 <- 1
+                    for (l in sub1) {
+                         temp <- a0[l] * pijk[l] + a1[l] * (1 - pijk[l])
+                         mb2 <- mb2 * temp
+                    }
+                    null <- 1
+                    for (l in sub1) {
+                         temp <- a1[l] * (1 - pijk[l])
+                         null <- null * temp
+                    }
+                    prob1 <- (1-spec)^2*spec*null*prod(1-pijk[sub2])+
+                           (1-spec)*(1-sens)*sens*null*(1-prod(1-pijk[sub2]))+
+                           spec*sens^2*(mb2-null)*prod(1-pijk[sub2])+
+                           (1-sens)*sens^2*(mb2-null)*(1-prod(1-pijk[sub2]))
+                }
+                if (subg[vec1[gs]] == 1) {
+                    mb2 <- 1
+                    for (l in sub1) {
+                         temp <- a0[l] * pijk[l] + a1[l] * (1 - pijk[l])
+                         mb2 <- mb2 * temp
+                    }
+                    null <- 1
+                    for (l in sub1) {
+                         temp <- a1[l] * (1 - pijk[l])
+                         null <- null * temp
+                    }
+                    mb2a <- 1
+                    for (l in sub2) {
+                         temp <- a0[l] * pijk[l] + a1[l] * (1 - pijk[l])
+                         mb2a <- mb2a * temp
+                    }
+                    nulla <- 1
+                    for (l in sub2) {
+                         temp <- a1[l] * (1 - pijk[l])
+                         nulla <- nulla * temp
+                    }
+                    prob1 <- (1-spec)^3*null*nulla+
+                           (1-spec)*sens^2*null*(mb2a-nulla)+
+                           (1-spec)*sens^2*(mb2-null)*nulla+
+                           sens^3*(mb2-null)*(mb2a-nulla)
+                }
+            }
+         } else prob1 <- 1 - zhat[grn]
+         logl <- logl - log(prob1)
+    }
+    aic <- 2 * logl + 2 * K
+    if (diff > control$tol && counts > control$maxit)
+        warning("EM algorithm did not converge.")
+    if (control$time) {
+        end.time <- proc.time()
+        save.time <- end.time - start.time
+        cat("\n Number of minutes running:", round(save.time[3]/60, 2), "\n \n")
+    }
+    list(coefficients = beta.old, hessian = H, fitted.values = zhat,
+        deviance = 2 * logl, aic = aic,
+        counts = counts - 1, residuals = residual, z = z)
+}
+
+
+sim.halving <- function (x = NULL, gshape = 20, gscale = 2, par,
+    linkf = c("logit", "probit", "cloglog"),
+    sample.size, group.size, sens = 1, spec = 1,
+    sens.ind = NULL, spec.ind = NULL)
+{
+    if (is.null(sens.ind))
+        sens.ind <- sens
+    if (is.null(spec.ind))
+        spec.ind <- spec
+    if (is.null(x)) {
+        x <- rgamma(n = sample.size, shape = gshape, scale = gscale)
+        X <- cbind(1, x)
+    }
+    else {
+        X <- cbind(1, x)
+        sample.size <- nrow(X)
+    }
+    linkf <- match.arg(linkf)
+    pijk <- switch(linkf, logit = plogis(X %*% par),
+            probit = pnorm(X %*% par),
+            cloglog = 1 - exp(-exp(X %*% par)))
+    ind <- rbinom(n = sample.size, size = 1, prob = pijk)
+    num.g <- ceiling(sample.size/group.size)
+    vec <- 1:sample.size
+    groupn <- rep(1:num.g, each = group.size)[vec]
+    save.sum <- tapply(ind, groupn, sum)
+    save.group <- as.vector(ifelse(save.sum > 0, 1, 0))
+    save.obs <- rep(NA, num.g)
+    subgroup <- ret <- rep(NA, sample.size)
+    for (grn in 1:num.g) {
+         vec1 <- vec[groupn == grn]
+         gs <- length(vec1)
+         save.obs[grn] <- ifelse(save.group[grn] == 1, rbinom(1, 1, sens),
+                1 - rbinom(1, 1, spec))
+         if (save.obs[grn] == 1) {
+             sub1 <- vec1[1:ceiling(gs/2)]
+             sub2 <- vec1[(ceiling(gs/2) + 1):gs]
+             tZ1 <- sum(ind[sub1])
+             tZ2 <- sum(ind[sub2])
+             Z1 <- ifelse(tZ1 == 1, rbinom(1,
+                 1, sens), 1 - rbinom(1, 1, spec))
+             Z2 <- ifelse(tZ2 == 1, rbinom(1,
+                 1, sens), 1 - rbinom(1, 1, spec))
+             if (Z1 == 1) {
+                 for (i1 in sub1) {
+                     ret[i1] <- ifelse(ind[i1] == 1, rbinom(1,
+                        1, sens.ind), 1 - rbinom(1, 1, spec.ind))
+                 }
+             }
+             if (Z2 == 1) {
+                 for (i1 in sub2) {
+                     ret[i1] <- ifelse(ind[i1] == 1, rbinom(1,
+                        1, sens.ind), 1 - rbinom(1, 1, spec.ind))
+                 }
+             }
+             subgroup[sub1] <- Z1
+             subgroup[sub2] <- Z2
+         }
+    }
+    gres <- rep(save.obs, each = group.size)[vec]
+    grd <- data.frame(gres = gres, x = x, groupn = groupn, ind = ind,
+            retest = ret, subgroup = subgroup)
+    if (ncol(X) > 2)
+        for (i in 2:ncol(X))
+             colnames(grd)[i] <- paste("x", i - 1, sep="")
+    grd
 }

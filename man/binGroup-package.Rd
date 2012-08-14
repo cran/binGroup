@@ -7,14 +7,14 @@
 Statistical Methods for Group Testing.
 }
 \description{
-This package provides methods for estimation and hypothesis testing of proportions in group testing designs. It involves methods for estimating a proportion in a single population (assuming  sensitivity and specificty 1 in designs with equal  group sizes), as well as hypothesis tests and functions for experimental design for this situation. For estimating one proportion or the difference of proportions, a number of confidence interval methods are included, which can deal with various different pool sizes. Further, regression methods are implemented for simple pooling and matrix pooling designs.
+This package provides methods for estimation and hypothesis testing of proportions in group testing designs. It involves methods for estimating a proportion in a single population (assuming sensitivity and specificity 1 in designs with equal group sizes), as well as hypothesis tests and functions for experimental design for this situation. For estimating one proportion or the difference of proportions, a number of confidence interval methods are included, which can deal with various different pool sizes. Further, regression methods are implemented for simple pooling and matrix pooling designs.
 }
 \details{
 \tabular{ll}{
 Package: \tab binGroup\cr
 Type: \tab Package\cr
-Version: \tab 1.0-8\cr
-Date: \tab 2011-01-04\cr
+Version: \tab 1.1-0\cr
+Date: \tab 2012-08-14\cr
 License: \tab GPL\cr
 LazyLoad: \tab no\cr
 }

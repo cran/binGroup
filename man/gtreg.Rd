@@ -86,7 +86,7 @@ For \kbd{gtreg.fit}, \kbd{EM} and \kbd{EM.ret}: the vector of the group response
 }
 
 \item{X}{
-For \kbd{gtreg.fit}, \kbd{EM} an \kbd{EM.ret}: the design matrix of the covariates.
+For \kbd{gtreg.fit}, \kbd{EM} and \kbd{EM.ret}: the design matrix of the covariates.
 }
 
 \item{ret}{
