@@ -1,5 +1,5 @@
 \name{binGroup-package}
-\Rdversion{1.1}
+\Rdversion{1.1-5}
 \alias{binGroup-package}
 \alias{binGroup}
 \docType{package}
@@ -8,13 +8,14 @@ Statistical Methods for Group Testing.
 }
 \description{
 This package provides methods for estimation and hypothesis testing of proportions in group testing designs. It involves methods for estimating a proportion in a single population (assuming sensitivity and specificity 1 in designs with equal group sizes), as well as hypothesis tests and functions for experimental design for this situation. For estimating one proportion or the difference of proportions, a number of confidence interval methods are included, which can deal with various different pool sizes. Further, regression methods are implemented for simple pooling and matrix pooling designs.
+Methods for identification of positive specimens in group testing designs: methods for identification of positive specimens in a number of group testing algorithms. Hierarchical and array-based algorithms are implemented and used to find the  optimal testing configuration and calculate operating characteristics for testing configurations across a wide variety of situations.
 }
 \details{
 \tabular{ll}{
 Package: \tab binGroup\cr
 Type: \tab Package\cr
-Version: \tab 1.1-0\cr
-Date: \tab 2012-08-14\cr
+Version: \tab 2.1-0\cr
+Date: \tab 2018-03-12\cr
 License: \tab GPL\cr
 LazyLoad: \tab no\cr
 }
@@ -36,6 +37,7 @@ The function \code{\link{pooledBinDiff}} provides a number of confidence interva
 Two approaches (by Vansteelandt et al., 2000 and Xie, 2001) to estimate parameters of group testing regression models can be applied by calling \code{\link{gtreg}}. Once fitted, corresponding methods to extract residuals, calculate predictions and summarize the parameter estimates (including hypotheses tests) are available in the S3 methods \code{\link{residuals.gt}}, \code{\link{predict.gt}} and \code{\link{summary.gt}}.
 
 Group testing regression models in settings with matrix pooling (Xie, 2001) can be fit using \code{\link{gtreg.mp}}. 
+
 
 
 }

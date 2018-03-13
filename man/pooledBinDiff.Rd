@@ -9,7 +9,8 @@ The function calculates confidence intervals for the difference of two proportio
 }
 \usage{
 pooledBinDiff(x1, m1, x2, m2, n1 = rep(1, length(x1)),
- n2 = rep(1, length(x2)), pt.method = c("bc-mle", "mle", "mir"), 
+ n2 = rep(1, length(x2)), 
+ pt.method = c("firth", "gart", "bc-mle", "mle", "mir"), 
  ci.method = c("skew-score", "bc-skew-score", "score", "lrt", "wald", "mir"),
  scale = 1, alpha = 0.05, tol = .Machine$double.eps^0.5)
 }
@@ -21,14 +22,18 @@ pooledBinDiff(x1, m1, x2, m2, n1 = rep(1, length(x1)),
   \item{m2}{ a vector of corresponding pool sizes in population 2, must have the same length as \code{x2}}
   \item{n1}{ a vector of the corresponding number of pools with sizes \code{m1}}
   \item{n2}{ a vector of the corresponding number of pools with sizes \code{m2}}
-  \item{pt.method}{a character string, specifying the point estimate to compute, with the following options: \code{"bc-mle"} bias-corrected MLE, the default; \code{"mle"} MLE, and \code{"mir"} MIR. }
+  \item{pt.method}{a character string, specifying the point estimator to compute, with the following options: \code{"firth"}: recommended bias-corrected estimator (Hepworth & Biggerstaff, 2017), the default; \code{"gart"} bias-corrected MLE (Biggerstaff, 2008); \code{"bc-mle"}: same as \code{"gart"}, kept for backward compatibility ; \code{"mle"} MLE, and \code{"mir"} MIR. }
   \item{ci.method}{a character string, specifying the confidence interval to compute, with options: \code{"skew-score"} skewness-corrected, the default, \code{"score"} the score, \code{"bc-skew-score"} bias- and skewness-corrected 
- \code{"lrt"} likelihood ratio test. Further, the options \code{"wald"} wald and \code{"mir"} MIR are available but are recommended.}
+ \code{"lrt"} likelihood ratio test. See Biggerstaff (2008) for details. Further, the options \code{"wald"} wald and \code{"mir"} MIR are available but are not recommended.}
   \item{scale}{ a single numeric, coefficient to scale the point estimates and intervals bounds in the print and summary method (\code{\link{print.poolbindiff}}, \code{\link{summary.poolbindiff}}) }
   \item{alpha}{ a single numeric, specifying the type-I-error level}
   \item{tol}{accuracy required for iterations in internal functions}
 }
-\details{ Note, that the methods "mir" and "wald" can not be recommended, because they return too narrow intervals in relevant situations, "mir" because it ignores the pooling, and "wald" because it relies on simple large sample methods.
+
+\details{
+Point estimation: bias preventative ("firth") and bias corrected ("gart") estimators are recommended, with details described in Hepworth G, Biggerstaff BJ (2017). Use of MLE (\code{"mle"}), and MIR (\code{"mir"}) estimators is not recommended.
+
+Confidence intervals: Note, that the methods "mir" and "wald" can not be recommended, because they return too narrow intervals in relevant situations, "mir" because it ignores the pooling, and "wald" because it relies on simple large sample methods.
  For computational details and simulation results of the remaining methods, see Biggerstaff (2008).}
 
 \value{
@@ -50,7 +55,16 @@ A list with elements
 
 }
 \references{
+
+\emph{Walter SD, Hildreth SW, Beaty BJ:} Estimation of infection rates in population of organisms using pools of variable size. \emph{Am J Epidemiol 1980, 112(1):124-128}
+
+\emph{Hepworth G: Estimation of proportions by group testing. PhD Dissertation. 
+   Melbourne, Australia: The University of Melbourne; 1999.}
+
 \emph{Biggerstaff BJ (2008)}: Confidence interval for the difference of proportions estmimated from pooled samples. \emph{Journal of Agricultural Biological and Environmental Statistics 2008, 13(4):478-496.}
+
+\emph{Hepworth G, Biggerstaff BJ:} Bias correction in estimating Proportions by pooled testing. \emph{JABES 2017, to appear.}
+
 }
 \author{Brad Biggerstaff}
 
