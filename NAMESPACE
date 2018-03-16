@@ -10,7 +10,6 @@ pooledBin, pooledBinDiff
 export(OTC, NI.Dorf, Inf.Dorf, NI.D3, Inf.D3, NI.Array, Inf.Array, NI.A2M)
 
 import(graphics)
-importFrom("grDevices", "win.graph")
 importFrom("partitions", "parts")
 importFrom("stats","binomial", "binom.test", "coef", "dbinom", "delete.response", "dbeta", "dnorm", "glm.fit", "integrate", "is.empty.model", "lm", "lm.fit", "model.extract", "model.frame", "model.matrix", "model.response", "na.omit", "na.pass", "optim", "pbeta", "pbinom", "plogis", "pnorm", "printCoefmat", "qbeta", "qbinom", "qchisq", "qnorm", "quantile", "rbeta", "rbinom", "residuals", "rgamma", "terms", "uniroot")
 importFrom("utils", "tail")

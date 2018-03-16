@@ -141,7 +141,7 @@
         y.beta <- dbeta(get.beta, a, b)
         max.y <- min(max(y.beta), 100)
 
-        grDevices::win.graph() #new plot window
+
         plot(x = get.beta, y = y.beta, type = "l",
           lwd = 1, col = "darkgreen", panel.first=grid(col = "gray"),
           xlim = c(0, 1), ylim = c(0, max.y),

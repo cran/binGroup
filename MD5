@@ -1,8 +1,8 @@
-55ed455b3d6c6b698b36fa5b80dfcffc *DESCRIPTION
-8ca076bf6fbaf54c033ea6b8ba483686 *NAMESPACE
+0663a2e216fee93b18426258da51856f *DESCRIPTION
+17a99c46d02246065ca0b4700a47d3f6 *NAMESPACE
 f3face66b417f339d154b6b8586a279b *R/Array.Functions.R
 c10eb9c4bf6bff0389ce05f2f4ed7a8f *R/Dorfman.Functions.R
-31c8a6523f24138ff81f7acfecd775e6 *R/Hierarchical.Functions.R
+2c1273f5525f9d758ec979df7dcfbe8d *R/Hierarchical.Functions.R
 a3cd786d7c67062247667af6c72413b9 *R/Inf.Array.R
 fd0e5712f017e9c80b730760b1853144 *R/Inf.D3.R
 05cc9b9e23a7c6a112c6ac299415307a *R/Inf.Dorf.R
@@ -53,7 +53,7 @@ e468aa51ae936d8331a3be9717dacbd2 *man/bgtWidth.Rd
 1784078a3e7bcf53807962bfac883f0e *man/bgtvs.Rd
 e7ae4c7e2d38b11951fa399e8016dad1 *man/binCI.Rd
 80be26fa37c735b387d744821d73cc3a *man/binDesign.Rd
-6f232b5db789bffc4b148c75d8bab458 *man/binGroup-package.Rd
+9b0f8a1ae260975779354981270ee059 *man/binGroup-package.Rd
 e68e6361ff5348b9b2cfbd260faca248 *man/binPower.Rd
 8bca8a060695800b851a9fb2fcfba1c0 *man/binTest.Rd
 2249b448c2f14a1b064f727d6788efba *man/binWidth.Rd

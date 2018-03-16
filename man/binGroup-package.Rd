@@ -14,8 +14,8 @@ Methods for identification of positive specimens in group testing designs: metho
 \tabular{ll}{
 Package: \tab binGroup\cr
 Type: \tab Package\cr
-Version: \tab 2.1-0\cr
-Date: \tab 2018-03-12\cr
+Version: \tab 2.1-1\cr
+Date: \tab 2018-03-14\cr
 License: \tab GPL\cr
 LazyLoad: \tab no\cr
 }

@@ -1,7 +1,7 @@
 Package: binGroup
 Title: Evaluation and Experimental Design for Binomial Group Testing
-Version: 2.1-0
-Date: 2018-03-12
+Version: 2.1-1
+Date: 2018-03-14
 Authors@R: c(person("Boan", "Zhang", role = "aut"), 
              person("Christopher", "Bilder", role = "aut"),
              person("Brad", "Biggerstaff", role = "aut"),
@@ -13,7 +13,7 @@ Author: Boan Zhang [aut],
   Frank Schaarschmidt [aut, cre],
   Brianna Hitt [aut]
 Maintainer: Frank Schaarschmidt <schaarschmidt@biostat.uni-hannover.de>
-Imports: grDevices, graphics, partitions, stats, utils
+Imports: graphics, partitions, stats, utils
 Description: Methods for estimation and hypothesis testing of proportions
  in group testing designs: methods for estimating a proportion in a single
         population (assuming sensitivity and specificity equal to 1 in designs
@@ -35,6 +35,6 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
 NeedsCompilation: no
-Packaged: 2018-03-13 09:01:08 UTC; Schaarschmidt
+Packaged: 2018-03-16 08:02:11 UTC; Schaarschmidt
 Repository: CRAN
-Date/Publication: 2018-03-13 09:16:18 UTC
+Date/Publication: 2018-03-16 17:24:40 UTC
