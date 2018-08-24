@@ -67,7 +67,6 @@
 
 
 
-
 #Start beta.dist() functions
 ####################################################################
 #    Michael Black 03 12 2013
@@ -87,72 +86,158 @@
 #
 ###################################################################
 
-  #PDF of ordered p_(i)
-  f.p.ord <- function(p, i, grp.sz, a, b) {
-   factorial(grp.sz)/(factorial(i - 1)*factorial(grp.sz - i))*dbeta(x = p, shape1 = a, shape2 = b)*pbeta(q = p, shape1 = a, shape2 = b)^(i - 1)*
-                                                    (1 - pbeta(q = p, shape1 = a, shape2 = b))^(grp.sz - i)
+#PDF of ordered p_(i)
+f.p.ord <- function(p, i, grp.sz, a, b) {
+  factorial(grp.sz)/(factorial(i - 1)*factorial(grp.sz - i))*dbeta(x = p, shape1 = a, shape2 = b)*pbeta(q = p, shape1 = a, shape2 = b)^(i - 1)*
+    (1 - pbeta(q = p, shape1 = a, shape2 = b))^(grp.sz - i)
+}
+
+#p * PDF of ordered p_(i) - used to find E(p_(i))
+p.f.p.ord <- function(p, i, grp.sz, a, b) {
+  p*factorial(grp.sz)/(factorial(i - 1)*factorial(grp.sz - i))*dbeta(x = p, shape1 = a, shape2 = b)*pbeta(q = p, shape1 = a, shape2 = b)^(i - 1) *
+    (1 - pbeta(q = p, shape1 = a, shape2 = b))^(grp.sz - i)
+}
+
+  
+
+# Start beta.dist()                                          
+######################################################
+
+#' @title Expected value of order statistics from a beta distribution
+#' 
+#' @description Get the expected value of order statistics, E(p(i)), 
+#' from a beta distribution by specifying an average probability 
+#' and shape parameters for the beta distribution.
+#' 
+#' @param p average probability, \eqn{\frac{\alpha}{\alpha + \beta}}.
+#' @param alpha the alpha parameter for the beta distribution. The 
+#' details of the specification of \kbd{alpha} are given under 'Details'.
+#' @param beta the beta parameter for the beta distribution, which is
+#' calculated from the average probability, \kbd{p}, if it is not
+#' specified. The details of the specification of \kbd{beta} are 
+#' given under 'Details'.
+#' @param grp.sz the number of individuals in the group.
+#' @param simul a logical value indicating whether to use simulation. 
+#' If simulation is used, the vector of probabilities is found by 
+#' simulating 10,000 values from a beta distribution with
+#' the specified shape parameters. If simulation is not used, 
+#' the vector of individual probabilities is found using integration.
+#' @param plot a logical value indicating whether to plot the 
+#' distribution with p(i) marked.
+#' @param rel.tol relative tolerance used for integration.
+#'
+#' @details If \kbd{alpha} = 0, this function uses an extreme value 
+#' distribution based on a Bernoulli(p) distribution to  find the 
+#' individual probabilities, p_i. If \kbd{alpha} is infinite, this 
+#' function uses \eqn{p_i=p} for all i.
+#' 
+#' If \kbd{beta} is not specified, it is calculated from the average
+#' probability \kbd{p} as \eqn{b=a*\frac{1}{p-1}}. If \kbd{beta} is 
+#' specified, this function ignores \kbd{p} unless \kbd{alpha} is 
+#' infinite.
+#' 
+#' Depending on the specified probability, alpha level, and overall 
+#' group size, simulation may be necessary in order to generate the 
+#' vector of individual probabilities. In this case, the user should
+#' specify \kbd{simul=TRUE} and set a seed in order to reproduce results. 
+#' See Black et al. (2015) for additional details.
+#' 
+#' @return A vector of ordered probabilities, p_i.
+#' 
+#' @author This function was originally written by Michael S. 
+#' Black for Black et al. (2015). The function was obtained 
+#' from \url{http://chrisbilder.com/grouptesting}.
+#' 
+#' @references 
+#' \insertRef{Black2015}{binGroup}
+#' 
+#' @seealso 
+#' \url{http://chrisbilder.com/grouptesting}
+#' 
+#' @seealso
+#' \code{\link{p.vec.func}} for generating a vector of individual
+#' risk probabilities for informative group testing (after checking 
+#' whether simulation is needed) and \code{\link{Informative.array.prob}} 
+#' for arranging a vector of individual risk probabilities in a matrix 
+#' for informative array testing without master pooling.
+#' 
+#' @family Individual risk probability functions
+#' 
+#' @examples
+#' # This example takes less than 1 second to run.
+#' # Estimated running time was calculated using a 
+#' #   computer with 16 GB of RAM and one core of an 
+#' #   Intel i7-6500U processor.
+#' set.seed(8791)
+#' beta.dist(p=0.05, alpha=1, grp.sz=30)
+#' 
+#' # This example takes less than 1 second to run.
+#' # Estimated running time was calculated using a 
+#' #   computer with 16 GB of RAM and one core of an 
+#' #   Intel i7-6500U processor.
+#' set.seed(1002)
+#' beta.dist(p=0.02, alpha=2, grp.sz=50, simul=TRUE)
+#' 
+#' # This example takes less than 1 second to run.
+#' # Estimated running time was calculated using a 
+#' #   computer with 16 GB of RAM and one core of an 
+#' #   Intel i7-6500U processor.
+#' set.seed(5732)
+#' beta.dist(alpha=2, beta=5, grp.sz=15, plot=TRUE)
+  
+# function to get vector of p(i)
+beta.dist <- function(p = 0.05,alpha = 1,beta = NULL, grp.sz = 10, simul = FALSE, plot = FALSE, rel.tol = ifelse(a >= 1, .Machine$double.eps^0.25,  .Machine$double.eps^0.1)) {
+  a <- alpha
+  b <- beta
+  if (a == "inf"|| a == "hom") p.vec = rep(p, grp.sz)
+  else if (a == 0) {
+    p.vec <- numeric(grp.sz)
+    save.err <- numeric(grp.sz)
+    save.int <- 0
+    for(i in 1:grp.sz) {
+      save.int <- save.int + choose(grp.sz, (i - 1))*(p^(grp.sz - i + 1))*((1 - p)^(i - 1))
+      p.vec[i] <- save.int
+      save.err[i] <- 0
+    }
   }
-
-  #p * PDF of ordered p_(i) - used to find E(p_(i))
-  p.f.p.ord <- function(p, i, grp.sz, a, b) {
-    p*factorial(grp.sz)/(factorial(i - 1)*factorial(grp.sz - i))*dbeta(x = p, shape1 = a, shape2 = b)*pbeta(q = p, shape1 = a, shape2 = b)^(i - 1) *
-                                                    (1 - pbeta(q = p, shape1 = a, shape2 = b))^(grp.sz - i)
-  }
-
-
-  # function to get vector of p(i)
-  beta.dist <- function(p = 0.05,alpha = 1,beta = NULL, grp.sz = 10, simul = FALSE, plot = FALSE, rel.tol = ifelse(a >= 1, .Machine$double.eps^0.25,  .Machine$double.eps^0.1)) {
-    a <- alpha
-    b <- beta
-    if (a == "inf"|| a == "hom") p.vec = rep(p, grp.sz)
-    else if (a == 0) {
+  
+  else {
+    if (is.null(b)) b = a*(1/p - 1)
+    if (simul == FALSE) {
       p.vec <- numeric(grp.sz)
       save.err <- numeric(grp.sz)
-      save.int <- 0
+      
       for(i in 1:grp.sz) {
-        save.int <- save.int + choose(grp.sz, (i - 1))*(p^(grp.sz - i + 1))*((1 - p)^(i - 1))
-        p.vec[i] <- save.int
-        save.err[i] <- 0
+        save.int <- integrate(f = p.f.p.ord, lower = 0, upper = 1, i = i, grp.sz = grp.sz, a = a, b = b, rel.tol = rel.tol)
+        p.vec[i] <- save.int$value
+        save.err[i] <- save.int$abs.error
       }
     }
-
-    else {
-      if (is.null(b)) b = a*(1/p - 1)
-      if (simul == FALSE) {
-        p.vec <- numeric(grp.sz)
-        save.err <- numeric(grp.sz)
-
-        for(i in 1:grp.sz) {
-          save.int <- integrate(f = p.f.p.ord, lower = 0, upper = 1, i = i, grp.sz = grp.sz, a = a, b = b, rel.tol = rel.tol)
-          p.vec[i] <- save.int$value
-          save.err[i] <- save.int$abs.error
-        }
-      }
-      else  {
-        print("Using simulation")
-        presort <- matrix(rbeta(10000*grp.sz, a, b), ncol = grp.sz, byrow = 10000)
-        sorted <- t(apply(presort,1,sort))
-        p.vec <- colMeans(sorted)
-      }
-
+    else  {
+      print("Using simulation")
+      presort <- matrix(rbeta(10000*grp.sz, a, b), ncol = grp.sz, byrow = 10000)
+      sorted <- t(apply(presort,1,sort))
+      p.vec <- colMeans(sorted)
     }
+    
+  }
   if (plot == TRUE && is.numeric(a) && a != 0) {
-        get.beta  <- c(sort(rbeta(1000, a, b)), 1)
-        y.beta <- dbeta(get.beta, a, b)
-        max.y <- min(max(y.beta), 100)
-
-
-        plot(x = get.beta, y = y.beta, type = "l",
-          lwd = 1, col = "darkgreen", panel.first=grid(col = "gray"),
-          xlim = c(0, 1), ylim = c(0, max.y),
-          xlab = substitute(paste("PDF and ", italic(E)(italic(p)[(italic(i))]) , " for beta distribution with I = ", grp.sz, ", ", alpha, " = ", a, " and ", beta, " = ", b), list(grp.sz = grp.sz, a = a, b = b)),
-          ylab = substitute(paste(italic(f)(italic(p)[italic(i)])), list()))
-        points(x = p.vec, y = rep(0.5, length(p.vec)), type = "h", lwd = 1)
-
+    get.beta  <- c(sort(rbeta(1000, a, b)), 1)
+    y.beta <- dbeta(get.beta, a, b)
+    max.y <- min(max(y.beta), 100)
+    
+    
+    plot(x = get.beta, y = y.beta, type = "l",
+         lwd = 1, col = "darkgreen", panel.first=grid(col = "gray"),
+         xlim = c(0, 1), ylim = c(0, max.y),
+         xlab = substitute(paste("PDF and ", italic(E)(italic(p)[(italic(i))]) , " for beta distribution with I = ", grp.sz, ", ", alpha, " = ", a, " and ", beta, " = ", b), list(grp.sz = grp.sz, a = a, b = b)),
+         ylab = substitute(paste(italic(f)(italic(p)[italic(i)])), list()))
+    points(x = p.vec, y = rep(0.5, length(p.vec)), type = "h", lwd = 1)
+    
   }
   if (plot == TRUE && !is.numeric(a) || a == 0) print("Sorry plot not available for homogeneous or extreme")
- p.vec
-  }
+  p.vec
+}
 # End beta.dist() functions
 
 # Start halving() functions
@@ -165,8 +250,6 @@
 #               p a vector of individual probabilities
 #               stages the number of stages for halving
 #               order.p = TRUE if FALSE p.vec is not sorted for halving
-#
-#
 ###################################################################
 
 #get.tests is called by halving
@@ -178,69 +261,71 @@ get.tests <- function(t1, t2) {
   Tests
 }
 
+
+
 #sub.grp.size called by halving
 sub.grp.size <- function(I.0, stages) {
-
-    if (stages == 2) {
-        return(I.0)
-    }
-    else if (stages == 3) {
-        return(c(floor(I.0/2), I.0-floor(I.0/2)))
-        #return(c(ceiling(I.0/2), I.0 - ceiling(I.0/2)))
-    }
-    else {
-        return(c(sub.grp.size(I.0 = floor(I.0/2), stages = stages - 1), sub.grp.size(I.0 = (I.0 - floor(I.0/2)), stages=stages - 1)))
-        #return(c(sub.grp.size(I.0 = ceiling(I.0/2), stages = stages - 1), sub.grp.size(I.0 = (I.0 - ceiling(I.0/2)), stages=stages - 1)))
-    }
-
+  
+  if (stages == 2) {
+    return(I.0)
+  }
+  else if (stages == 3) {
+    return(c(floor(I.0/2), I.0-floor(I.0/2)))
+    #return(c(ceiling(I.0/2), I.0 - ceiling(I.0/2)))
+  }
+  else {
+    return(c(sub.grp.size(I.0 = floor(I.0/2), stages = stages - 1), sub.grp.size(I.0 = (I.0 - floor(I.0/2)), stages=stages - 1)))
+    #return(c(sub.grp.size(I.0 = ceiling(I.0/2), stages = stages - 1), sub.grp.size(I.0 = (I.0 - ceiling(I.0/2)), stages=stages - 1)))
+  }
+  
 }
 
 
 
 halving <- function(p, sp = 1, se = 1, stages = 2, order.p = TRUE) {
-
+  
   if (order.p == TRUE) p <- sort(p)
   N <- length(p)
-
-	if(stages < 2) {
-     stages <- 2
-     print("stages out of range, using dorfman")
-     }
-
-	#these make sure that stages is in bounds for the program
-	if(stages > 5) {
-     stages = 5
-     print("To many stages go back to 5")
-     }
+  
+  if(stages < 2) {
+    stages <- 2
+    print("stages out of range, using dorfman")
+  }
+  
+  #these make sure that stages is in bounds for the program
+  if(stages > 5) {
+    stages = 5
+    print("To many stages go back to 5")
+  }
   max.stages <- floor(log(N, 2)) + 1
   if (stages > max.stages) {
-      stages <- max.stages
-      print("To many stages using max.stages")
-      }
-
+    stages <- max.stages
+    print("To many stages using max.stages")
+  }
+  
   # This splits it into final sub-groups
   fin.cnt <- sub.grp.size(I.0 = N, stages = stages)
   f <- length(fin.cnt)
-
+  
   tb <- matrix(c(sp, 1 - sp, 1 - se, se), ncol = 2, byrow = 2)
-
-   if (stages > 2){
-
-   #the for loop below gets the matrix for the testing error part
+  
+  if (stages > 2){
+    
+    #the for loop below gets the matrix for the testing error part
     for (i in 2:(stages - 1)) {
       c1 <- c(sp, rep(1 - se, (2^(2^(i - 1)) -1)))
       ident <- diag(1 - c1)
       tb2 <- (tb%x%tb)
       tb3 <- t(t(tb2)%*%ident)
       tb <- cbind(c1, tb3)
-
+      
     }
     # below gets the tests matrix for given final sub-groups
     tests.start <- NULL
     for (i in 1:f) {
       tests.start <- rbind(tests.start, c(1, 1 + fin.cnt[i]))
     }
-
+    
     for (i in 1:(stages - 2)){
       tests.fin <- NULL
       for (k in 1:(f/(2^i))) {
@@ -249,12 +334,12 @@ halving <- function(p, sp = 1, se = 1, stages = 2, order.p = TRUE) {
       tests.start <- tests.fin
     }
     Tests <- tests.start
-
+    
   }
   if (stages == 2) {
-      Tests <- t(c(1, 1 + N))
+    Tests <- t(c(1, 1 + N))
   }
-# gets the probability vector
+  # gets the probability vector
   prob.p <- 1
   p.start <- 0
   for (j in 1:f) {
@@ -269,20 +354,22 @@ halving <- function(p, sp = 1, se = 1, stages = 2, order.p = TRUE) {
   test.prop <- rbind(Tests, prob.ts)
   #finalizes the pmf
   pmf <- rbind((by(test.prop[1, ], test.prop[1, ], sum)/by(test.prop[1, ],
-               test.prop[1, ], length)),
+                                                           test.prop[1, ], length)),
                by(test.prop[2, ], test.prop[1, ], sum))
   #get the E(T)
   et <- sum(pmf[1, ]*pmf[2, ])
   #get variance for T
   et2 <- sum(((pmf[1, ])^2)*pmf[2, ])
   vt <- et2 - et^2
-
-
+  
+  
   pmf <- data.frame(num.tests = round(pmf[1, ]), prob.tests = round(pmf[2, ], 4), row.names = NULL)
-
+  
   list(pmf = pmf, et = et, vt = vt)
 }
 # End halving() functions
+
+
 
 # Start  hierarchical.desc functions.
 # First auxilary functions that are called by hierarchical
@@ -301,13 +388,15 @@ halving <- function(p, sp = 1, se = 1, stages = 2, order.p = TRUE) {
 
 # Exp.Tk.3step is for 3 steps gets the portion of E(T) for the given grouping
 Exp.Tk.3step <- function(p.group, p.rest, sp = 1, se = 1) {
-    group.size <- length(p.group)
-    if (group.size > 1) {
-      ETk <- group.size*(((1 - sp)^2)*prod(1 - p.group)*prod(1 - p.rest) + se*(1 - sp)*(prod(1 - p.group)*(1 - prod(1 - p.rest))) + (se^2)*(1 - prod(1 - p.group)))
-    }
-    else if (group.size == 1) ETk <- 0
-    ETk
+  group.size <- length(p.group)
+  if (group.size > 1) {
+    ETk <- group.size*(((1 - sp)^2)*prod(1 - p.group)*prod(1 - p.rest) + se*(1 - sp)*(prod(1 - p.group)*(1 - prod(1 - p.rest))) + (se^2)*(1 - prod(1 - p.group)))
+  }
+  else if (group.size == 1) ETk <- 0
+  ETk
 }
+
+
 
 ##########################
 #grps.iter.3step iterates through all the possible groupings and sizes to find the optimal
@@ -317,11 +406,11 @@ grps.iter.3step <- function(p, N, g, grps.size, opt.grps, fin.opt, sp, se) {
   grps.start <- 1
   grps.fin <- N - g + 1
   if (g == 1) {
-
-      opt.grps[g.all - g + 1] <- N.all - sum(opt.grps[1:g.all - 1])
-      count <- 0
-      opt.grps[g.all + 1] <- Exp.T.3step(p = p, opt.grps[1:g.all], sp = sp, se = se)
-
+    
+    opt.grps[g.all - g + 1] <- N.all - sum(opt.grps[1:g.all - 1])
+    count <- 0
+    opt.grps[g.all + 1] <- Exp.T.3step(p = p, opt.grps[1:g.all], sp = sp, se = se)
+    
     if (opt.grps[g.all + 1] < fin.opt[g.all + 1]) {
       fin.opt <- opt.grps
     }
@@ -336,6 +425,8 @@ grps.iter.3step <- function(p, N, g, grps.size, opt.grps, fin.opt, sp, se) {
   fin.opt
 }
 
+
+
 #################################
 #Opt.grps.3step calls grps.iter.3step for a specified group p and number of groupings g
 Opt.grps.3step <- function(p, g = 2, sp = 1, se = 1){
@@ -347,6 +438,8 @@ Opt.grps.3step <- function(p, g = 2, sp = 1, se = 1){
   out.this
 }
 
+
+
 ###
 #This next program gets opt groupings and opt sizes
 #   It calls Opt.grps.3step so looks at all possible groupings
@@ -357,20 +450,23 @@ Opt.grps.size_number.3step <- function(p, sp = 1, se = 1) {
   expt.t <- 2*N
   Opt.all <- NULL
   for (g in 1:N) {
-     Opt.sizes <- Opt.grps.3step(p = p, g = g, sp = sp, se = se)
-     if (Opt.sizes[g + 1] < expt.t) {
-        expt.t <- Opt.sizes[g + 1]
-        Opt.all <- Opt.sizes
-     }
+    Opt.sizes <- Opt.grps.3step(p = p, g = g, sp = sp, se = se)
+    if (Opt.sizes[g + 1] < expt.t) {
+      expt.t <- Opt.sizes[g + 1]
+      Opt.all <- Opt.sizes
+    }
   }
-
+  
   end.time <- proc.time()
   save.time <- end.time-start.time
   cat("\n Number of minutes running for I = ", N, ":", save.time[3]/60, "\n \n")
-
-
+  
+  
   Opt.all
 }
+
+
+
 # Opt.grps.size_number_speedg.3step is a simple modification to the above that lets us stop sooner
 Opt.grps.size_number_speedg.3step<-function(p, sp = 1, se = 1) {
   start.time <- proc.time()
@@ -378,19 +474,20 @@ Opt.grps.size_number_speedg.3step<-function(p, sp = 1, se = 1) {
   expt.t <- 2*N
   Opt.all <- NULL
   for (g in 1:N) {
-     Opt.sizes <- Opt.grps.3step(p = p, g = g, sp = sp, se = se)
-     if (Opt.sizes[g + 1] < expt.t) {
-        expt.t <- Opt.sizes[g + 1]
-        Opt.all <- Opt.sizes
-     }
-     if (Opt.sizes[g + 1] > expt.t) break
+    Opt.sizes <- Opt.grps.3step(p = p, g = g, sp = sp, se = se)
+    if (Opt.sizes[g + 1] < expt.t) {
+      expt.t <- Opt.sizes[g + 1]
+      Opt.all <- Opt.sizes
+    }
+    if (Opt.sizes[g + 1] > expt.t) break
   }
-
+  
   end.time <- proc.time()
   save.time <- end.time - start.time
-
+  
   Opt.all
 }
+
 
 
 ########################################3
@@ -408,16 +505,18 @@ Exp.T.3step <- function(p, grping, sp = 1, se = 1){
   N <- length(p)
   g.ord <- c(0, cumsum(grping))
   if (g.all > 1) {
-  Exp.T<- 1 + g.all*((1 - sp)*prod(1 - p) + se*(1 - prod(1 - p)))
-  for (i in 1:g.all) {
-     Exp.T <- Exp.T + Exp.Tk.3step(p.group = p[(g.ord[i] + 1):g.ord[i + 1]], p.rest = p[-((g.ord[i] + 1):g.ord[i + 1])], sp = sp, se = se)
-  }
+    Exp.T<- 1 + g.all*((1 - sp)*prod(1 - p) + se*(1 - prod(1 - p)))
+    for (i in 1:g.all) {
+      Exp.T <- Exp.T + Exp.Tk.3step(p.group = p[(g.ord[i] + 1):g.ord[i + 1]], p.rest = p[-((g.ord[i] + 1):g.ord[i + 1])], sp = sp, se = se)
+    }
   }
   if (g.all == 1) {
     Exp.T<-1 + grping*((1 - sp)*prod(1 - p) + se*(1 - prod(1 - p)))
   }
   Exp.T
 }
+
+
 
 #This Function iterates until the optimal grouping is found, it assumes that
 #     the Exp.t is a convex function of the groupings
@@ -427,40 +526,42 @@ get.fin.opt.3step <- function( p, fin.opt, sp = 1, se = 1) {
   init.grps <- fin.opt[1:g]
   chk.chg <- 0
   for (k in 1:g) {
-  for (j in 1:2) {
-  for (i in 1:g) {
-    if (j == 1) {
-      if (init.grps[i] > 1) {
-      init.grps.mod <- init.grps
-      init.grps.mod[i] <- init.grps.mod[i] - 1
-      init.grps.mod[k] <- init.grps.mod[k] + 1
-      chk.opt <- c(init.grps.mod, Exp.T.3step(p, grping = init.grps.mod, sp = sp, se = se))
-      if ((chk.opt[g + 1]) < (fin.opt[g + 1])) {
-        fin.opt <- chk.opt
-        chk.chg <- 1
-      }
+    for (j in 1:2) {
+      for (i in 1:g) {
+        if (j == 1) {
+          if (init.grps[i] > 1) {
+            init.grps.mod <- init.grps
+            init.grps.mod[i] <- init.grps.mod[i] - 1
+            init.grps.mod[k] <- init.grps.mod[k] + 1
+            chk.opt <- c(init.grps.mod, Exp.T.3step(p, grping = init.grps.mod, sp = sp, se = se))
+            if ((chk.opt[g + 1]) < (fin.opt[g + 1])) {
+              fin.opt <- chk.opt
+              chk.chg <- 1
+            }
+          }
+        }
+        if (j == 2) {
+          if (init.grps[k] > 1) {
+            init.grps.mod <- init.grps
+            init.grps.mod[i] <- init.grps.mod[i] + 1
+            init.grps.mod[k] <- init.grps.mod[k] - 1
+            chk.opt <- c(init.grps.mod, Exp.T.3step(p, grping = init.grps.mod, sp = sp, se = se))
+            if (chk.opt[g + 1] < fin.opt[g + 1]) {
+              fin.opt <- chk.opt
+              chk.chg <- 1
+            }
+          }
+        }
+        
       }
     }
-    if (j == 2) {
-      if (init.grps[k] > 1) {
-      init.grps.mod <- init.grps
-      init.grps.mod[i] <- init.grps.mod[i] + 1
-      init.grps.mod[k] <- init.grps.mod[k] - 1
-      chk.opt <- c(init.grps.mod, Exp.T.3step(p, grping = init.grps.mod, sp = sp, se = se))
-      if (chk.opt[g + 1] < fin.opt[g + 1]) {
-        fin.opt <- chk.opt
-        chk.chg <- 1
-      }
-      }
-    }
-
   }
-  }
-  }
-
-if (chk.chg == 1) return(get.fin.opt.3step(p, fin.opt, sp = sp, se = se))
-if (chk.chg == 0) return(fin.opt)
+  
+  if (chk.chg == 1) return(get.fin.opt.3step(p, fin.opt, sp = sp, se = se))
+  if (chk.chg == 0) return(fin.opt)
 }
+
+
 
 # This function selects an initial estimate for groupings
 #   Then it calls the optimizer above for a specified number of groupings g
@@ -471,8 +572,10 @@ Opt.grps.speed1.3step <- function(p, g, sp = 1, se = 1) {
   fin.opt <- c(init.grps, Exp.T.3step(p, grping = init.grps, sp = sp, se = se))
   fin.opt.out <- get.fin.opt.3step(p, fin.opt, sp = sp, se = se)
   fin.opt.out
-
+  
 }
+
+
 
 #This iterates through the number of subgroups at stage 2 called g to find optimal
 Opt.grps.size.speed.3step <- function(p, sp = 1, se = 1) {
@@ -481,19 +584,21 @@ Opt.grps.size.speed.3step <- function(p, sp = 1, se = 1) {
   expt.t <- 2*N
   Opt.all <- NULL
   for (g in 1:N) {
-     Opt.sizes <- Opt.grps.speed1.3step(p = p, g = g, sp = sp, se = se)
-     if (Opt.sizes[g + 1] < expt.t) {
-        expt.t <- Opt.sizes[g + 1]
-        Opt.all <- Opt.sizes
-     }
+    Opt.sizes <- Opt.grps.speed1.3step(p = p, g = g, sp = sp, se = se)
+    if (Opt.sizes[g + 1] < expt.t) {
+      expt.t <- Opt.sizes[g + 1]
+      Opt.all <- Opt.sizes
+    }
   }
-
+  
   end.time <- proc.time()
   save.time <- end.time - start.time
-   cat("\n Number of minutes running for I = ", N, ":", save.time[3]/60, "\n \n")
-
+  cat("\n Number of minutes running for I = ", N, ":", save.time[3]/60, "\n \n")
+  
   Opt.all
 }
+
+
 
 #Below is a simple modification to the above that lets us stop sooner
 Opt.grps.size_number.speed.3step <- function(p, sp = 1, se = 1) {
@@ -503,21 +608,24 @@ Opt.grps.size_number.speed.3step <- function(p, sp = 1, se = 1) {
   Opt.all <- NULL
   stop.count<-0
   for (g in 1:N) {
-     Opt.sizes <- Opt.grps.speed1.3step(p = p, g = g, sp = sp, se = se)
-     if (Opt.sizes[g + 1] < expt.t) {
-        expt.t <- Opt.sizes[g + 1]
-        Opt.all <- Opt.sizes
-     }
-     if (Opt.sizes[g + 1] > expt.t) stop.count <- stop.count + 1
-     if (stop.count > 1) break
+    Opt.sizes <- Opt.grps.speed1.3step(p = p, g = g, sp = sp, se = se)
+    if (Opt.sizes[g + 1] < expt.t) {
+      expt.t <- Opt.sizes[g + 1]
+      Opt.all <- Opt.sizes
+    }
+    if (Opt.sizes[g + 1] > expt.t) stop.count <- stop.count + 1
+    if (stop.count > 1) break
   }
-
+  
   end.time <- proc.time()
   save.time <- end.time - start.time
-
+  
   Opt.all
 }
-  #End three-stage functions
+#End three-stage functions
+
+
+
   #start accuracy measure functions
 ##############################################################
 #
@@ -533,7 +641,6 @@ Opt.grps.size_number.speed.3step <- function(p, sp = 1, se = 1) {
 #
 ##############################################################
 
-
 # Probability of actually testing testing using 3-step regrouping
 ProbY <- function(p.vec, g3, sp=1, se=1) {
   g <- length(g3)
@@ -542,24 +649,26 @@ ProbY <- function(p.vec, g3, sp=1, se=1) {
   g.ord <- c(0, cumsum(g3))
   Prob.Y <- NULL
   for (i in 1:g) {
-     p.g2 <- p.ord[(g.ord[i] + 1):g.ord[i + 1]]
-     I.g2 <- length(p.g2)
-     if (I.g2 > 1) {
-     for (j in 1:I.g2) {
+    p.g2 <- p.ord[(g.ord[i] + 1):g.ord[i + 1]]
+    I.g2 <- length(p.g2)
+    if (I.g2 > 1) {
+      for (j in 1:I.g2) {
         p.j <- p.g2[j]
         probYis <- ((1 - sp)^3)*prod(1 - p.ord) + se*((1 - sp)^2)*(prod(1 - p.g2) -
-                  prod(1 - p.ord)) + (se^2)*(1 - sp)*((1 - p.j) - prod(1 - p.g2)) + (se^3)*p.j
+                                                                     prod(1 - p.ord)) + (se^2)*(1 - sp)*((1 - p.j) - prod(1 - p.g2)) + (se^3)*p.j
         Prob.Y <- rbind(Prob.Y, probYis)
-     }
-     }
-     else if (I.g2 == 1) {
-        p.j <- p.g2
-        probYis <- ((1 - sp)^2)*prod(1 - p.ord) + se*(1 - sp)*((1 - p.j) - prod(1 - p.ord)) + (se^2)*p.j
-        Prob.Y<-rbind(Prob.Y, probYis)
-     }
+      }
+    }
+    else if (I.g2 == 1) {
+      p.j <- p.g2
+      probYis <- ((1 - sp)^2)*prod(1 - p.ord) + se*(1 - sp)*((1 - p.j) - prod(1 - p.ord)) + (se^2)*p.j
+      Prob.Y<-rbind(Prob.Y, probYis)
+    }
   }
   Prob.Y
 }
+
+
 
 # 1-Polling specificity: Is specific for each individual
 #                         obtained by changing the pi to zero one at a time
@@ -573,10 +682,10 @@ ProbY.0 <- function(p.vec, g3, sp=1, se=1) {
   g.ord <- c(0, cumsum(g3))
   Prob.Y <- NULL
   for (i in 1:g) {
-     p.g2 <- p.ord[(g.ord[i] + 1):g.ord[i + 1]]
-     I.g2 <- length(p.g2)
-     if (I.g2 > 1) {
-     for (j in 1:I.g2) {
+    p.g2 <- p.ord[(g.ord[i] + 1):g.ord[i + 1]]
+    I.g2 <- length(p.g2)
+    if (I.g2 > 1) {
+      for (j in 1:I.g2) {
         p.g2.mod <- p.g2
         p.ord.mod <- p.ord
         p.j <- 0
@@ -584,18 +693,21 @@ ProbY.0 <- function(p.vec, g3, sp=1, se=1) {
         p.ord.mod[g.ord[i] + j] <- 0
         probYis <- ((1 - sp)^3)*prod(1 - p.ord.mod) + se*((1 - sp)^2)*(prod(1 - p.g2.mod) - prod(1 - p.ord.mod)) + (se^2)*(1 - sp)*((1 - p.j) - prod(1 - p.g2.mod)) + (se^3)*p.j
         Prob.Y <- rbind(Prob.Y, probYis)
-     }
-     }
-     else if (I.g2 == 1) {
-        p.j <- 0
-        p.ord.mod <- p.ord
-        p.ord.mod[g.ord[i] + 1] <- 0
-        probYis <- ((1 - sp)^2)*prod(1 - p.ord.mod) + se*(1 - sp)*((1 - p.j) - prod(1 - p.ord.mod)) + (se^2)*p.j
-        Prob.Y <- rbind(Prob.Y, probYis)
-     }
+      }
+    }
+    else if (I.g2 == 1) {
+      p.j <- 0
+      p.ord.mod <- p.ord
+      p.ord.mod[g.ord[i] + 1] <- 0
+      probYis <- ((1 - sp)^2)*prod(1 - p.ord.mod) + se*(1 - sp)*((1 - p.j) - prod(1 - p.ord.mod)) + (se^2)*p.j
+      Prob.Y <- rbind(Prob.Y, probYis)
+    }
   }
   Prob.Y
 }
+
+
+
 ####################################################
 # GSE
 ProbY.1 <- function(p.vec, g3, sp=1, se=1) {
@@ -605,27 +717,24 @@ ProbY.1 <- function(p.vec, g3, sp=1, se=1) {
   g.ord <- c(0, cumsum(g3))
   Prob.Y <- NULL
   for (i in 1:g) {
-     p.g2 <- p.ord[(g.ord[i] + 1):g.ord[i + 1]]
-     I.g2 <- length(p.g2)
-     for (j in 1:I.g2) {
-     if (I.g2 > 1) {
+    p.g2 <- p.ord[(g.ord[i] + 1):g.ord[i + 1]]
+    I.g2 <- length(p.g2)
+    for (j in 1:I.g2) {
+      if (I.g2 > 1) {
         Prob.Y <- rbind(Prob.Y, se^3)
-     }
-     else if (I.g2 == 1) {
+      }
+      else if (I.g2 == 1) {
         Prob.Y <- rbind(Prob.Y, se^2)
-     }
-     }
+      }
+    }
   }
   Prob.Y
 }
 
-
 ###################################################################################
 ###################################################################################
-
 
 #  4 step method for these tests
-
 
 # 1-Polling specificity: Is specific for each individual
 #                         obtained by changing the pi to zero one at a time
@@ -699,6 +808,8 @@ ProbY.4s <- function(p.vec, vec.g2, vec.g3, sp = 1, se = 1) {
   Prob.Y
 }
 
+
+
 ProbY.4s.0 <- function(p.vec, vec.g2, vec.g3, sp = 1, se = 1) {
   g2 <- length(vec.g2)
   g3 <- length(vec.g3)
@@ -767,6 +878,7 @@ ProbY.4s.0 <- function(p.vec, vec.g2, vec.g3, sp = 1, se = 1) {
 
   Prob.Y
 }
+
 ###############################################################
 
 ProbY.4s.1 <- function(p.vec, vec.g2, vec.g3, sp = 1, se = 1) {
@@ -838,6 +950,9 @@ ProbY.4s.1 <- function(p.vec, vec.g2, vec.g3, sp = 1, se = 1) {
   Prob.Y
 }
   #end accuracy functions
+
+
+
   #start four-stage CRC programs
 ############################################################
 #   Author: Michael Black
@@ -857,7 +972,6 @@ ProbY.4s.1 <- function(p.vec, vec.g2, vec.g3, sp = 1, se = 1) {
 #     7. If optimal vec.g2 or vec.g3 is a vector of 1s then 3 step is optimal.
 #
 ###############################################################
-
 
 #first we get the ET for 4step.
 Exp.T.4step <- function(p, vec.g2, vec.g3, se = 1, sp = 1){
@@ -925,6 +1039,9 @@ Exp.T.4step <- function(p, vec.g2, vec.g3, se = 1, sp = 1){
   }
   list(vec.g2 = vec.g2, vec.g3 = vec.g3, Exp.T = get.Exp.T)
 }
+
+
+
 ####################################################
 # This function gives the descent part of steepest descent
 #  the movement continues in the steepest direction
@@ -954,6 +1071,8 @@ steep.move <- function(chg.g2, chg.g3, p, N, g3, g2, opt.grps3,
 
   }
 }
+
+
 
 #################################################################################
 # Trying to iterate both vec.g2 and vec.g3 simultaneously.
@@ -1030,6 +1149,9 @@ grps.iter.both<-function(p, N, g3, g2, opt.grps3, opt.grps2, iter.opt.3s, iter.o
                             opt.grps2 = iter.opt.2s, iter.opt.3s, iter.opt.2s, iter.opt.ET, sp, se))
   if (chk.chg == 0) return(Iter.all)
 }
+
+
+
 #################
 # iterating the vec.g3 possibilities for each modified vec.g2
 
@@ -1190,6 +1312,9 @@ Opt.grps.size_number.4step <- function(p, sp = 1, se = 1, init.config = "hom") {
   Opt.all
 }
   #End four-stage CRC functions
+
+
+
   #start four stage ORC functions
 ############################################################
 #
@@ -1209,7 +1334,6 @@ Opt.grps.size_number.4step <- function(p, sp = 1, se = 1, init.config = "hom") {
 #     7. If optimal vec.g2 is a vector of 1s then 3 step is optimal.
 #
 ###############################################################
-
 
 #first we get the ET for 4step.
 Exp.T.4step.slow<-function(p,vec.g2,vec.g3,se=1,sp=1){
@@ -1277,6 +1401,7 @@ Exp.T.4step.slow<-function(p,vec.g2,vec.g3,se=1,sp=1){
 }
 
 
+
 #Iterates through all the possible combinations for vec.g3 given a g3 and vec.g2 this will be replaced with faster
 grps.iter.4step.slow<-function(p,N,g3,g2,opt.grps3,opt.grps2,fin.opt.3s,fin.opt.2s,fin.opt.ET,sp,se) {
 
@@ -1316,6 +1441,9 @@ grps.iter.4step.slow<-function(p,N,g3,g2,opt.grps3,opt.grps2,fin.opt.3s,fin.opt.
 
   Opt.all
 }
+
+
+
 #This iterates through all the possible vec.g2 combinations given a g3
 
 grps.iter.4s.slow<-function(p,N,g3,g2,opt.grps3,opt.grps2,fin.opt.3s,fin.opt.2s,fin.opt.ET,sp=1,se=1){
@@ -1351,6 +1479,7 @@ grps.iter.4s.slow<-function(p,N,g3,g2,opt.grps3,opt.grps2,fin.opt.3s,fin.opt.2s,
         fin.opt.2s<-Opt.all$vec.g2
   Opt.all
 }
+
 
 
 # This iterates through the possible g2 given a g3
@@ -1413,11 +1542,12 @@ Opt.grps.size_number.4step.slow<-function(p,sp=1,se=1) {
   Opt.all
 }
   #end four-stage ORC functions
+
+
+
   #start notation adjustment functions
 ############################################################
 #   Author: Michael Black
-#
-#
 ###############################################################
 get.mc.3s <- function(grping){
   c2 <- length(grping)
@@ -1449,6 +1579,7 @@ get.mc.3s <- function(grping){
 list(S = S, c2 = c2, vec.m2 = vec.m2, vec.I2 = vec.I2)
 
 }
+
 
 
 #first we get the ET for 4step.
@@ -1542,6 +1673,9 @@ get.mc.4s <- function(vec.g2, vec.g3){
         vec.I3 = vec.I3)
 }
   #end notation adjustment functions
+
+
+
   #start hierarchical.desc() functions
 ####################################################################
 #    Michael Black 03 12 2013
@@ -1565,250 +1699,416 @@ get.mc.4s <- function(vec.g2, vec.g3){
 #                 even though it won't be tested again
 #
 ###################################################################
-  #function called by hierarchical.desc() to covert I2 and I3 to the form used in the programs
-  get.g2_g3 <- function(I2, I3) {
-      extra.g3  <- ifelse(I2 == 1, 1, 0)
-      length.g3 <- length(I3) + sum(extra.g3)
-      g2 <- rep(0, length(I2))
-
-      for (i in 1:length(I2)) {
-        if (I2[i] == 1)   I3 <- c(I3[0:(j - 1)], 1, I3[j:length(I3)])
-        for (j in 1:length(I3)) {
-          if (cumsum(I3)[j] == cumsum(I2)[i]) {
-            g2[i] = j
-          }
-        }
+  #function called by hierarchical.desc() to convert I2 and I3 to the form used in the programs
+get.g2_g3 <- function(I2, I3) {
+  extra.g3  <- ifelse(I2 == 1, 1, 0)
+  length.g3 <- length(I3) + sum(extra.g3)
+  g2 <- rep(0, length(I2))
+  
+  for (i in 1:length(I2)) {
+    if (I2[i] == 1)   I3 <- c(I3[0:(j - 1)], 1, I3[j:length(I3)])
+    for (j in 1:length(I3)) {
+      if (cumsum(I3)[j] == cumsum(I2)[i]) {
+        g2[i] = j
       }
-      g2 <- g2 - c(0, g2[1:(length(g2) - 1)])
-      g3 <- I3
-  list(g2 = g2, g3 = g3)
+    }
   }
+  g2 <- g2 - c(0, g2[1:(length(g2) - 1)])
+  g3 <- I3
+  list(g2 = g2, g3 = g3)
+}
+
 
 
 ##Note Mike Black 3/22/13: I've added the call to the function with I2 and I3 as In section 3.2,
 
-  hierarchical.desc <- function(p, I2 = NULL, I3 = NULL, se = 1, sp = 1, order.p = TRUE) {
-    if (order.p == TRUE) p = sort(p)
-    N <- length(p)
-
-    g2 <- NULL
-    g3 <- NULL
-
-    if (!is.null(I2) && is.null(I3)) g2 <- I2 #converts I2 to what is used in program
-
-    if (!is.null(I2) && !is.null(I3)) {
-      get.g.vec <- get.g2_g3(I2 = I2, I3 = I3) #coverts I2, I3 to what is used in the programs
-      g2 <- get.g.vec$g2
-      g3 <- get.g.vec$g3
-    }
-
-    if (is.null(g2) || (is.null(g3) && max(g2) == 1 || max(g2) == N)) {
-      print("Two stage procedure")
-      stages = 2
-
-      g2 <- "individual testing"
-      g3 <- NULL
-
-      et <- 1 + N*(se*(1 - prod(1 - p)) + (1 - sp)*prod(1 - p))
-
-      pse.vec  <- ProbY.1(p.vec = p, g3 = rep(1, N), sp = sp, se = se)
-      psp.vec  <- 1 - ProbY.0(p.vec = p, g3 = rep(1,N), sp = sp, se = se)
-      pppv.vec <- p*pse.vec/(p*pse.vec + (1 - p)*(1 - psp.vec))
-      pnpv.vec <- (1 - p)*psp.vec/((1 - p)*psp.vec + p*(1 - pse.vec))
-
-      pse  <- sum(p*pse.vec)/sum(p)
-      psp  <- sum((1 - p)*psp.vec)/sum(1 - p)
-      pppv <- sum(p*pse.vec)/sum((p*pse.vec + (1 - p)*(1 - psp.vec)))
-      pnpv <- sum((1 - p)*psp.vec)/sum(((1 - p)*psp.vec + p*(1 - pse.vec)))
-
-      I2 <- "individual testing"
-      I3 <- NULL
-
-      m1 <- N
-      m2 <- "individual testing"
-      m3 <- NULL
-
-    }
-    else if (!is.null(g2) && (is.null(g3) || length(g3) == length(g2) || max(g3) == 1) ) {
-      print("Three stage procedure")
-      stages = 3
-
-      g3 <- "individual testing"
-
-      et <- Exp.T.3step(p = p, grping = g2, se = se, sp = sp)
-
-      pse.vec  <- ProbY.1(p.vec = p,g3 = g2,sp = sp,se = se)
-      psp.vec  <- 1 - ProbY.0(p.vec = p,g3 = g2,sp = sp,se = se)
-      pppv.vec <- p*pse.vec/(p*pse.vec + (1 - p)*(1 - psp.vec))
-      pnpv.vec <- (1 - p)*psp.vec/((1 - p)*psp.vec + p*(1 - pse.vec))
-
-      pse  <- sum(p*pse.vec)/sum(p)
-      psp  <- sum((1 - p)*psp.vec)/sum(1 - p)
-      pppv <- sum(p*pse.vec)/sum((p*pse.vec + (1 - p)*(1 - psp.vec)))
-      pnpv <- sum((1 - p)*psp.vec)/sum(((1 - p)*psp.vec + p*(1 - pse.vec)))
-
-      test.pattern <- get.mc.3s(grping = g2)
-
-      I2 <- test.pattern$vec.I2
-      I3 <- "individual testing"
-
-      m2 = test.pattern$vec.m2
-      m1 = length(m2)
-      m3 = "individual testing"
-
-
-    }
-    else if (!is.null(g2) && !is.null(g3)) {
-      print("Four stage procedure")
-      stages = 4
-      et <- Exp.T.4step(p = p, vec.g2 = g2, vec.g3 = g3, se = se, sp = sp)$Exp.T
-
-      pse.vec  <- ProbY.4s.1(p.vec = p, vec.g2 = g2, vec.g3 = g3, sp = sp, se = se)
-      psp.vec  <- 1 - ProbY.4s.0(p.vec = p, vec.g2 = g2, vec.g3 = g3, sp = sp, se = se)
-      pppv.vec <- p*pse.vec/(p*pse.vec + (1 - p)*(1 - psp.vec))
-      pnpv.vec <- (1 - p)*psp.vec/((1 - p)*psp.vec + p*(1 - pse.vec))
-
-      pse  <- sum(p*pse.vec)/sum(p)
-      psp  <- sum((1 - p)*psp.vec)/sum(1 - p)
-      pppv <- sum(p*pse.vec)/sum((p*pse.vec + (1 - p)*(1 - psp.vec)))
-      pnpv <- sum((1 - p)*psp.vec)/sum(((1 - p)*psp.vec + p*(1 - pse.vec)))
-
-      test.pattern <- get.mc.4s(vec.g2 = g2, vec.g3 = g3)
-
-      I2 <- test.pattern$vec.I2
-      I3 <- test.pattern$vec.I3
-
-      m2 = test.pattern$vec.m2
-      m1 = length(m2)
-      m3 = test.pattern$vec.m3
-
-    }
-
-
-c("PSe.individual", "PSp.individual", "PPPV.individual", "PNPV.individual")
-
-
-  list(ET = et, stages = stages, group.size = N, I2 = I2, I3 = I3, m1 = m1, m2 = m2, m3 = m3,
-        individual.testerror = data.frame(p, pse.vec, psp.vec, pppv.vec, pnpv.vec, row.names=NULL),
-        group.testerror = c(PSe = pse, PSp = psp, PPPV = pppv, PNPV = pnpv),
-        individual.probabilities = p)
-
+hierarchical.desc <- function(p, I2 = NULL, I3 = NULL, se = 1, sp = 1, order.p = TRUE) {
+  if (order.p == TRUE) p = sort(p)
+  N <- length(p)
+  
+  g2 <- NULL
+  g3 <- NULL
+  
+  if (!is.null(I2) && is.null(I3)) g2 <- I2 #converts I2 to what is used in program
+  
+  if (!is.null(I2) && !is.null(I3)) {
+    get.g.vec <- get.g2_g3(I2 = I2, I3 = I3) #coverts I2, I3 to what is used in the programs
+    g2 <- get.g.vec$g2
+    g3 <- get.g.vec$g3
   }
+  
+  if (is.null(g2) || (is.null(g3) && max(g2) == 1 || max(g2) == N)) {
+    print("Two stage procedure")
+    stages = 2
+    
+    g2 <- "individual testing"
+    g3 <- NULL
+    
+    et <- 1 + N*(se*(1 - prod(1 - p)) + (1 - sp)*prod(1 - p))
+    
+    pse.vec  <- ProbY.1(p.vec = p, g3 = rep(1, N), sp = sp, se = se)
+    psp.vec  <- 1 - ProbY.0(p.vec = p, g3 = rep(1,N), sp = sp, se = se)
+    pppv.vec <- p*pse.vec/(p*pse.vec + (1 - p)*(1 - psp.vec))
+    pnpv.vec <- (1 - p)*psp.vec/((1 - p)*psp.vec + p*(1 - pse.vec))
+    
+    pse  <- sum(p*pse.vec)/sum(p)
+    psp  <- sum((1 - p)*psp.vec)/sum(1 - p)
+    pppv <- sum(p*pse.vec)/sum((p*pse.vec + (1 - p)*(1 - psp.vec)))
+    pnpv <- sum((1 - p)*psp.vec)/sum(((1 - p)*psp.vec + p*(1 - pse.vec)))
+    
+    I2 <- "individual testing"
+    I3 <- NULL
+    
+    m1 <- N
+    m2 <- "individual testing"
+    m3 <- NULL
+    
+  }
+  else if (!is.null(g2) && (is.null(g3) || length(g3) == length(g2) || max(g3) == 1) ) {
+    print("Three stage procedure")
+    stages = 3
+    
+    g3 <- "individual testing"
+    
+    et <- Exp.T.3step(p = p, grping = g2, se = se, sp = sp)
+    
+    pse.vec  <- ProbY.1(p.vec = p,g3 = g2,sp = sp,se = se)
+    psp.vec  <- 1 - ProbY.0(p.vec = p,g3 = g2,sp = sp,se = se)
+    pppv.vec <- p*pse.vec/(p*pse.vec + (1 - p)*(1 - psp.vec))
+    pnpv.vec <- (1 - p)*psp.vec/((1 - p)*psp.vec + p*(1 - pse.vec))
+    
+    pse  <- sum(p*pse.vec)/sum(p)
+    psp  <- sum((1 - p)*psp.vec)/sum(1 - p)
+    pppv <- sum(p*pse.vec)/sum((p*pse.vec + (1 - p)*(1 - psp.vec)))
+    pnpv <- sum((1 - p)*psp.vec)/sum(((1 - p)*psp.vec + p*(1 - pse.vec)))
+    
+    test.pattern <- get.mc.3s(grping = g2)
+    
+    I2 <- test.pattern$vec.I2
+    I3 <- "individual testing"
+    
+    m2 = test.pattern$vec.m2
+    m1 = length(m2)
+    m3 = "individual testing"
+    
+    
+  }
+  else if (!is.null(g2) && !is.null(g3)) {
+    print("Four stage procedure")
+    stages = 4
+    et <- Exp.T.4step(p = p, vec.g2 = g2, vec.g3 = g3, se = se, sp = sp)$Exp.T
+    
+    pse.vec  <- ProbY.4s.1(p.vec = p, vec.g2 = g2, vec.g3 = g3, sp = sp, se = se)
+    psp.vec  <- 1 - ProbY.4s.0(p.vec = p, vec.g2 = g2, vec.g3 = g3, sp = sp, se = se)
+    pppv.vec <- p*pse.vec/(p*pse.vec + (1 - p)*(1 - psp.vec))
+    pnpv.vec <- (1 - p)*psp.vec/((1 - p)*psp.vec + p*(1 - pse.vec))
+    
+    pse  <- sum(p*pse.vec)/sum(p)
+    psp  <- sum((1 - p)*psp.vec)/sum(1 - p)
+    pppv <- sum(p*pse.vec)/sum((p*pse.vec + (1 - p)*(1 - psp.vec)))
+    pnpv <- sum((1 - p)*psp.vec)/sum(((1 - p)*psp.vec + p*(1 - pse.vec)))
+    
+    test.pattern <- get.mc.4s(vec.g2 = g2, vec.g3 = g3)
+    
+    I2 <- test.pattern$vec.I2
+    I3 <- test.pattern$vec.I3
+    
+    m2 = test.pattern$vec.m2
+    m1 = length(m2)
+    m3 = test.pattern$vec.m3
+    
+  }
+  
+  
+  c("PSe.individual", "PSp.individual", "PPPV.individual", "PNPV.individual")
+  
+  
+  list(ET = et, stages = stages, group.size = N, I2 = I2, I3 = I3, m1 = m1, m2 = m2, m3 = m3,
+       individual.testerror = data.frame(p, pse.vec, psp.vec, pppv.vec, pnpv.vec, row.names=NULL),
+       group.testerror = c(PSe = pse, PSp = psp, PPPV = pppv, PNPV = pnpv),
+       individual.probabilities = p)
+  
+}
 
 
 
 ## Brianna Hitt 4-11-16 - turn off printing for two, three, and four stages
 
+#' @title Operating characteristics for hierarchical group testing
+#' 
+#' @description Calculate operating characteristics for hierarchical 
+#' group testing with up to four stages, given a vector of individual 
+#' probabilities and a testing configuration.
+#' 
+#' @param p vector of probabilities corresponding to each individual's 
+#' risk of disease.
+#' @param I2 a numeric vector of pool sizes for stage 2 testing (used in 
+#' hierarchical testing with at least three stages).
+#' @param I3 a numeric vector of pool sizes for stage 3 testing (used in 
+#' hierarchical testing with at least four stages).
+#' @param se the sensitivity of the diagnostic test.
+#' @param sp the specificity of the diagnostic test.
+#' @param order.p a logical value indicating whether the vector of 
+#' individual probabilities needs to be sorted.
+#' 
+#' @details This function calculates the operating characteristics for
+#' hierarchical group testing with up to four stages of testing. 
+#' Operating characteristics calculated are expected number of tests, 
+#' and pooling sensitivity, pooling specificity, pooling positive 
+#' predictive value, and pooling negative predictive value, for each 
+#' individual and for the configuration overall.
+#' 
+#' If \kbd{I2} is NULL, there are two stages of testing. If \kbd{I3} 
+#' is NULL but \kbd{I2} has values, there are three stages of testing.
+#' If both \kbd{I2} and \kbd{I3} have values, there are four stages 
+#' of testing.
+#' 
+#' Vectors \kbd{I2} and \kbd{I3} should be entered using notation
+#' that keeps track of all individuals through all stages (e.g. for
+#' a group of 10 individuals that splits into 5, 4, and 1 individual
+#' at stage 2, then into 3, 2, 2, 1, and 1 individual at stage 3
+#' before individual testing at stage 4, then I2=c(5,4,1) and 
+#' I3=c(3,2,2,1,1,1) so that the specimen that was tested 
+#' individually at stage 2 is still numbered at stage 3 even though
+#' it will not be tested again).
+#' 
+#' The displayed pooling sensitivity, pooling specificity, pooling positive 
+#' predictive value, and pooling negative predictive value are weighted 
+#' averages of the corresponding individual accuracy measures for all 
+#' individuals within the initial group for a hierarchical algorithm.
+#' Expressions for these averages are provided in the Supplementary 
+#' Material for Hitt et al. (2018). These expressions are based on accuracy 
+#' definitions given by Altman and Bland (1994a, 1994b).
+#' 
+#' @return A list containing:
+#' \item{ET}{the expected number of tests.}
+#' \item{stages}{the number of stages in the testing algorithm.}
+#' \item{group.size}{the total number of individuals tested in the 
+#' algorithm.}
+#' \item{I2}{pool sizes for the second stage of testing, or
+#' "individual testing" if there are only two stages of testing.}
+#' \item{I3}{pool sizes for the third stage of testing, or
+#' "individual testing" if there are only three stages of testing.}
+#' \item{m1}{the initial (stage 1) group size for two stage testing, 
+#' or the number of subgroups originating from the initial group.}
+#' \item{m2}{the number of subgroups for each preceding group 
+#' containing more than one individual, or "individual testing" 
+#' if there are only two stages of testing.}
+#' \item{m3}{the number of subgroups for each preceding group 
+#' containing more than one individual, or "individual testing" 
+#' if there are only three stages of testing. NULL if there are 
+#' only two stages of testing.}
+#' \item{individual.testerror}{a data frame containing:
+#' \describe{
+#' \item{pse.vec}{a vector containing each individual's pooling 
+#' sensitivity.}
+#' \item{psp.vec}{a vector containing each individual's pooling 
+#' specificity.}
+#' \item{pppv.vec}{a vector containing each individual's pooling 
+#' positive predictive value.}
+#' \item{pnpv.vec}{a vector containing each individual's pooling
+#' negative predictive value.}}}
+#' \item{group.testerror}{a vector containing:
+#' \describe{
+#' \item{PSe}{the overall pooling sensitivity for the algorithm. 
+#' Further details are given under 'Details'.}
+#' \item{PSp}{the overall pooling specificity for the algorithm. 
+#' Further details are given under 'Details'.}
+#' \item{PPPV}{the overall pooling positive predictive value 
+#' for the algorithm. Further details are given under 'Details'.}
+#' \item{PNPV}{the overall pooling negative predictive value
+#' for the algorithm. Further details are given under 'Details'.}}}
+#' \item{individual.probabilities}{a vector containing each 
+#' individual's probability of disease. If \kbd{order.p=TRUE}, this
+#' is the sorted vector of individual probabilities.}
+#' 
+#' @section Note: This function returns the pooling positive and negative
+#' predictive values for all individuals even though these measures are 
+#' diagnostic specific; i.e., PPPV (PNPV) should only be considered
+#' for those individuals who have tested positive (negative).
+#' 
+#' @author This function was originally written by Michael S. 
+#' Black for Black et al. (2015). The function was obtained from 
+#' \url{http://chrisbilder.com/grouptesting}. Minor modifications were made 
+#' to the function for inclusion in the binGroup package.
+#' 
+#' @references 
+#' \insertRef{Black2015}{binGroup}
+#' 
+#' @seealso
+#' \code{\link{Array.Measures}} for calculating operating characteristics
+#' under array testing without master pooling, 
+#' \code{\link{MasterPool.Array.Measures}} for non-informative array 
+#' testing with master pooling, and \code{\link{inf.dorf.measures}} 
+#' for informative two-stage hierarchical testing. See 
+#' \code{\link{p.vec.func}} for generating a vector of 
+#' individual risk probabilities for informative group testing.  
+#' 
+#' \url{http://chrisbilder.com/grouptesting}
+#' 
+#' @family Operating characteristic functions
+#' 
+#' @examples 
+#' # Calculate the operating characteristics for 
+#' #   non-informative two-stage hierarchical testing
+#' #   with an overall disease prevalence of p = 0.015
+#' #   and an initial group size of 12.
+#' # This example takes less than 1 second to run.
+#' # Estimated running time was calculated using a 
+#' #   computer with 16 GB of RAM and one core of an 
+#' #   Intel i7-6500U processor.
+#' p.vec <- rep(x=0.015, times=12)
+#' hierarchical.desc2(p=p.vec, I2=NULL, I3=NULL, se=0.95, 
+#' sp=0.95, order.p=FALSE)
+#' 
+#' # Calculate the operating characteristics for 
+#' #   non-informative three-stage hierarchical testing
+#' #   with an overall disease prevalence of p = 0.04, 
+#' #   where an initial group of 20 individuals is 
+#' #   split into equally sized subgroups of 5 each.
+#' # This example takes less than 1 second to run.
+#' # Estimated running time was calculated using a 
+#' #   computer with 16 GB of RAM and one core of an 
+#' #   Intel i7-6500U processor.
+#' p.vec <- rep(x=0.04, times=20)
+#' hierarchical.desc2(p=p.vec, I2=rep(x=5, times=4),
+#' I3=NULL, se=0.99, sp=0.99, order.p=FALSE)
+#' 
+#' # Calculate the operating characteristics for 
+#' #   informative three-stage hierarchical testing
+#' #   where an initial group of 10 individuals is 
+#' #   split into subsequent groups of 5, 4, and 1 
+#' #   individual.
+#' # A vector of individual probabilities is generated using
+#' #   the expected value of order statistics from a beta 
+#' #   distribution with p = 0.02 and a heterogeneity level 
+#' #   of alpha = 0.5. Depending on the specified probability, 
+#' #   alpha level, and overall group size, simulation may 
+#' #   be necessary in order to generate the vector of individual
+#' #   probabilities. This is done using p.vec.func() and 
+#' #   requires the user to set a seed in order to reproduce 
+#' #   results.
+#' # This example takes less than 1 second to run.
+#' # Estimated running time was calculated using a 
+#' #   computer with 16 GB of RAM and one core of an 
+#' #   Intel i7-6500U processor.
+#' set.seed(1002)
+#' p.vec <- p.vec.func(p=0.02, alpha=0.5, grp.sz=10)
+#' hierarchical.desc2(p=p.vec, I2=c(5,4,1), I3=NULL,
+#' se=0.90, sp=0.90, order.p=TRUE)
 
-  hierarchical.desc2 <- function(p, I2 = NULL, I3 = NULL, se = 1, sp = 1, order.p = TRUE) {
-    if (order.p == TRUE) p = sort(p)
-    N <- length(p)
-
-    g2 <- NULL
-    g3 <- NULL
-
-    if (!is.null(I2) && is.null(I3)) g2 <- I2 #converts I2 to what is used in program
-
-    if (!is.null(I2) && !is.null(I3)) {
-      get.g.vec <- get.g2_g3(I2 = I2, I3 = I3) #coverts I2, I3 to what is used in the programs
-      g2 <- get.g.vec$g2
-      g3 <- get.g.vec$g3
-    }
-
-    if (is.null(g2) || (is.null(g3) && max(g2) == 1 || max(g2) == N)) {
-      #print("Two stage procedure")
-      stages = 2
-
-      g2 <- "individual testing"
-      g3 <- NULL
-
-      et <- 1 + N*(se*(1 - prod(1 - p)) + (1 - sp)*prod(1 - p))
-
-      pse.vec  <- ProbY.1(p.vec = p, g3 = rep(1, N), sp = sp, se = se)
-      psp.vec  <- 1 - ProbY.0(p.vec = p, g3 = rep(1,N), sp = sp, se = se)
-      pppv.vec <- p*pse.vec/(p*pse.vec + (1 - p)*(1 - psp.vec))
-      pnpv.vec <- (1 - p)*psp.vec/((1 - p)*psp.vec + p*(1 - pse.vec))
-
-      pse  <- sum(p*pse.vec)/sum(p)
-      psp  <- sum((1 - p)*psp.vec)/sum(1 - p)
-      pppv <- sum(p*pse.vec)/sum((p*pse.vec + (1 - p)*(1 - psp.vec)))
-      pnpv <- sum((1 - p)*psp.vec)/sum(((1 - p)*psp.vec + p*(1 - pse.vec)))
-
-      I2 <- "individual testing"
-      I3 <- NULL
-
-      m1 <- N
-      m2 <- "individual testing"
-      m3 <- NULL
-
-    }
-    else if (!is.null(g2) && (is.null(g3) || length(g3) == length(g2) || max(g3) == 1) ) {
-      #print("Three stage procedure")
-      stages = 3
-
-      g3 <- "individual testing"
-
-      et <- Exp.T.3step(p = p, grping = g2, se = se, sp = sp)
-
-      pse.vec  <- ProbY.1(p.vec = p,g3 = g2,sp = sp,se = se)
-      psp.vec  <- 1 - ProbY.0(p.vec = p,g3 = g2,sp = sp,se = se)
-      pppv.vec <- p*pse.vec/(p*pse.vec + (1 - p)*(1 - psp.vec))
-      pnpv.vec <- (1 - p)*psp.vec/((1 - p)*psp.vec + p*(1 - pse.vec))
-
-      pse  <- sum(p*pse.vec)/sum(p)
-      psp  <- sum((1 - p)*psp.vec)/sum(1 - p)
-      pppv <- sum(p*pse.vec)/sum((p*pse.vec + (1 - p)*(1 - psp.vec)))
-      pnpv <- sum((1 - p)*psp.vec)/sum(((1 - p)*psp.vec + p*(1 - pse.vec)))
-
-      test.pattern <- get.mc.3s(grping = g2)
-
-      I2 <- test.pattern$vec.I2
-      I3 <- "individual testing"
-
-      m2 = test.pattern$vec.m2
-      m1 = length(m2)
-      m3 = "individual testing"
-
-
-    }
-    else if (!is.null(g2) && !is.null(g3)) {
-      #print("Four stage procedure")
-      stages = 4
-      et <- Exp.T.4step(p = p, vec.g2 = g2, vec.g3 = g3, se = se, sp = sp)$Exp.T
-
-      pse.vec  <- ProbY.4s.1(p.vec = p, vec.g2 = g2, vec.g3 = g3, sp = sp, se = se)
-      psp.vec  <- 1 - ProbY.4s.0(p.vec = p, vec.g2 = g2, vec.g3 = g3, sp = sp, se = se)
-      pppv.vec <- p*pse.vec/(p*pse.vec + (1 - p)*(1 - psp.vec))
-      pnpv.vec <- (1 - p)*psp.vec/((1 - p)*psp.vec + p*(1 - pse.vec))
-
-      pse  <- sum(p*pse.vec)/sum(p)
-      psp  <- sum((1 - p)*psp.vec)/sum(1 - p)
-      pppv <- sum(p*pse.vec)/sum((p*pse.vec + (1 - p)*(1 - psp.vec)))
-      pnpv <- sum((1 - p)*psp.vec)/sum(((1 - p)*psp.vec + p*(1 - pse.vec)))
-
-      test.pattern <- get.mc.4s(vec.g2 = g2, vec.g3 = g3)
-
-      I2 <- test.pattern$vec.I2
-      I3 <- test.pattern$vec.I3
-
-      m2 = test.pattern$vec.m2
-      m1 = length(m2)
-      m3 = test.pattern$vec.m3
-
-    }
-
-
-    c("PSe.individual", "PSp.individual", "PPPV.individual", "PNPV.individual")
-
-
-    list(ET = et, stages = stages, group.size = N, I2 = I2, I3 = I3, m1 = m1, m2 = m2, m3 = m3,
-         individual.testerror = data.frame(p, pse.vec, psp.vec, pppv.vec, pnpv.vec, row.names=NULL),
-         group.testerror = c(PSe = pse, PSp = psp, PPPV = pppv, PNPV = pnpv),
-         individual.probabilities = p)
-
+hierarchical.desc2 <- function(p, I2 = NULL, I3 = NULL, se = 1, sp = 1, order.p = TRUE) {
+  if (order.p == TRUE) p = sort(p)
+  N <- length(p)
+  
+  g2 <- NULL
+  g3 <- NULL
+  
+  if (!is.null(I2) && is.null(I3)) g2 <- I2 #converts I2 to what is used in program
+  
+  if (!is.null(I2) && !is.null(I3)) {
+    get.g.vec <- get.g2_g3(I2 = I2, I3 = I3) #coverts I2, I3 to what is used in the programs
+    g2 <- get.g.vec$g2
+    g3 <- get.g.vec$g3
   }
-  #end hierarchical.desc() functions
+  
+  if (is.null(g2) || (is.null(g3) && max(g2) == 1 || max(g2) == N)) {
+    #print("Two stage procedure")
+    stages = 2
+    
+    g2 <- "individual testing"
+    g3 <- NULL
+    
+    et <- 1 + N*(se*(1 - prod(1 - p)) + (1 - sp)*prod(1 - p))
+    
+    pse.vec  <- ProbY.1(p.vec = p, g3 = rep(1, N), sp = sp, se = se)
+    psp.vec  <- 1 - ProbY.0(p.vec = p, g3 = rep(1,N), sp = sp, se = se)
+    pppv.vec <- p*pse.vec/(p*pse.vec + (1 - p)*(1 - psp.vec))
+    pnpv.vec <- (1 - p)*psp.vec/((1 - p)*psp.vec + p*(1 - pse.vec))
+    
+    pse  <- sum(p*pse.vec)/sum(p)
+    psp  <- sum((1 - p)*psp.vec)/sum(1 - p)
+    pppv <- sum(p*pse.vec)/sum((p*pse.vec + (1 - p)*(1 - psp.vec)))
+    pnpv <- sum((1 - p)*psp.vec)/sum(((1 - p)*psp.vec + p*(1 - pse.vec)))
+    
+    I2 <- "individual testing"
+    I3 <- NULL
+    
+    m1 <- N
+    m2 <- "individual testing"
+    m3 <- NULL
+    
+  }
+  else if (!is.null(g2) && (is.null(g3) || length(g3) == length(g2) || max(g3) == 1) ) {
+    #print("Three stage procedure")
+    stages = 3
+    
+    g3 <- "individual testing"
+    
+    et <- Exp.T.3step(p = p, grping = g2, se = se, sp = sp)
+    
+    pse.vec  <- ProbY.1(p.vec = p,g3 = g2,sp = sp,se = se)
+    psp.vec  <- 1 - ProbY.0(p.vec = p,g3 = g2,sp = sp,se = se)
+    pppv.vec <- p*pse.vec/(p*pse.vec + (1 - p)*(1 - psp.vec))
+    pnpv.vec <- (1 - p)*psp.vec/((1 - p)*psp.vec + p*(1 - pse.vec))
+    
+    pse  <- sum(p*pse.vec)/sum(p)
+    psp  <- sum((1 - p)*psp.vec)/sum(1 - p)
+    pppv <- sum(p*pse.vec)/sum((p*pse.vec + (1 - p)*(1 - psp.vec)))
+    pnpv <- sum((1 - p)*psp.vec)/sum(((1 - p)*psp.vec + p*(1 - pse.vec)))
+    
+    test.pattern <- get.mc.3s(grping = g2)
+    
+    I2 <- test.pattern$vec.I2
+    I3 <- "individual testing"
+    
+    m2 = test.pattern$vec.m2
+    m1 = length(m2)
+    m3 = "individual testing"
+    
+    
+  }
+  else if (!is.null(g2) && !is.null(g3)) {
+    #print("Four stage procedure")
+    stages = 4
+    et <- Exp.T.4step(p = p, vec.g2 = g2, vec.g3 = g3, se = se, sp = sp)$Exp.T
+    
+    pse.vec  <- ProbY.4s.1(p.vec = p, vec.g2 = g2, vec.g3 = g3, sp = sp, se = se)
+    psp.vec  <- 1 - ProbY.4s.0(p.vec = p, vec.g2 = g2, vec.g3 = g3, sp = sp, se = se)
+    pppv.vec <- p*pse.vec/(p*pse.vec + (1 - p)*(1 - psp.vec))
+    pnpv.vec <- (1 - p)*psp.vec/((1 - p)*psp.vec + p*(1 - pse.vec))
+    
+    pse  <- sum(p*pse.vec)/sum(p)
+    psp  <- sum((1 - p)*psp.vec)/sum(1 - p)
+    pppv <- sum(p*pse.vec)/sum((p*pse.vec + (1 - p)*(1 - psp.vec)))
+    pnpv <- sum((1 - p)*psp.vec)/sum(((1 - p)*psp.vec + p*(1 - pse.vec)))
+    
+    test.pattern <- get.mc.4s(vec.g2 = g2, vec.g3 = g3)
+    
+    I2 <- test.pattern$vec.I2
+    I3 <- test.pattern$vec.I3
+    
+    m2 = test.pattern$vec.m2
+    m1 = length(m2)
+    m3 = test.pattern$vec.m3
+    
+  }
+  
+  
+  c("PSe.individual", "PSp.individual", "PPPV.individual", "PNPV.individual")
+  
+  
+  list(ET = et, stages = stages, group.size = N, I2 = I2, I3 = I3, m1 = m1, m2 = m2, m3 = m3,
+       individual.testerror = data.frame(p, pse.vec, psp.vec, pppv.vec, pnpv.vec, row.names=NULL),
+       group.testerror = c(PSe = pse, PSp = psp, PPPV = pppv, PNPV = pnpv),
+       individual.probabilities = p)
+  
+}
+#end hierarchical.desc() functions
 #end hierarchical and additional functions
+
+
+
 #Start get.CRC, uses same additional functions as above  for hierarchical.desc()
 ####################################################################
 #    Michael Black 03 12 2013
@@ -1823,16 +2123,16 @@ c("PSe.individual", "PSp.individual", "PPPV.individual", "PNPV.individual")
 #
 ###################################################################
 
-  get.CRC <- function(p, se = 1, sp = 1, stages = 2, order.p = TRUE,
+get.CRC <- function(p, se = 1, sp = 1, stages = 2, order.p = TRUE,
                     everycase = FALSE, init.config = "hom")   {
-    if (order.p == TRUE) p = sort(p)
-
-    if (stages == 2) {
-      print("Two stage immediately retests individually if initial group is positive")
-      CRC.desc <- hierarchical.desc(p = p, se = se, sp = sp, I2 = NULL, I3 = NULL, order.p = order.p)
-    }
-
-   if (everycase != TRUE) {
+  if (order.p == TRUE) p = sort(p)
+  
+  if (stages == 2) {
+    print("Two stage immediately retests individually if initial group is positive")
+    CRC.desc <- hierarchical.desc(p = p, se = se, sp = sp, I2 = NULL, I3 = NULL, order.p = order.p)
+  }
+  
+  if (everycase != TRUE) {
     if (stages == 3) {
       CRC <- Opt.grps.size_number.speed.3step(p = p, se = se, sp = sp) #in "integer_programming.R"
       CRC.desc <- hierarchical.desc(p=p, se = se, sp = sp, I2 = CRC[1:length(CRC) - 1], I3 = NULL, order.p = order.p)
@@ -1841,31 +2141,31 @@ c("PSe.individual", "PSp.individual", "PPPV.individual", "PNPV.individual")
       CRC <- Opt.grps.size_number.4step(p = p, se = se, sp =sp)         #in "ET4stepOptimizing_steeper_4s_only.R"
       change.notation <- get.mc.4s(vec.g2 = CRC$vec.g2, vec.g3 = CRC$vec.g3)
       CRC.desc <- hierarchical.desc(p = p, se = se, sp = sp,
-                      I2 = change.notation$vec.I2, I3 = change.notation$vec.I3,
-                      order.p = order.p)
+                                    I2 = change.notation$vec.I2, I3 = change.notation$vec.I3,
+                                    order.p = order.p)
     }
-   }
-
-   if (everycase == TRUE) {
+  }
+  
+  if (everycase == TRUE) {
     if (stages == 3) {
-
+      
       print("Warning: if group size is large (>18) progam may take excessive time")
-
+      
       CRC <- Opt.grps.size_number_speedg.3step(p = p, sp = sp, se = se)        #in "integer_programming.R"
       CRC.desc <- hierarchical.desc(p = p, se = se, sp = sp, I2 = CRC[1:length(CRC) - 1], I3 = NULL, order.p = order.p)
     }
     if (stages == 4) {
-
+      
       print("Warning: if group size is large (>13) progam may take excessive time")
-
+      
       CRC <- Opt.grps.size_number.4step.slow(p = p, sp = sp, se = se)         #in "ET4stepOptimizing_steeper_4s_only.R"
       change.notation <- get.mc.4s(vec.g2 = CRC$vec.g2, vec.g3 = CRC$vec.g3)
       CRC.desc <- hierarchical.desc(p = p, se = se, sp = sp,
-                      I2 = change.notation$vec.I2, I3 = change.notation$vec.I3, order.p = order.p)
+                                    I2 = change.notation$vec.I2, I3 = change.notation$vec.I3, order.p = order.p)
     }
     print("ORC is the optimal looking at every possible configuration")
-   }
-   CRC.desc
   }
+  CRC.desc
+}
 
 

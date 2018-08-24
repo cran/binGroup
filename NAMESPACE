@@ -7,10 +7,11 @@ residuals.gt, predict.gt,
 pooledBin, pooledBinDiff
 )
 
-export(OTC, NI.Dorf, Inf.Dorf, NI.D3, Inf.D3, NI.Array, Inf.Array, NI.A2M)
+export(OTC, NI.Dorf, Inf.Dorf, NI.D3, Inf.D3, NI.Array, Inf.Array, NI.A2M, hierarchical.desc2, inf.dorf.measures, Array.Measures, MasterPool.Array.Measures, beta.dist, p.vec.func, Informative.array.prob, opt.info.dorf, characteristics.pool, accuracy.dorf, pool.specific.dorf, opt.pool.size, thresh.val.dorf)
 
 import(graphics)
 importFrom("partitions", "parts")
+importFrom("Rdpack", "reprompt")
 importFrom("stats","binomial", "binom.test", "coef", "dbinom", "delete.response", "dbeta", "dnorm", "glm.fit", "integrate", "is.empty.model", "lm", "lm.fit", "model.extract", "model.frame", "model.matrix", "model.response", "na.omit", "na.pass", "optim", "pbeta", "pbinom", "plogis", "pnorm", "printCoefmat", "qbeta", "qbinom", "qchisq", "qnorm", "quantile", "rbeta", "rbinom", "residuals", "rgamma", "terms", "uniroot")
 importFrom("utils", "tail")
 

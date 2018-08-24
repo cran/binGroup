@@ -2,120 +2,180 @@
 % Please edit documentation in R/Inf.Dorf.R
 \name{Inf.Dorf}
 \alias{Inf.Dorf}
-\title{Informative two-stage hierarchical (Dorfman) testing}
+\title{Find the optimal testing configuration for informative 
+two-stage hierarchical (Dorfman) testing}
 \usage{
-Inf.Dorf(p, Se, Sp, group.sz, obj.fn, weights, alpha)
+Inf.Dorf(p, Se, Sp, group.sz, obj.fn, weights = NULL, alpha = 2)
 }
 \arguments{
-\item{p}{the probability of disease, which can be an overall probability of disease,
-from which a heterogeneous vector of individual probabilities will be generated, or
-a vector of individual probabilities specified by the user}
+\item{p}{the probability of disease, which can be specified as an overall 
+probability of disease, from which a heterogeneous vector of individual 
+probabilities will be generated, or a heterogeneous vector of individual 
+probabilities specified by the user.}
 
-\item{Se}{the sensitivity of the diagnostic test}
+\item{Se}{the sensitivity of the diagnostic test.}
 
-\item{Sp}{the specificity of the diagnostic test}
+\item{Sp}{the specificity of the diagnostic test.}
 
-\item{group.sz}{a single block size for which to find the optimal configuration
-out of all possible configurations and calculate the associated operating
-characteristics, or a range of block sizes over which to find the optimal
-testing configuration}
+\item{group.sz}{a single block size for which to find the OTC
+out of all possible configurations, or a range of block sizes over 
+which to find the OTC.}
 
 \item{obj.fn}{a list of objective functions which are minimized to find the
-optimal testing configuration. Available options include "\kbd{ET}" (the expected
-number of tests per individual), "\kbd{MAR}" (the expected number of tests divided
-by the expected number of correct classifications, described in Malinovsky et al. (2016)),
-\url{http://www.chrisbilder.com/grouptesting/HBTM/} for additional details.}
+OTC. The expected number of tests per individual, "\kbd{ET}", will always 
+be calculated. Additional options include "\kbd{MAR}" 
+(the expected number of tests divided by the expected number of correct 
+classifications, described in Malinovsky et al. (2016)), and "\kbd{GR}" 
+(a linear combination of the expected number of tests, the number of 
+misclassified negatives, and the number of misclassified positives, 
+described in Graff & Roeloffs (1972)). See Hitt et al. (2018) at
+\url{http://chrisbilder.com/grouptesting} for additional details.}
 
-\item{weights}{a matrix of up to six sets of weights for the GR function. Each set of
-weights is specified by a row of the matrix.}
+\item{weights}{a matrix of up to six sets of weights for the GR function. 
+Each set of weights is specified by a row of the matrix.}
 
-\item{alpha}{a scale parameter for the beta distribution that specifies the degree of
-heterogeneity for the generated probability vector}
+\item{alpha}{a scale parameter for the beta distribution that specifies 
+the degree of heterogeneity for the generated probability vector. If a 
+heterogeneous vector of individual probabilities is specified by the user, 
+\kbd{alpha} can be specified as \kbd{NA} or will be ignored.}
 }
 \value{
 A list containing:
-\item{prob}{the overall probability of disease or vector of individual probabilities,
-as specified by the user}
+\item{prob}{the probability of disease, as specified by the user.}
 \item{alpha}{the level of heterogeneity used to generate the vector of individual
-probabilities}
-\item{Se}{the sensitivity of the diagnostic test}
-\item{Sp}{the specificity of the diagnostic test}
-\item{opt.ET, opt.MAR, opt.GR}{a list for each objective function specified by the
-user, containing:
+probabilities.}
+\item{Se}{the sensitivity of the diagnostic test.}
+\item{Sp}{the specificity of the diagnostic test.}
+\item{opt.ET, opt.MAR, opt.GR}{a list for each objective function specified 
+by the user, containing:
 \describe{
-\item{OTC}{a list specifying the optimal testing configuration, which includes:
+\item{OTC}{a list specifying elements of the optimal testing configuration, 
+which include:
 \describe{
-\item{Block.sz}{the block size/overall group size, which is not tested}
-\item{pool.szs}{pool sizes for the first stage of testing}}}
-\item{p.vec}{the sorted vector of individual probabilities}
-\item{ET}{the expected testing expenditure for the OTC}
-\item{value}{the value of the objective function per individual}
-\item{PSe}{the overall pooling sensitivity for the algorithm}
-\item{PSp}{the overall pooling specificity for the algorithm}
-\item{PPPV}{the overall pooling positive predictive value for the algorithm}
-\item{PNPV}{the overall pooling negative predictive value for the algorithm}}}
+\item{Block.sz}{the block size/overall group size, which is not tested.}
+\item{pool.szs}{pool sizes for the first stage of testing.}}}
+\item{p.vec}{the sorted vector of individual probabilities.}
+\item{ET}{the expected testing expenditure for the OTC.}
+\item{value}{the value of the objective function per individual.}
+\item{PSe}{the overall pooling sensitivity for the algorithm. 
+Further details are given under 'Details'.}
+\item{PSp}{the overall pooling specificity for the algorithm. 
+Further details are given under 'Details'.}
+\item{PPPV}{the overall pooling positive predictive value for the algorithm. 
+Further details are given under 'Details'.}
+\item{PNPV}{the overall pooling negative predictive value for the algorithm. 
+Further details are given under 'Details'.}}}
 }
 \description{
-Find the optimal testing configuration for informative
-two-stage hierarchical (Dorfman) testing and calculate the associated
-operating characteristics.
+Find the optimal testing configuration (OTC) for 
+informative two-stage hierarchical (Dorfman) testing and 
+calculate the associated operating characteristics.
 }
 \details{
-This function finds the optimal testing configuration and computes
-the associated operating characteristics for informative two-stage
-hierarchical (Dorfman) testing, implemented via the pool-specific optimal
-Dorfman (PSOD) method described in McMahan et al. (2012a). This function
-finds the optimal testing configuration by considering all possible configurations
-instead of using the greedy algorithm proposed for PSOD testing.
-See Hitt et al. (2018) at \url{http://www.chrisbilder.com/grouptesting/HBTM/}
-McMahan et al. (2012a), or Dorfman (1943) for additional details.
+This function finds the OTC and computes the associated operating 
+characteristics for informative two-stage hierarchical (Dorfman) testing, 
+implemented via the pool-specific optimal Dorfman (PSOD) method described in 
+McMahan et al. (2012). This function finds the optimal testing configuration 
+by considering all possible testing configurations instead of using the greedy 
+algorithm proposed for PSOD testing. Operating characteristics calculated are
+expected number of tests, pooling sensitivity, pooling specificity, pooling
+positive predictive value, and pooling negative predictive value for the algorithm.
+See Hitt et al. (2018) or McMahan et al. (2012) at 
+\url{http://chrisbilder.com/grouptesting} for additional details on the 
+implementation of informative two-stage hierarchical (Dorfman) testing.
+
+The value(s) specified by \kbd{group.sz} represent the overall block size 
+used in the pool-specific optimal Dorfman (PSOD) method, where the overall group 
+size is not tested. Instead, multiple initial pool sizes within this block are 
+found and tested in the first stage of testing. The second stage of testing consists 
+of individual retesting. For more details on informative two-stage hierarchical testing 
+implemented via the PSOD method, see Hitt et al. (2018) and McMahan et al. (2012).
+
+If a single value is provided for \kbd{group.sz}, the OTC will be  
+found over all possible testing configurations. If a range of group sizes is 
+specified, the OTC will be found over all group sizes.
+
+The displayed pooling sensitivity, pooling specificity, pooling positive 
+predictive value, and pooling negative predictive value are weighted 
+averages of the corresponding individual accuracy measures for all 
+individuals within the initial group for a hierarchical algorithm, or 
+within the entire array for an array-based algorithm.
+Expressions for these averages are provided in the Supplementary 
+Material for Hitt et al. (2018). These expressions are based on accuracy 
+definitions given by Altman and Bland (1994a, 1994b).
 }
 \examples{
-# Find the optimal testing configuration for informative two-stage
-#   hierarchical (Dorfman) testing
-\dontrun{Inf.Dorf(p=0.01, Se=0.95, Sp=0.95, group.sz=3:20, obj.fn=c("ET", "MAR"),
-weights=NULL, alpha=2)}
+# Find the OTC for informative two-stage hierarchical 
+#   (Dorfman) testing.
+# A vector of individual probabilities is generated using
+#   the expected value of order statistics from a beta 
+#   distribution with p = 0.01 and a heterogeneity level 
+#   of alpha = 2. Depending on the specified probability, 
+#   alpha level, and overall group size, simulation may 
+#   be necessary in order to generate the vector of individual
+#   probabilities. This is done using p.vec.func() and 
+#   requires the user to set a seed in order to reproduce 
+#   results.
+# This example takes approximately 20 seconds to run.
+# Estimated running time was calculated using a 
+#   computer with 16 GB of RAM and one core of an 
+#   Intel i7-6500U processor.
+\dontrun{
+set.seed(9245)
+Inf.Dorf(p=0.01, Se=0.95, Sp=0.95, group.sz=3:30, 
+obj.fn=c("ET", "MAR"), alpha=2)}
 
-# Find the optimal testing configuration for informative two-stage
-#  hierarchical (Dorfman) testing, for a specified vector of
-#  individual probabilities
+# This example takes less than 1 second to run.
+# Estimated running time was calculated using a 
+#   computer with 16 GB of RAM and one core of an 
+#   Intel i7-6500U processor.
+set.seed(9245)
+Inf.Dorf(p=0.01, Se=0.95, Sp=0.95, group.sz=5:10, 
+obj.fn=c("ET", "MAR"), alpha=2)
 
+# Find the OTC for informative two-stage hierarchical 
+#   (Dorfman) testing, for a specified block size.
+# This example uses rbeta() to generate random probabilities 
+#   and requires the user to set a seed in order to reproduce 
+#   results.
+# This example takes approximately 2.5 minutes to run.
+# Estimated running time was calculated using a 
+#   computer with 16 GB of RAM and one core of an 
+#   Intel i7-6500U processor.
 \dontrun{
 set.seed(8791)
-Inf.Dorf(p=rbeta(10,2,200), Se=0.90, Sp=0.90, group.sz=10,
-obj.fn=c("ET", "MAR", "GR"),
+Inf.Dorf(p=p.vec.func(p=0.03, alpha=0.5, grp.sz=50), 
+Se=0.90, Sp=0.90, group.sz=50, obj.fn=c("ET", "MAR", "GR"),
 weights=matrix(data=c(1,1,10,10), nrow=2, ncol=2, byrow=TRUE),
-alpha=NA)
-}
+alpha=NA)}
 }
 \references{
-\emph{Dorfman, R. (1943)}. The detection of defective members of large populations.
-\emph{The Annals of Mathematical Statistics, 14, 436-440}.
+\insertRef{Altman1994a}{binGroup}
 
-\emph{Graff, L.E. & Roeloffs, R. (1972)}. Group testing in the presence of test error;
-an extension of the Dorfman procedure. \emph{Technometrics, 14, 113-122}.
+\insertRef{Altman1994b}{binGroup}
 
-\emph{Malinovsky, Y.; Albert, P.S. & Roy, A. (2016)}. Reader reaction: A note on the
-evaluation of group testing algorithms in the presence of misclassification.
-\emph{Biometrics, 72, 299-302}.
+\insertRef{Dorfman1943}{binGroup}
 
-\emph{McMahan, C.S.; Tebbs, J.M. & Bilder, C.R. (2012a)}. Informative Dorfman screening.
-\emph{Biometrics, 68, 287-296}.
+\insertRef{Graff1972}{binGroup}
+
+\insertRef{Hitt2018}{binGroup}
+
+\insertRef{Malinovsky2016}{binGroup}
+
+\insertRef{McMahan2012a}{binGroup}
 }
 \seealso{
-\code{\link{NI.Dorf}} for non-informative
-two-stage hierarchical (Dorfman) testing
+\code{\link{NI.Dorf}} for non-informative two-stage hierarchical (Dorfman) 
+testing and \code{\link{OTC}} for finding the optimal testing configuration 
+for a number of standard group testing algorithms.
 
-\code{\link{OTC}} for finding the
-optimal testing configuration for a number of standard group testing algorithms
+\url{http://chrisbilder.com/grouptesting}
 
-\url{http://chrisbilder.com/grouptesting/HBTM}
-
-Other Optimal Testing Configuration functions: \code{\link{Inf.Array}},
+Other OTC functions: \code{\link{Inf.Array}},
   \code{\link{Inf.D3}}, \code{\link{NI.A2M}},
   \code{\link{NI.Array}}, \code{\link{NI.D3}},
   \code{\link{NI.Dorf}}, \code{\link{OTC}}
 }
 \author{
-Brianna Hitt
+Brianna D. Hitt
 }

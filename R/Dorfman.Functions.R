@@ -17,6 +17,115 @@
 #
 #EXAMPLE: opt.info.dorf(prob=rbeta(1000,1,10), se = 1, sp = 1, method ="OD", max.pool=15, thresh.pool=8, threshold=NULL)
 
+#' @title Find the characteristics of an informative two-stage 
+#' hierarchical (Dorfman) algorithm
+#' 
+#' @description Find the characteristics of an informative 
+#' two-stage hierarchical (Dorfman) decoding process using Optimal 
+#' Dorfman (OD), Thresholded Optimal Dorfman (TOD), or Pool-Specific 
+#' Optimal Dorfman (PSOD) algorithms.
+#' 
+#' @param prob a vector of all subjects' infection probabilities.
+#' @param se the sensitivity of the diagnostic test.
+#' @param sp the specificity of the diagnostic test.
+#' @param method character string defining the specific screening
+#' procedure for implementation of Dorfman retesting in a 
+#' heterogeneous population. Options include Optimal Dorfman 
+#' ("\kbd{OD}"), Thresholded Optimal Dorfman ("\kbd{TOD}"), and
+#' Pool-Specific Optimal Dorfman ("\kbd{PSOD}"). Further details 
+#' are given under 'Details'.
+#' @param max.pool the maximum allowable pool size. Further details 
+#' are given under 'Details'.
+#' @param thresh.pool the initial pool size used for TOD, if 
+#' \kbd{threshold} is not specified. Further details are given 
+#' under 'Details'.
+#' @param threshold the threshold value for TOD. If a threshold
+#' value is not specified, one is found algorithmically. Further 
+#' details are given under 'Details'.
+#' 
+#' @details This function finds the characteristics of an informative
+#' two-stage hierarchical (Dorfman) decoding process. Characteristics
+#' found include the expected expenditure of the decoding process, 
+#' the variance of the expenditure of the decoding process, and the 
+#' pooling sensitivity, pooling specificity, pooling positive predictive
+#' value, and pooling negative predictive value for each individual.
+#' Calculations of these characteristics are done using equations
+#' presented in McMahan et al. (2012). 
+#' 
+#' Optimal Dorfman (OD) is an informative Dorfman algorithm in 
+#' which the common pool size \eqn{c=c_{opt}} minimizes 
+#' \eqn{E(T^(c))}, the expected number of tests needed to decode 
+#' all \eqn{N} individuals when pools of size \eqn{c} are used. 
+#' 
+#' Thresholded Optimal Dorfman (TOD) is an informative Dorfman 
+#' algorithm in which all \eqn{N} individuals are partitioned 
+#' into two classes, low-risk and high-risk individuals, based 
+#' on whether their risk probability falls below or above a 
+#' particular threshold value. The threshold can be specified 
+#' using the \kbd{threshold} argument or the TOD algorithm can 
+#' identify the optimal threshold value. The low-risk individuals
+#' are tested using a optimal common pool size,  and high-risk 
+#' individuals are tested individually.
+#' 
+#' Pool-Specific Optimal Dorfman (PSOD) is an informative Dorfman
+#' algorithm in which optimal sizes are determined for each pool. 
+#' A total of \eqn{N} individuals are tested in pools that minimize
+#' the expected number of tests per individual, on a pool-by-pool 
+#' basis. If desired, the user can add the constraint of a maximum 
+#' allowable pool size, so that each pool will contain no more 
+#' than the maximum allowable number of individuals.
+#' 
+#' All three informative Dorfman procedures described above require
+#' individuals to be ordered from smallest to largest probability 
+#' of infection. See McMahan et al. (2012) for additional details
+#' on the implementation of informative two-stage hierarchical
+#' (Dorfman) testing algorithms.
+#' 
+#' @return A list containing:
+#' \item{tv}{the threshold value used for TOD, if applicable.}
+#' \item{e}{the expected expenditure of the decoding process.}
+#' \item{v}{the variance of the expenditure of the decoding 
+#' process.}
+#' \item{summary}{a matrix of summary measures that includes
+#' each individual's infection probability, pool (pool to which
+#' they belong), pooling sensitivity, pooling specificity, 
+#' pooling positive predictive value, and pooling negative
+#' predictive value.}
+#' 
+#' @author This function was originally written by Christopher S. 
+#' McMahan for McMahan et al. (2012). The function was obtained 
+#' from \url{http://chrisbilder.com/grouptesting}.
+#' 
+#' @references 
+#' \insertRef{Dorfman1943}{binGroup}
+#' 
+#' \insertRef{McMahan2012a}{binGroup}
+#' 
+#' @seealso 
+#' \url{http://chrisbilder.com/grouptesting}
+#' 
+#' @family Informative Dorfman functions
+#' 
+#' @examples 
+#' # Find the characteristics of an informative
+#' #   Dorfman algorithm, using the OD procedure.
+#' # This example takes less than 1 second to run.
+#' # Estimated running time was calculated using a 
+#' #   computer with 16 GB of RAM and one core of an 
+#' #   Intel i7-6500U processor.
+#' opt.info.dorf(prob=rbeta(1000,1,10), se=1, sp=1, 
+#' method ="OD", max.pool=15, thresh.pool=8, threshold=NULL)
+#' 
+#' # Find the characteristics of an informative 
+#' #   Dorfman algorithm, using the TOD procedure.
+#' # This example takes less than 1 second to run.
+#' # Estimated running time was calculated using a 
+#' #   computer with 16 GB of RAM and one core of an 
+#' #   Intel i7-6500U processor.
+#' set.seed(1002)
+#' p.vec <- p.vec.func(p=0.01, alpha=2, grp.sz=20)
+#' opt.info.dorf(prob=p.vec, se=0.95, sp=0.95, 
+#' method="TOD", max.pool=5, threshold=0.015)
 
 opt.info.dorf<-function(prob, se = 1, sp = 1, method ="OD", max.pool=15, thresh.pool=8, threshold=NULL){
 
@@ -126,10 +235,6 @@ return(list("tv"=p.star, "e"=res.e, "v"=res.v, "summary"=res.mat))
 
 
 
-
-
-
-
 ######################################
 ### DORFMAN DECODING FUNCTIONS #######
 ######################################
@@ -142,6 +247,44 @@ return(list("tv"=p.star, "e"=res.e, "v"=res.v, "summary"=res.mat))
 # sp is specificity.
 # res.e is the expected expenditure of the pool and
 # res.v is the variance of expenditure of the pool.
+
+#' @title Testing expenditure for informative Dorfman testing
+#' 
+#' @description Calculate the expectation and variation of the testing
+#' expenditure of a pool used with informative Dorfman testing.
+#' 
+#' @param p a vector of each individual's probability of infection.
+#' @inheritParams opt.info.dorf
+#' 
+#' @details This function calculates the expected value and variance
+#' of the testing expenditure of a pool of size greater than or equal 
+#' to one used with informative Dorfman testing. Calculations of these 
+#' measures are done using the equations presented in McMahan et al. (2012). 
+#' 
+#' @return a list containing:
+#' \item{e}{the expected testing expenditure of the pool.}
+#' \item{v}{the variation of the testing expenditure of the pool.}
+#'  
+#' @author This function was originally written by Christopher S. 
+#' McMahan for McMahan et al. (2012). The function was obtained 
+#' from \url{http://chrisbilder.com/grouptesting}.
+#' 
+#' @references 
+#' \insertRef{McMahan2012a}{binGroup}
+#' 
+#' @seealso 
+#' \url{http://chrisbilder.com/grouptesting} 
+#' 
+#' @family Informative Dorfman functions
+#' 
+#' @examples 
+#' # This example takes less than 1 second to run.
+#' # Estimated running time was calculated using a 
+#' #   computer with 16 GB of RAM and one core of an 
+#' #   Intel i7-6500U processor.
+#' set.seed(8135)
+#' p.vec <- p.vec.func(p=0.02, alpha=1, grp.sz=10)
+#' characteristics.pool(p=p.vec[1:3], se=0.90, sp=0.90)
 
 characteristics.pool<-function(p,se,sp){
 n<-length(p)
@@ -157,12 +300,58 @@ res.v<-0
 return(list("e"=res.e, "v"=res.v))
 }
 
+
+
 ############################################################################
-# Function that retruns PSe, PSp, PPV, and NPV for all individuals
+# Function that returns PSe, PSp, PPV, and NPV for all individuals
 # belonging to a pool of size greater than or equal to one
 # here p is a vector of all subject probabilities,
 # se is sensitivity, and
 # sp is specificity.
+
+#' @title Accuracy measures for informative Dorfman testing
+#' 
+#' @description Calculate the accuracy measures for each individual 
+#' in a pool used with informative Dorfman testing.
+#' 
+#' @param p a vector of each individual's probability of infection.
+#' @inheritParams opt.info.dorf
+#' 
+#' @details This function calculates the pooling sensitivity, pooling
+#' specificity, pooling positive predictive value, and pooling negative
+#' predictive value for each individual belonging to a pool of size 
+#' greater than or equal to one used with informative Dorfman testing. 
+#' Calculations of these measures are done using the equations presented 
+#' in McMahan et al. (2012). 
+#' 
+#' @return a list containing:
+#' \item{PSe}{a vector containing each individual's pooling sensitivity.}
+#' \item{PSp}{a vector containing each individual's pooling specificity.}
+#' \item{PPV}{a vector containing each individual's pooling positive 
+#' predictive value.}
+#' \item{NPV}{a vector containing each individual's pooling negative 
+#' predictive value.}
+#'  
+#' @author This function was originally written by Christopher S. 
+#' McMahan for McMahan et al. (2012). The function was obtained 
+#' from \url{http://chrisbilder.com/grouptesting}.
+#' 
+#' @references 
+#' \insertRef{McMahan2012a}{binGroup}
+#' 
+#' @seealso 
+#' \url{http://chrisbilder.com/grouptesting}
+#' 
+#' @family Informative Dorfman functions
+#' 
+#' @examples 
+#' # This example takes less than 1 second to run.
+#' # Estimated running time was calculated using a 
+#' #   computer with 16 GB of RAM and one core of an 
+#' #   Intel i7-6500U processor.
+#' set.seed(8135)
+#' p.vec <- p.vec.func(p=0.02, alpha=1, grp.sz=10)
+#' accuracy.dorf(p=p.vec[1:3], se=0.90, sp=0.90)
 
 accuracy.dorf<-function(p,se,sp){
 cj<-length(p)
@@ -192,14 +381,51 @@ return(list("PSe"=se.vec, "PSp"=sp.vec, "PPV"=ppv.vec, "NPV"=npv.vec))
 
 
 
-
 ##############################################
 # Pooling Algorithm Minimizes Individual 
 # Risk on a per pool basis, so it allows for multiple 
 # pooling sizes (psz) here p is a vector of all subject probabilities,
 # se is sensitivity,
 # sp is specificity, and
-# max.n is the maximum allowable pool size.
+# max.p is the maximum allowable pool size.
+
+#' @title Find the optimal pool sizes for Pool-Specific Optimal Dorfman 
+#' (PSOD) testing
+#' 
+#' @description Find the set of optimal pool sizes for Pool-Specific 
+#' Optimal Dorfman (PSOD) testing.
+#' 
+#' @param p a vector of each individual's probability of infection.
+#' @param max.p the maximum allowable pool size.
+#' @inheritParams opt.info.dorf
+#' 
+#' @details This function finds the set of optimal pool sizes for PSOD
+#' testing. PSOD testing uses a greedy algorithm and does not consider
+#' all possible sets of pool sizes. See McMahan et al. (2012) for 
+#' additional details on the implementation of PSOD testing.
+#' 
+#' @return The optimal set of pool sizes for PSOD testing.
+#'  
+#' @author This function was originally written by Christopher S. 
+#' McMahan for McMahan et al. (2012). The function was obtained 
+#' from \url{http://chrisbilder.com/grouptesting}.
+#' 
+#' @references 
+#' \insertRef{McMahan2012a}{binGroup}
+#' 
+#' @seealso 
+#' \url{http://chrisbilder.com/grouptesting}
+#' 
+#' @family Informative Dorfman functions
+#' 
+#' @examples 
+#' # This example takes less than 1 second to run.
+#' # Estimated running time was calculated using a 
+#' #   computer with 16 GB of RAM and one core of an 
+#' #   Intel i7-6500U processor.
+#' set.seed(8135)
+#' p.vec <- p.vec.func(p=0.02, alpha=1, grp.sz=10)
+#' pool.specific.dorf(p=p.vec, max.p=3, se=0.95, sp=0.95)
 
 pool.specific.dorf<-function(p,max.p,se,sp){
 p<-sort(p)
@@ -229,13 +455,52 @@ return(psz)
 
 
 
-
 ####################################################
-# Function for finding the otimal pool size (psz),                                               
+# Function for finding the optimal pool size (psz),                                               
 # here p is a vector of all subject probabilities,
 # se is sensitivity,
 # sp is specificity, and
-# max.n is the maximum allowable pool size.
+# max.p is the maximum allowable pool size.
+
+#' @title Find the optimal pool size for Optimal Dorfman or
+#' Thresholded Optimal Dorfman
+#' 
+#' @description Find the optimal common pool size for Optimal Dorfman
+#' (OD) or Thresholded Optimal Dorfman (TOD) testing.
+#' 
+#' @param p a vector of each individual's probability of infection.
+#' @param max.p the maximum allowable pool size.
+#' @inheritParams opt.info.dorf
+#' 
+#' @details This function finds the optimal common pool size for OD or
+#' TOD testing. Using OD testing, all individuals are tested using an 
+#' optimal common pool size. Using TOD testing, individuals are partitioned 
+#' into low-risk and high-risk groups, and all low-risk individuals are 
+#' tested using an optimal common pool size. See McMahan et al. (2012) for 
+#' additional details on the implementation of OD or TOD testing.
+#' 
+#' @return The optimal common pool size for OD or TOD testing.
+#'  
+#' @author This function was originally written by Christopher S. 
+#' McMahan for McMahan et al. (2012). The function was obtained 
+#' from \url{http://chrisbilder.com/grouptesting}.
+#' 
+#' @references 
+#' \insertRef{McMahan2012a}{binGroup}
+#' 
+#' @seealso 
+#' \url{http://chrisbilder.com/grouptesting}
+#' 
+#' @family Informative Dorfman functions
+#' 
+#' @examples 
+#' # This example takes less than 1 second to run.
+#' # Estimated running time was calculated using a 
+#' #   computer with 16 GB of RAM and one core of an 
+#' #   Intel i7-6500U processor.
+#' set.seed(8135)
+#' p.vec <- p.vec.func(p=0.02, alpha=1, grp.sz=10)
+#' opt.pool.size(p=p.vec, max.p=3, se=0.95, sp=0.95)
 
 opt.pool.size<-function(p, max.p, se=1, sp=1){
                
@@ -276,7 +541,52 @@ return(psz-1)
 # se is sensitivity,
 # sp is specificity, and
 # psz is the initial pool size.
-                                                                   
+
+#' @title Find the optimal threshold value for Thresholded Optimal 
+#' Dorfman testing
+#' 
+#' @description Find the optimal threshold value for Thresholded Optimal
+#' Dorfman (TOD) testing.
+#' 
+#' @param p a vector of each individual's probability of infection.
+#' @param psz the initial pool size.
+#' @inheritParams opt.info.dorf
+#' 
+#' @details This function finds the optimal threshold value for TOD 
+#' testing for situations where the threshold value is not specified. 
+#' See McMahan et al. (2012) for additional details on the implementation 
+#' of TOD testing.
+#' 
+#' @return The optimal threshold value for TOD testing.
+#'  
+#' @author This function was originally written by Christopher S. 
+#' McMahan for McMahan et al. (2012). The function was obtained 
+#' from \url{http://chrisbilder.com/grouptesting}.
+#' 
+#' @references 
+#' \insertRef{McMahan2012a}{binGroup}
+#' 
+#' @seealso 
+#' \url{http://chrisbilder.com/grouptesting}
+#' 
+#' @family Informative Dorfman functions
+#' 
+#' @examples
+#' # This example takes approximately 4 seconds to run. 
+#' # Estimated running time was calculated using a 
+#' #   computer with 16 GB of RAM and one core of an 
+#' #   Intel i7-6500U processor.
+#' \dontrun{
+#' set.seed(3154)
+#' p.vec <- p.vec.func(p=0.10, alpha=0.5, grp.sz=1000)
+#' thresh.val.dorf(p=p.vec, psz=10, se=0.95, sp=0.95)}
+#' 
+#' # This example takes less than 1 second to run.
+#' # Estimated running time was calculated using a 
+#' #   computer with 16 GB of RAM and one core of an 
+#' #   Intel i7-6500U processor.
+#' p.vec <- p.vec.func(p=0.15, alpha=2, grp.sz=100)
+#' thresh.val.dorf(p=p.vec, psz=10, se=0.95, sp=0.95)
 
 thresh.val.dorf<-function(p, psz, se=1, sp=1){
   N<-length(p)

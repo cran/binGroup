@@ -1,5 +1,5 @@
 \name{binGroup-package}
-\Rdversion{1.1-5}
+\Rdversion{2.2-1}
 \alias{binGroup-package}
 \alias{binGroup}
 \docType{package}
@@ -7,16 +7,16 @@
 Statistical Methods for Group Testing.
 }
 \description{
-This package provides methods for estimation and hypothesis testing of proportions in group testing designs. It involves methods for estimating a proportion in a single population (assuming sensitivity and specificity 1 in designs with equal group sizes), as well as hypothesis tests and functions for experimental design for this situation. For estimating one proportion or the difference of proportions, a number of confidence interval methods are included, which can deal with various different pool sizes. Further, regression methods are implemented for simple pooling and matrix pooling designs.
-Methods for identification of positive specimens in group testing designs: methods for identification of positive specimens in a number of group testing algorithms. Hierarchical and array-based algorithms are implemented and used to find the  optimal testing configuration and calculate operating characteristics for testing configurations across a wide variety of situations.
+This package provides methods for estimation and hypothesis testing of proportions in group testing designs. It involves methods for estimating a proportion in a single population (assuming sensitivity and specificity 1 in designs with equal group sizes), as well as hypothesis tests and functions for experimental design for this situation. For estimating one proportion or the difference of proportions, a number of confidence interval methods are included, which can deal with various different pool sizes. Further, regression methods are implemented for simple pooling and matrix pooling designs. \cr \cr
+This package also provides methods for identification of positive items in a number of group testing algorithms. Optimal testing configurations can be found for hierarchical and array-based algorithms. Operating characteristics can be calculated for testing configurations across a wide variety of situations.
 }
 \details{
 \tabular{ll}{
 Package: \tab binGroup\cr
 Type: \tab Package\cr
-Version: \tab 2.1-1\cr
-Date: \tab 2018-03-14\cr
-License: \tab GPL\cr
+Version: \tab 2.2-1\cr
+Date: \tab 2018-07-07\cr
+License: \tab GPL (>=3)\cr
 LazyLoad: \tab no\cr
 }
 
@@ -38,11 +38,15 @@ Two approaches (by Vansteelandt et al., 2000 and Xie, 2001) to estimate paramete
 
 Group testing regression models in settings with matrix pooling (Xie, 2001) can be fit using \code{\link{gtreg.mp}}. 
 
+4) Identification using hierarchical and array-based group testing algorithms
+
+The function \code{\link{OTC}} implements a number of group testing algorithms, described in Hitt et al. (2018), which calculate the operating characteristics and find the optimal testing configuration over a range of possible initial pool sizes and/or testing configurations (sets of subsequent pool sizes).
+
 
 
 }
 \author{
-Boan Zhang, Christopher Bilder, Brad Biggerstaff, Frank Schaarschmidt
+Boan Zhang, Christopher Bilder, Brad Biggerstaff, Brianna Hitt, Frank Schaarschmidt
 
 Maintainer: Frank Schaarschmidt <schaarschmidt@biostat.uni-hannover.de>
 }
@@ -53,6 +57,8 @@ Maintainer: Frank Schaarschmidt <schaarschmidt@biostat.uni-hannover.de>
 \emph{Hepworth, G. (1996)} Exact confidence intervals for proportions estimated by group testing. \emph{Biometrics 52, 1134-1146.}
 
 \emph{Hepworth, G. (1999)}: \emph{Estimation of proportions by group testing.} PhD Dissertation. Melbourne, Australia: The University of Melbourne.
+
+\emph{Hitt, B., Bilder, C., Tebbs, J. & McMahan, C. (2018)} The Optimal Group Size Controversy for Infectious Disease Testing: Much Ado About Nothing?!. Manuscript submitted for publication. http://www.chrisbilder.com/grouptesting
 
 \emph{Schaarschmidt, F. (2007)} Experimental design for one-sided confidence intervals or hypothesis tests in binomial group testing.  \emph{Communications in Biometry and Crop Science 2 (1), 32-40.} http://agrobiol.sggw.waw.pl/cbcs/
 
@@ -70,6 +76,8 @@ Maintainer: Frank Schaarschmidt <schaarschmidt@biostat.uni-hannover.de>
 \keyword{regression}
 \keyword{models}
 \keyword{htest}
+\keyword{Categorical Data}
+\keyword{Optimization}
 
 \examples{
 
@@ -164,5 +172,49 @@ fit2
 summary(fit2)
 }
 
+# 4) Identification using hierarchical and array-based group testing algorithms
+
+# 4.1) Finding the optimal testing configuration over a range of initial 
+# group sizes, using non-informative three-stage hierarchical testing, where 
+#   p denotes the overall prevalence of disease,
+#   Se denotes the sensitivity of the diagnostic test, 
+#   Sp denotes the specificity of the diagnostic test,
+#   group.sz denotes the range of initial pool sizes for consideration, and
+#   obj.fn specifies the objective functions for which to find results.
+
+# The following call reproduces results given by Hitt et al. (2018) for 
+# informative three-stage hierarchical testing with an overall disease 
+# prevalence of E(p_i) = 0.01 and sensitivity and specificity equal to 0.95.
+
+# This example takes approximately 2.5 minutes to run.
+
+\dontrun{
+set.seed(1002)
+results1 <- OTC(algorithm="ID3", p=0.01, Se=0.95, Sp=0.95, group.sz=3:40, 
+obj.fn=c("ET", "MAR"), alpha=2)
+results1$opt.ET$OTC
+results1$opt.ET$ET/results1$opt.ET$OTC$Stage1
+results1$opt.MAR$OTC
+results1$opt.MAR$ET/results1$opt.MAR$OTC$Stage1
+}
+
+# 4.2) Finding the optimal testing configuration using non-informative
+# array testing without master pooling
+
+# The following call reproduces results given by Hitt et al. (2018) for
+# non-informative array testing without master pooling with an overall
+# disease prevalence of p=0.01 and sensitivity and specificity equal 
+# to 0.90.
+
+# This example takes approximately 7 minutes to run.
+
+\dontrun{
+results2 <- OTC(algorithm="A2", p=0.01, Se=0.90, Sp=0.90, group.sz=3:40, 
+obj.fn=c("ET", "MAR"))
+results2$opt.ET$OTC
+results2$opt.ET$ET/results2$opt.ET$OTC$Array.sz
+results2$opt.MAR$OTC
+results2$opt.MAR$ET/results2$opt.MAR$OTC$Array.sz
+}
 
 }

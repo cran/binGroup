@@ -2,109 +2,169 @@
 % Please edit documentation in R/Inf.D3.R
 \name{Inf.D3}
 \alias{Inf.D3}
-\title{Informative three-stage hierarchical testing}
+\title{Find the optimal testing configuration for informative 
+three-stage hierarchical testing}
 \usage{
-Inf.D3(p, Se, Sp, group.sz, obj.fn, weights, alpha)
+Inf.D3(p, Se, Sp, group.sz, obj.fn, weights = NULL, alpha = 2)
 }
 \arguments{
-\item{p}{the probability of disease, which can be an overall probability of disease,
-from which a heterogeneous vector of individual probabilities will be generated, or
-a vector of individual probabilities specified by the user}
+\item{p}{the probability of disease, which can be specified as an overall 
+probability of disease, from which a heterogeneous vector of individual 
+probabilities will be generated, or a heterogeneous vector of individual 
+probabilities specified by the user.}
 
-\item{Se}{the sensitivity of the diagnostic test}
+\item{Se}{the sensitivity of the diagnostic test.}
 
-\item{Sp}{the specificity of the diagnostic test}
+\item{Sp}{the specificity of the diagnostic test.}
 
-\item{group.sz}{a single group size over which to find the optimal testing
-configuration out of all possible configurations, or a range of group sizes
-over which to find the optimal testing configuration}
+\item{group.sz}{a single group size over which to find the OTC
+out of all possible testing configurations, or a range of group sizes
+over which to find the OTC.}
 
 \item{obj.fn}{a list of objective functions which are minimized to find the
-optimal testing configuration. Available options include "\kbd{ET}" (the expected
-number of tests per individual), "\kbd{MAR}" (the expected number of tests divided
-by the expected number of correct classifications, described in Malinovsky et al. (2016)),
-\url{http://www.chrisbilder.com/grouptesting/HBTM/} for additional details.}
+OTC. The expected number of tests per individual, "\kbd{ET}", will always 
+be calculated. Additional options include "\kbd{MAR}" 
+(the expected number of tests divided by the expected number of correct 
+classifications, described in Malinovsky et al. (2016)), and "\kbd{GR}" 
+(a linear combination of the expected number of tests, the number of 
+misclassified negatives, and the number of misclassified positives, 
+described in Graff & Roeloffs (1972)). See Hitt et al. (2018) at
+\url{http://chrisbilder.com/grouptesting} for additional details.}
 
-\item{weights}{a matrix of up to six sets of weights for the GR function. Each set of
-weights is specified by a row of the matrix.}
+\item{weights}{a matrix of up to six sets of weights for the GR function. 
+Each set of weights is specified by a row of the matrix.}
 
-\item{alpha}{a scale parameter for the beta distribution that specifies the degree of
-heterogeneity for the generated probability vector}
+\item{alpha}{a scale parameter for the beta distribution that specifies 
+the degree of heterogeneity for the generated probability vector. If a 
+heterogeneous vector of individual probabilities is specified by the user, 
+\kbd{alpha} can be specified as \kbd{NA} or will be ignored.}
 }
 \value{
 A list containing:
-\item{prob}{the overall probability of disease or vector of individual probabilities, as specified by the user}
-\item{alpha}{the level of heterogeneity used to generate the vector of individual probabilities}
-\item{Se}{the sensitivity of the diagnostic test}
-\item{Sp}{the specificity of the diagnostic test}
-\item{opt.ET, opt.MAR, opt.GR}{a list for each objective function specified by the user, containing:
+\item{prob}{the probability of disease, as specified by the user.}
+\item{alpha}{the level of heterogeneity used to generate the vector of individual
+probabilities.}
+\item{Se}{the sensitivity of the diagnostic test.}
+\item{Sp}{the specificity of the diagnostic test.}
+\item{opt.ET, opt.MAR, opt.GR}{a list for each objective function specified 
+by the user, containing:
 \describe{
-\item{OTC}{a list specifying the optimal testing configuration, which includes:
+\item{OTC}{a list specifying elements of the optimal testing configuration, 
+which include:
 \describe{
-\item{Stage1}{the pool size for the first stage of testing, i.e. the initial group size}
-\item{Stage2}{pool sizes for the second stage of testing}}}
-\item{p.vec}{the sorted vector of individual probabilities}
-\item{ET}{the expected testing expenditure for the OTC}
-\item{value}{the value of the objective function per individual}
-\item{PSe}{the overall pooling sensitivity for the algorithm}
-\item{PSp}{the overall pooling specificity for the algorithm}
-\item{PPPV}{the overall pooling positive predictive value for the algorithm}
-\item{PNPV}{the overall pooling negative predictive value for the algorithm}}}
+\item{Stage1}{pool size for the first stage of testing, i.e. the initial
+group size.}
+\item{Stage2}{pool sizes for the second stage of testing.}}}
+\item{p.vec}{the sorted vector of individual probabilities.}
+\item{ET}{the expected testing expenditure for the OTC.}
+\item{value}{the value of the objective function per individual.}
+\item{PSe}{the overall pooling sensitivity for the algorithm.
+Further details are given under 'Details'.}
+\item{PSp}{the overall pooling specificity for the algorithm.
+Further details are given under 'Details'.}
+\item{PPPV}{the overall pooling positive predictive value for the algorithm.
+Further details are given under 'Details'.}
+\item{PNPV}{the overall pooling negative predictive value for the algorithm.
+Further details are given under 'Details'.}}}
 }
 \description{
-Find the optimal testing configuration for informative
-three-stage hierarchical testing and calculate the associated
-operating charcteristics.
+Find the optimal testing configuration (OTC) for 
+informative three-stage hierarchical testing and calculate the 
+associated operating charcteristics.
 }
 \details{
-This function finds the optimal testing configuration and
-computes the associated operating characteristics for informative
-three-stage hierarchical testing. This function finds the optimal
-testing configuration by considering all possible configurations.
-See Hitt et al. (2018) at \url{http://www.chrisbilder.com/grouptesting/HBTM/}
-or Black et al. (2015) for additional details.
+This function finds the OTC and computes the associated 
+operating characteristics for informative three-stage hierarchical testing. 
+This function finds the optimal testing configuration by considering all 
+possible testing configurations. Operating characteristics calculated are
+expected number of tests, pooling sensitivity, pooling specificity, pooling
+positive predictive value, and pooling negative predictive value for the algorithm.
+See Hitt et al. (2018) or Black et al. (2015) at 
+\url{http://chrisbilder.com/grouptesting} for additional details on the 
+implementation of informative three-stage hierarchical testing.
+
+The value(s) specified by \kbd{group.sz} represent the initial (stage 1) 
+group size. If a single value is provided for \kbd{group.sz}, the OTC 
+will be found over all possible testing configurations for that initial 
+group size. If a range of group sizes is specified, the OTC will be found 
+over all group sizes.
+
+The displayed pooling sensitivity, pooling specificity, pooling positive 
+predictive value, and pooling negative predictive value are weighted 
+averages of the corresponding individual accuracy measures for all 
+individuals within the initial group for a hierarchical algorithm, or 
+within the entire array for an array-based algorithm.
+Expressions for these averages are provided in the Supplementary 
+Material for Hitt et al. (2018). These expressions are based on accuracy 
+definitions given by Altman and Bland (1994a, 1994b).
 }
 \examples{
-# Find the optimal testing configuration for information three-stage
-#   hierarchical testing
-Inf.D3(p=0.05, Se=0.99, Sp=0.99, group.sz=10:15, obj.fn=c("ET", "MAR"),
-weights=NULL, alpha=0.5)
+# Find the OTC for informative three-stage hierarchical 
+#   testing over a range of group sizes.
+# A vector of individual probabilities is generated using
+#   the expected value of order statistics from a beta 
+#   distribution with p = 0.05 and a heterogeneity level 
+#   of alpha = 0.5. Depending on the specified probability, 
+#   alpha level, and overall group size, simulation may 
+#   be necessary in order to generate the vector of individual
+#   probabilities. This is done using p.vec.func() and 
+#   requires the user to set a seed in order to reproduce 
+#   results.
+# This example takes approximately 20 seconds to run.
+# Estimated running time was calculated using a 
+#   computer with 16 GB of RAM and one core of an 
+#   Intel i7-6500U processor.
+\dontrun{
+set.seed(8318)
+Inf.D3(p=0.05, Se=0.99, Sp=0.99, group.sz=3:30, 
+obj.fn=c("ET", "MAR"), alpha=0.5)}
 
-# Find the optimal testing configuration out of all possible configurations
-#   for a specified group size and vector of individual probabilities
-set.seed(82763)
-Inf.D3(p=rbeta(12,2,200), Se=0.99, Sp=0.99, group.sz=12,
-obj.fn=c("ET", "MAR", "GR"),
-weights=matrix(data=c(1,1), nrow=1, ncol=2, byrow=TRUE),
-alpha=NA)
+# This example takes less than 1 second to run.
+# Estimated running time was calculated using a 
+#   computer with 16 GB of RAM and one core of an 
+#   Intel i7-6500U processor.
+set.seed(8318)
+Inf.D3(p=0.05, Se=0.99, Sp=0.99, group.sz=10:15, 
+obj.fn=c("ET", "MAR"), alpha=0.5)
 
+# Find the OTC out of all possible testing configurations
+#   for a specified group size and vector of individual 
+#   probabilities.
+# This example takes less than 1 second to run.
+# Estimated running time was calculated using a 
+#   computer with 16 GB of RAM and one core of an 
+#   Intel i7-6500U processor.
+set.seed(1216)
+p.vec <- p.vec.func(p=0.10, alpha=2, grp.sz=12)
+Inf.D3(p=p.vec, Se=0.99, Sp=0.99, group.sz=12,
+obj.fn=c("ET", "MAR", "GR"), weights=matrix(data=c(1,1), 
+nrow=1, ncol=2, byrow=TRUE), alpha=NA)
 }
 \references{
-\emph{Black, M.S.; Bilder, C.R. & Tebbs, J.M. (2015)}.
-Optimal retesting configurations for hierarchical group testing.
-\emph{Journal of the Royal Statistical Society. Series C: Applied Statistics,
-64, 693-710}.
+\insertRef{Altman1994a}{binGroup}
 
-\emph{Graff, L.E. & Roeloffs, R. (1972)}. Group testing in the presence of
-test error; an extension of the Dorfman procedure. \emph{Technometrics, 14, 113-122}.
+\insertRef{Altman1994b}{binGroup}
 
-\emph{Malinovsky, Y.; Albert, P.S. & Roy, A. (2016)}. Reader reaction: A note on the
-evaluation of group testing algorithms in the presence of misclassification.
-\emph{Biometrics, 72, 299-302}.
+\insertRef{Black2015}{binGroup}
+
+\insertRef{Graff1972}{binGroup}
+
+\insertRef{Hitt2018}{binGroup}
+
+\insertRef{Malinovsky2016}{binGroup}
 }
 \seealso{
 \code{\link{NI.D3}} for non-informative three-stage hierarchical testing
+and \code{\link{OTC}} for finding the optimal testing configuration for a
+number of standard group testing algorithms.
 
-\code{\link{OTC}} for finding the optimal testing configuration for a
-number of standard group testing algorithms
+\url{http://chrisbilder.com/grouptesting}
 
-\url{http://chrisbilder.com/grouptesting/HBTM}
-
-Other Optimal Testing Configuration functions: \code{\link{Inf.Array}},
+Other OTC functions: \code{\link{Inf.Array}},
   \code{\link{Inf.Dorf}}, \code{\link{NI.A2M}},
   \code{\link{NI.Array}}, \code{\link{NI.D3}},
   \code{\link{NI.Dorf}}, \code{\link{OTC}}
 }
 \author{
-Brianna Hitt
+Brianna D. Hitt
 }

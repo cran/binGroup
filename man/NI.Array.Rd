@@ -2,112 +2,144 @@
 % Please edit documentation in R/NI.Array.R
 \name{NI.Array}
 \alias{NI.Array}
-\title{Non-informative array testing without master pooling}
+\title{Find the optimal testing configuration for non-informative 
+array testing without master pooling}
 \usage{
-NI.Array(p, Se, Sp, group.sz, obj.fn, weights)
+NI.Array(p, Se, Sp, group.sz, obj.fn, weights = NULL)
 }
 \arguments{
 \item{p}{the probability of disease, which can be specified as an overall
-probability of disease or a homogeneous vector of individual probabilities}
+probability of disease or a homogeneous vector of individual probabilities.}
 
-\item{Se}{the sensitivity of the diagnostic test}
+\item{Se}{the sensitivity of the diagnostic test.}
 
-\item{Sp}{the specificity of the diagnostic test}
+\item{Sp}{the specificity of the diagnostic test.}
 
 \item{group.sz}{a single group size (representing the row/column size)
 for which to calculate the operating characteristics, or a range of group
-(row/column) sizes over which to find the optimal testing configuration}
+(row/column) sizes over which to find the OTC.
+The details of group size specification are given under 'Details'.}
 
 \item{obj.fn}{a list of objective functions which are minimized to find the
-optimal testing configuration. Available options include "\kbd{ET}" (the expected
-number of tests per individual), "\kbd{MAR}" (the expected number of tests divided
-by the expected number of correct classifications, described in Malinovsky et al. (2016)),
-\url{http://www.chrisbilder.com/grouptesting/HBTM/} for additional details.}
+OTC. The expected number of tests per individual, "\kbd{ET}", will always 
+be calculated. Additional options include "\kbd{MAR}" 
+(the expected number of tests divided by the expected number of correct 
+classifications, described in Malinovsky et al. (2016)), and "\kbd{GR}" 
+(a linear combination of the expected number of tests, the number of 
+misclassified negatives, and the number of misclassified positives, 
+described in Graff & Roeloffs (1972)). See Hitt et al. (2018) at
+\url{http://chrisbilder.com/grouptesting} for additional details.}
 
-\item{weights}{a matrix of up to six sets of weights for the GR function. Each set of
-weights is specified by a row of the matrix.}
+\item{weights}{a matrix of up to six sets of weights for the GR function. 
+Each set of weights is specified by a row of the matrix.}
 }
 \value{
 A list containing:
-\item{prob}{the overall probability of disease or vector of individual probabilities,
-as specified by the user}
-\item{Se}{the sensitivity of the diagnostic test}
-\item{Sp}{the specificity of the diagnostic test}
-\item{opt.ET, opt.MAR, opt.GR}{a list for each objective function specified by the
-user, containing:
+\item{prob}{the probability of disease, as specified by the user.}
+\item{Se}{the sensitivity of the diagnostic test.}
+\item{Sp}{the specificity of the diagnostic test.}
+\item{opt.ET, opt.MAR, opt.GR}{a list for each objective function specified 
+by the user, containing:
 \describe{
-\item{OTC}{a list specifying the optimal testing configuration, which includes:
+\item{OTC}{a list specifying elements of the optimal testing configuration, 
+which include:
 \describe{
-\item{Array.dim}{the row/column size for the first stage of testing}
-\item{Array.sz}{the overall array size (the square of the row/column size)}}}
-\item{p.mat}{the matrix of individual probabilities}
-\item{ET}{the expected testing expenditure for the OTC}
-\item{value}{the value of the objective function per individual}
-\item{PSe}{the overall pooling sensitivity for the algorithm}
-\item{PSp}{the overall pooling specificity for the algorithm}
-\item{PPPV}{the overall pooling positive predictive value for the algorithm}
-\item{PNPV}{the overall pooling negative predictive value for the algorithm}}}
+\item{Array.dim}{the row/column size for the first stage of testing.}
+\item{Array.sz}{the overall array size (the square of the row/column size).}}}
+\item{p.mat}{the matrix of individual probabilities.}
+\item{ET}{the expected testing expenditure for the OTC.}
+\item{value}{the value of the objective function per individual.}
+\item{PSe}{the overall pooling sensitivity for the algorithm.
+Further details are given under 'Details'.}
+\item{PSp}{the overall pooling specificity for the algorithm.
+Further details are given under 'Details'.}
+\item{PPPV}{the overall pooling positive predictive value for the algorithm.
+Further details are given under 'Details'.}
+\item{PNPV}{the overall pooling negative predictive value for the algorithm.
+Further details are given under 'Details'.}}}
 }
 \description{
-Find the optimal testing configuration for
+Find the optimal testing configuration (OTC) for
 non-informative array testing without master pooling and
 calculate the associated operating characteristics.
 }
 \details{
-This function finds the optimal testing configuration and
-computes the associated operating characteristics for non-informative
-array testing without master pooling. Array testing without master
-pooling involves amalgamating specimens in rows and columns for the
-first stage of testing. This function uses only square arrays,
-which is the way array-based group testing is carried
-out in most real-world applications. See Hitt et al. (2018) at
-\url{http://www.chrisbilder.com/grouptesting/HBTM/} or
-Kim et al. (2007) for additional details.
+This function finds the OTC and computes the associated 
+operating characteristics for non-informative array testing without 
+master pooling. Array testing without master pooling involves 
+amalgamating specimens in rows and columns for the first stage of testing. 
+This function uses only square arrays, which is the way array-based group 
+testing is carried out in most real-world applications. Operating 
+characteristics calculated are expected number of tests, pooling sensitivity, 
+pooling specificity, pooling positive predictive value, and pooling negative 
+predictive value for the algorithm. See Hitt et al. (2018) at
+\url{http://chrisbilder.com/grouptesting} or Kim et al. (2007) 
+for additional details on the implementation of non-informative array
+testing without master pooling.
+
+The value(s) specified by \kbd{group.sz} represent the initial group 
+(row/column) size. If a single value is provided for \kbd{group.sz}, operating
+characteristics will be calculated and no optimization will be performed.
+If a range of group sizes is specified, the OTC will be found over all 
+group sizes.
+
+The displayed pooling sensitivity, pooling specificity, pooling positive 
+predictive value, and pooling negative predictive value are weighted 
+averages of the corresponding individual accuracy measures for all 
+individuals within the initial group for a hierarchical algorithm.
+Expressions for these averages are provided in the Supplementary 
+Material for Hitt et al. (2018). These expressions are based on accuracy 
+definitions given by Altman and Bland (1994a, 1994b).
 }
 \examples{
-# Find the optimal testing configuration for non-informative array
-#   testing without master pooling over a range of group
-#   (row/column) sizes
-\dontrun{
+# Find the OTC for non-informative array testing 
+#   without master pooling over a range of group
+#   (row/column) sizes.
+# This example takes less than 1 second to run.
+# Estimated running time was calculated using a 
+#   computer with 16 GB of RAM and one core of an 
+#   Intel i7-6500U processor.
 NI.Array(p=0.04, Se=0.95, Sp=0.95, group.sz=3:10,
-obj.fn=c("ET", "MAR"), weights=NULL)
-}
+obj.fn=c("ET", "MAR"))
 
-# Find the optimal testing configuration for a specified group
-#   (row/column) size for non-informative array testing without
-#   master pooling
-NI.Array(p=rep(0.01,8), Se=0.90, Sp=0.90, group.sz=8,
-obj.fn=c("ET", "MAR", "GR"),
-weights=matrix(data=c(1,1,10,10,100,100), nrow=3, ncol=2, byrow=TRUE))
-
+# Calculate the operating characteristics for a specified 
+#   group (row/column) size for non-informative array 
+#   testing without master pooling.
+# This example takes less than 1 second to run.
+# Estimated running time was calculated using a 
+#   computer with 16 GB of RAM and one core of an 
+#   Intel i7-6500U processor.
+NI.Array(p=rep(0.01, 64), Se=0.90, Sp=0.90, group.sz=8,
+obj.fn=c("ET", "MAR", "GR"), 
+weights=matrix(data=c(1,1,10,10,100,100), 
+nrow=3, ncol=2, byrow=TRUE))
 }
 \references{
-\emph{Graff, L.E. & Roeloffs, R. (1972)}. Group testing in the presence of test
-error; an extension of the Dorfman procedure. \emph{Technometrics, 14, 113-122}.
+\insertRef{Altman1994a}{binGroup}
 
-\emph{Kim, H.Y.; Hudgens, M.G.; Dreyfuss, J.M.; Westreich, D.J. & Pilcher, C.D. (2007)}.
-Comparison of group testing algorithms for case identification in the presence of test error.
-\emph{Biometrics, 63, 1152-1163}.
+\insertRef{Altman1994b}{binGroup}
 
-\emph{Malinovsky, Y.; Albert, P.S. & Roy, A. (2016)}. Reader reaction: A note on the
-evaluation of group testing algorithms in the presence of misclassification.
-\emph{Biometrics, 72, 299-302}.
+\insertRef{Graff1972}{binGroup}
+
+\insertRef{Hitt2018}{binGroup}
+
+\insertRef{Kim2007}{binGroup}
+
+\insertRef{Malinovsky2016}{binGroup}
 }
 \seealso{
-\code{\link{Inf.Array}} for informative array testing
-
-\code{\link{NI.A2M}} for non-informative array testing with master pooling
-
+\code{\link{Inf.Array}} for informative array testing without master pooling,
+\code{\link{NI.A2M}} for non-informative array testing with master pooling, and
 \code{\link{OTC}} for finding the optimal testing configuration for a number
-of standard group testing algorithms
+of standard group testing algorithms.
 
-\url{http://chrisbilder.com/grouptesting/HBTM}
+\url{http://chrisbilder.com/grouptesting}
 
-Other Optimal Testing Configuration functions: \code{\link{Inf.Array}},
+Other OTC functions: \code{\link{Inf.Array}},
   \code{\link{Inf.D3}}, \code{\link{Inf.Dorf}},
   \code{\link{NI.A2M}}, \code{\link{NI.D3}},
   \code{\link{NI.Dorf}}, \code{\link{OTC}}
 }
 \author{
-Brianna Hitt
+Brianna D. Hitt
 }
