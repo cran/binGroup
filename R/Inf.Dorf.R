@@ -42,7 +42,7 @@
 #' @details This function utilizes the equations given by McMahan et al. 
 #' (2012) for informative two-stage hierarchical (Dorfman) testing. 
 #' It also repurposes functions written by Christopher S. McMahan (see
-#' \url{http://chrisbilder.com/grouptesting})
+#' \url{http://chrisbilder.com/grouptesting/})
 #' for the implementation of informative Dorfman testing and directly 
 #' uses functions written for the calculation of the associated operating 
 #' characteristics. This function calculates the operating characteristics 
@@ -78,7 +78,7 @@
 #' 
 #' @author The majority of this function was originally written by 
 #' Christopher S. McMahan for McMahan et al. (2012). The function was 
-#' obtained from \url{http://chrisbilder.com/grouptesting}. Minor modifications 
+#' obtained from \url{http://chrisbilder.com/grouptesting/}. Minor modifications 
 #' were made to the function for inclusion in the binGroup package.
 #' 
 #' @references 
@@ -100,7 +100,7 @@
 #' to calculate operating characteristics for the optimal set of 
 #' pool sizes.
 #' 
-#' \url{http://chrisbilder.com/grouptesting}
+#' \url{http://chrisbilder.com/grouptesting/}
 #' 
 #' @family Operating characteristic functions
 #' @family Informative Dorfman functions
@@ -224,7 +224,7 @@ inf.dorf.measures <- function(prob, se, sp, N, pool.sizes){
 #' expected number of tests, pooling sensitivity, pooling specificity, pooling
 #' positive predictive value, and pooling negative predictive value for the algorithm.
 #' See Hitt et al. (2018) or McMahan et al. (2012) at 
-#' \url{http://chrisbilder.com/grouptesting} for additional details on the 
+#' \url{http://chrisbilder.com/grouptesting/} for additional details on the 
 #' implementation of informative two-stage hierarchical (Dorfman) testing.
 #'
 #' The value(s) specified by \kbd{group.sz} represent the overall block size 
@@ -295,7 +295,7 @@ inf.dorf.measures <- function(prob, se, sp, N, pool.sizes){
 #' testing and \code{\link{OTC}} for finding the optimal testing configuration 
 #' for a number of standard group testing algorithms.
 #'
-#' \url{http://chrisbilder.com/grouptesting}
+#' \url{http://chrisbilder.com/grouptesting/}
 #'
 #' @family OTC functions
 #'
@@ -438,25 +438,25 @@ Inf.Dorf <- function(p, Se, Sp, group.sz, obj.fn, weights=NULL, alpha=2){
     
     # find the best configuration for each block size N, out of all possible configurations
     save.ET[count,] <- save.it[save.it[,(max(set.of.blocks)+6)]==min(save.it[,(max(set.of.blocks)+6)]), c(1:(max(set.of.blocks)+5),(max(set.of.blocks)+6),(max(set.of.blocks)+14):ncol(save.it))]
-    if(class(try(save.MAR[count,] <- save.it[save.it[,(max(set.of.blocks)+7)]==min(save.it[,(max(set.of.blocks)+7)]), c(1:(max(set.of.blocks)+5),(max(set.of.blocks)+7),(max(set.of.blocks)+14):ncol(save.it))],silent=T))!="try-error"){
+    if(!inherits(try(save.MAR[count,] <- save.it[save.it[,(max(set.of.blocks)+7)]==min(save.it[,(max(set.of.blocks)+7)]), c(1:(max(set.of.blocks)+5),(max(set.of.blocks)+7),(max(set.of.blocks)+14):ncol(save.it))],silent=T), "try-error")){
       save.MAR[count,] <- save.it[save.it[,(max(set.of.blocks)+7)]==min(save.it[,(max(set.of.blocks)+7)]), c(1:(max(set.of.blocks)+5),(max(set.of.blocks)+7),(max(set.of.blocks)+14):ncol(save.it))]
     }
-    if(class(try(save.GR1[count,] <- save.it[save.it[,(max(set.of.blocks)+8)]==min(save.it[,(max(set.of.blocks)+8)]), c(1:(max(set.of.blocks)+5),(max(set.of.blocks)+8),(max(set.of.blocks)+14):ncol(save.it))],silent=T))!="try-error"){
+    if(!inherits(try(save.GR1[count,] <- save.it[save.it[,(max(set.of.blocks)+8)]==min(save.it[,(max(set.of.blocks)+8)]), c(1:(max(set.of.blocks)+5),(max(set.of.blocks)+8),(max(set.of.blocks)+14):ncol(save.it))],silent=T), "try-error")){
       save.GR1[count,] <- save.it[save.it[,(max(set.of.blocks)+8)]==min(save.it[,(max(set.of.blocks)+8)]), c(1:(max(set.of.blocks)+5),(max(set.of.blocks)+8),(max(set.of.blocks)+14):ncol(save.it))]
     }
-    if(class(try(save.GR2[count,] <- save.it[save.it[,(max(set.of.blocks)+9)]==min(save.it[,(max(set.of.blocks)+9)]), c(1:(max(set.of.blocks)+5),(max(set.of.blocks)+9),(max(set.of.blocks)+14):ncol(save.it))],silent=T))!="try-error"){
+    if(!inherits(try(save.GR2[count,] <- save.it[save.it[,(max(set.of.blocks)+9)]==min(save.it[,(max(set.of.blocks)+9)]), c(1:(max(set.of.blocks)+5),(max(set.of.blocks)+9),(max(set.of.blocks)+14):ncol(save.it))],silent=T), "try-error")){
       save.GR2[count,] <- save.it[save.it[,(max(set.of.blocks)+9)]==min(save.it[,(max(set.of.blocks)+9)]), c(1:(max(set.of.blocks)+5),(max(set.of.blocks)+9),(max(set.of.blocks)+14):ncol(save.it))]
     }
-    if(class(try(save.GR3[count,] <- save.it[save.it[,(max(set.of.blocks)+10)]==min(save.it[,(max(set.of.blocks)+10)]), c(1:(max(set.of.blocks)+5),(max(set.of.blocks)+10),(max(set.of.blocks)+14):ncol(save.it))],silent=T))!="try-error"){
+    if(!inherits(try(save.GR3[count,] <- save.it[save.it[,(max(set.of.blocks)+10)]==min(save.it[,(max(set.of.blocks)+10)]), c(1:(max(set.of.blocks)+5),(max(set.of.blocks)+10),(max(set.of.blocks)+14):ncol(save.it))],silent=T), "try-error")){
       save.GR3[count,] <- save.it[save.it[,(max(set.of.blocks)+10)]==min(save.it[,(max(set.of.blocks)+10)]), c(1:(max(set.of.blocks)+5),(max(set.of.blocks)+10),(max(set.of.blocks)+14):ncol(save.it))]
     }
-    if(class(try(save.GR4[count,] <- save.it[save.it[,(max(set.of.blocks)+11)]==min(save.it[,(max(set.of.blocks)+11)]), c(1:(max(set.of.blocks)+5),(max(set.of.blocks)+11),(max(set.of.blocks)+14):ncol(save.it))],silent=T))!="try-error"){
+    if(!inherits(try(save.GR4[count,] <- save.it[save.it[,(max(set.of.blocks)+11)]==min(save.it[,(max(set.of.blocks)+11)]), c(1:(max(set.of.blocks)+5),(max(set.of.blocks)+11),(max(set.of.blocks)+14):ncol(save.it))],silent=T), "try-error")){
       save.GR4[count,] <- save.it[save.it[,(max(set.of.blocks)+11)]==min(save.it[,(max(set.of.blocks)+11)]), c(1:(max(set.of.blocks)+5),(max(set.of.blocks)+11),(max(set.of.blocks)+14):ncol(save.it))]
     }
-    if(class(try( save.GR5[count,] <- save.it[save.it[,(max(set.of.blocks)+12)]==min(save.it[,(max(set.of.blocks)+12)]), c(1:(max(set.of.blocks)+5),(max(set.of.blocks)+12),(max(set.of.blocks)+14):ncol(save.it))],silent=T))!="try-error"){
+    if(!inherits(try( save.GR5[count,] <- save.it[save.it[,(max(set.of.blocks)+12)]==min(save.it[,(max(set.of.blocks)+12)]), c(1:(max(set.of.blocks)+5),(max(set.of.blocks)+12),(max(set.of.blocks)+14):ncol(save.it))],silent=T), "try-error")){
       save.GR5[count,] <- save.it[save.it[,(max(set.of.blocks)+12)]==min(save.it[,(max(set.of.blocks)+12)]), c(1:(max(set.of.blocks)+5),(max(set.of.blocks)+12),(max(set.of.blocks)+14):ncol(save.it))]
     }
-    if(class(try(save.GR6[count,] <- save.it[save.it[,(max(set.of.blocks)+13)]==min(save.it[,(max(set.of.blocks)+13)]), c(1:(max(set.of.blocks)+5),(max(set.of.blocks)+13),(max(set.of.blocks)+14):ncol(save.it))],silent=T))!="try-error"){
+    if(!inherits(try(save.GR6[count,] <- save.it[save.it[,(max(set.of.blocks)+13)]==min(save.it[,(max(set.of.blocks)+13)]), c(1:(max(set.of.blocks)+5),(max(set.of.blocks)+13),(max(set.of.blocks)+14):ncol(save.it))],silent=T), "try-error")){
       save.GR6[count,] <- save.it[save.it[,(max(set.of.blocks)+13)]==min(save.it[,(max(set.of.blocks)+13)]), c(1:(max(set.of.blocks)+5),(max(set.of.blocks)+13),(max(set.of.blocks)+14):ncol(save.it))]    
     }
     

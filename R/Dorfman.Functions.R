@@ -94,7 +94,7 @@
 #' 
 #' @author This function was originally written by Christopher S. 
 #' McMahan for McMahan et al. (2012). The function was obtained 
-#' from \url{http://chrisbilder.com/grouptesting}.
+#' from \url{http://chrisbilder.com/grouptesting/}.
 #' 
 #' @references 
 #' \insertRef{Dorfman1943}{binGroup}
@@ -102,7 +102,7 @@
 #' \insertRef{McMahan2012a}{binGroup}
 #' 
 #' @seealso 
-#' \url{http://chrisbilder.com/grouptesting}
+#' \url{http://chrisbilder.com/grouptesting/}
 #' 
 #' @family Informative Dorfman functions
 #' 
@@ -267,13 +267,13 @@ return(list("tv"=p.star, "e"=res.e, "v"=res.v, "summary"=res.mat))
 #'  
 #' @author This function was originally written by Christopher S. 
 #' McMahan for McMahan et al. (2012). The function was obtained 
-#' from \url{http://chrisbilder.com/grouptesting}.
+#' from \url{http://chrisbilder.com/grouptesting/}.
 #' 
 #' @references 
 #' \insertRef{McMahan2012a}{binGroup}
 #' 
 #' @seealso 
-#' \url{http://chrisbilder.com/grouptesting} 
+#' \url{http://chrisbilder.com/grouptesting/} 
 #' 
 #' @family Informative Dorfman functions
 #' 
@@ -334,13 +334,13 @@ return(list("e"=res.e, "v"=res.v))
 #'  
 #' @author This function was originally written by Christopher S. 
 #' McMahan for McMahan et al. (2012). The function was obtained 
-#' from \url{http://chrisbilder.com/grouptesting}.
+#' from \url{http://chrisbilder.com/grouptesting/}.
 #' 
 #' @references 
 #' \insertRef{McMahan2012a}{binGroup}
 #' 
 #' @seealso 
-#' \url{http://chrisbilder.com/grouptesting}
+#' \url{http://chrisbilder.com/grouptesting/}
 #' 
 #' @family Informative Dorfman functions
 #' 
@@ -408,13 +408,13 @@ return(list("PSe"=se.vec, "PSp"=sp.vec, "PPV"=ppv.vec, "NPV"=npv.vec))
 #'  
 #' @author This function was originally written by Christopher S. 
 #' McMahan for McMahan et al. (2012). The function was obtained 
-#' from \url{http://chrisbilder.com/grouptesting}.
+#' from \url{http://chrisbilder.com/grouptesting/}.
 #' 
 #' @references 
 #' \insertRef{McMahan2012a}{binGroup}
 #' 
 #' @seealso 
-#' \url{http://chrisbilder.com/grouptesting}
+#' \url{http://chrisbilder.com/grouptesting/}
 #' 
 #' @family Informative Dorfman functions
 #' 
@@ -483,13 +483,13 @@ return(psz)
 #'  
 #' @author This function was originally written by Christopher S. 
 #' McMahan for McMahan et al. (2012). The function was obtained 
-#' from \url{http://chrisbilder.com/grouptesting}.
+#' from \url{http://chrisbilder.com/grouptesting/}.
 #' 
 #' @references 
 #' \insertRef{McMahan2012a}{binGroup}
 #' 
 #' @seealso 
-#' \url{http://chrisbilder.com/grouptesting}
+#' \url{http://chrisbilder.com/grouptesting/}
 #' 
 #' @family Informative Dorfman functions
 #' 
@@ -561,13 +561,13 @@ return(psz-1)
 #'  
 #' @author This function was originally written by Christopher S. 
 #' McMahan for McMahan et al. (2012). The function was obtained 
-#' from \url{http://chrisbilder.com/grouptesting}.
+#' from \url{http://chrisbilder.com/grouptesting/}.
 #' 
 #' @references 
 #' \insertRef{McMahan2012a}{binGroup}
 #' 
 #' @seealso 
-#' \url{http://chrisbilder.com/grouptesting}
+#' \url{http://chrisbilder.com/grouptesting/}
 #' 
 #' @family Informative Dorfman functions
 #' 

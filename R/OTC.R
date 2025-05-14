@@ -33,7 +33,7 @@
 #' (a linear combination of the expected number of tests, the number of 
 #' misclassified negatives, and the number of misclassified positives, 
 #' described in Graff & Roeloffs (1972)). See Hitt et al. (2018) at
-#' \url{http://chrisbilder.com/grouptesting} for additional details.
+#' \url{http://chrisbilder.com/grouptesting/} for additional details.
 #' @param weights a matrix of up to six sets of weights for the GR function. 
 #' Each set of weights is specified by a row of the matrix.
 #' @param alpha a shape parameter for the beta distribution that specifies the degree of
@@ -42,7 +42,7 @@
 #' @details This function finds the OTC and computes the
 #' associated operating characteristics for standard group testing algorithms,
 #' as described in Hitt et al. (2018) at 
-#' \url{http://chrisbilder.com/grouptesting}.
+#' \url{http://chrisbilder.com/grouptesting/}.
 #'
 #' Available algorithms include two- and three-stage hierarchical testing and
 #' array testing with and without master pooling. Both non-informative and informative
@@ -141,7 +141,7 @@
 #' \code{\link{NI.Array}} for non-informative array testing, \code{\link{Inf.Array}} for informative
 #' array testing, and \code{\link{NI.A2M}} for non-informative array testing with master pooling.
 #'
-#' \url{http://chrisbilder.com/grouptesting}
+#' \url{http://chrisbilder.com/grouptesting/}
 #'
 #' @family OTC functions
 #' 
@@ -484,7 +484,7 @@ OTC <- function(algorithm, p=NULL, probabilities=NULL, Se=0.99, Sp=0.99, group.s
 #' array testing without master pooling and \code{\link{beta.dist}}
 #' for the function on which \kbd{p.vec.func} is based on.
 #' 
-#' \url{http://chrisbilder.com/grouptesting}
+#' \url{http://chrisbilder.com/grouptesting/}
 #' 
 #' @family Individual risk probability functions
 #' 
@@ -508,7 +508,7 @@ p.vec.func <- function(p, alpha, grp.sz){
     NA
   } else{
     p.try <- suppressWarnings(try(beta.dist(p=p, alpha=alpha, grp.sz=grp.sz), silent=TRUE)) 
-    if(class(p.try)=="try-error"){
+    if(inherits(p.try, "try-error")){
       beta.dist(p=p, alpha=alpha, grp.sz=grp.sz, simul=TRUE)
     } else{
       beta.dist(p=p, alpha=alpha, grp.sz=grp.sz)

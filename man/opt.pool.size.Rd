@@ -44,17 +44,19 @@ opt.pool.size(p=p.vec, max.p=3, se=0.95, sp=0.95)
 \insertRef{McMahan2012a}{binGroup}
 }
 \seealso{
-\url{http://chrisbilder.com/grouptesting}
+\url{http://chrisbilder.com/grouptesting/}
 
-Other Informative Dorfman functions: \code{\link{accuracy.dorf}},
-  \code{\link{characteristics.pool}},
-  \code{\link{inf.dorf.measures}},
-  \code{\link{opt.info.dorf}},
-  \code{\link{pool.specific.dorf}},
-  \code{\link{thresh.val.dorf}}
+Other Informative Dorfman functions: 
+\code{\link{accuracy.dorf}()},
+\code{\link{characteristics.pool}()},
+\code{\link{inf.dorf.measures}()},
+\code{\link{opt.info.dorf}()},
+\code{\link{pool.specific.dorf}()},
+\code{\link{thresh.val.dorf}()}
 }
 \author{
 This function was originally written by Christopher S. 
 McMahan for McMahan et al. (2012). The function was obtained 
-from \url{http://chrisbilder.com/grouptesting}.
+from \url{http://chrisbilder.com/grouptesting/}.
 }
+\concept{Informative Dorfman functions}

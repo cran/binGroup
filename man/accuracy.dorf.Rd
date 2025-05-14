@@ -47,16 +47,19 @@ accuracy.dorf(p=p.vec[1:3], se=0.90, sp=0.90)
 \insertRef{McMahan2012a}{binGroup}
 }
 \seealso{
-\url{http://chrisbilder.com/grouptesting}
+\url{http://chrisbilder.com/grouptesting/}
 
-Other Informative Dorfman functions: \code{\link{characteristics.pool}},
-  \code{\link{inf.dorf.measures}},
-  \code{\link{opt.info.dorf}}, \code{\link{opt.pool.size}},
-  \code{\link{pool.specific.dorf}},
-  \code{\link{thresh.val.dorf}}
+Other Informative Dorfman functions: 
+\code{\link{characteristics.pool}()},
+\code{\link{inf.dorf.measures}()},
+\code{\link{opt.info.dorf}()},
+\code{\link{opt.pool.size}()},
+\code{\link{pool.specific.dorf}()},
+\code{\link{thresh.val.dorf}()}
 }
 \author{
 This function was originally written by Christopher S. 
 McMahan for McMahan et al. (2012). The function was obtained 
-from \url{http://chrisbilder.com/grouptesting}.
+from \url{http://chrisbilder.com/grouptesting/}.
 }
+\concept{Informative Dorfman functions}

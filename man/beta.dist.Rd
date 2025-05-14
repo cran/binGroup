@@ -4,9 +4,15 @@
 \alias{beta.dist}
 \title{Expected value of order statistics from a beta distribution}
 \usage{
-beta.dist(p = 0.05, alpha = 1, beta = NULL, grp.sz = 10,
-  simul = FALSE, plot = FALSE, rel.tol = ifelse(a >= 1,
-  .Machine$double.eps^0.25, .Machine$double.eps^0.1))
+beta.dist(
+  p = 0.05,
+  alpha = 1,
+  beta = NULL,
+  grp.sz = 10,
+  simul = FALSE,
+  plot = FALSE,
+  rel.tol = ifelse(a >= 1, .Machine$double.eps^0.25, .Machine$double.eps^0.1)
+)
 }
 \arguments{
 \item{p}{average probability, \eqn{\frac{\alpha}{\alpha + \beta}}.}
@@ -83,7 +89,7 @@ beta.dist(alpha=2, beta=5, grp.sz=15, plot=TRUE)
 \insertRef{Black2015}{binGroup}
 }
 \seealso{
-\url{http://chrisbilder.com/grouptesting}
+\url{http://chrisbilder.com/grouptesting/}
 
 \code{\link{p.vec.func}} for generating a vector of individual
 risk probabilities for informative group testing (after checking 
@@ -91,11 +97,13 @@ whether simulation is needed) and \code{\link{Informative.array.prob}}
 for arranging a vector of individual risk probabilities in a matrix 
 for informative array testing without master pooling.
 
-Other Individual risk probability functions: \code{\link{Informative.array.prob}},
-  \code{\link{p.vec.func}}
+Other Individual risk probability functions: 
+\code{\link{Informative.array.prob}()},
+\code{\link{p.vec.func}()}
 }
 \author{
 This function was originally written by Michael S. 
 Black for Black et al. (2015). The function was obtained 
-from \url{http://chrisbilder.com/grouptesting}.
+from \url{http://chrisbilder.com/grouptesting/}.
 }
+\concept{Individual risk probability functions}

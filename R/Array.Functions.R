@@ -40,7 +40,7 @@
 #' 
 #' @author This function was originally written by Christopher S. McMahan for 
 #' McMahan et al. (2012). The function was obtained from 
-#' \url{http://chrisbilder.com/grouptesting}.
+#' \url{http://chrisbilder.com/grouptesting/}.
 #' 
 #' @references 
 #' \insertRef{McMahan2012b}{binGroup}
@@ -56,7 +56,7 @@
 #' \code{\link{Informative.array.prob}} for arranging individual risk
 #' probabilities in a matrix for informative array testing.  
 #' 
-#' \url{http://chrisbilder.com/grouptesting}
+#' \url{http://chrisbilder.com/grouptesting/}
 #' 
 #' @family Operating characteristic functions
 #' 
@@ -234,7 +234,7 @@ return(res)
 #' 
 #' @author This function was originally written by Christopher S. McMahan 
 #' for McMahan et al. (2012). The function was obtained from 
-#' \url{http://chrisbilder.com/grouptesting}.
+#' \url{http://chrisbilder.com/grouptesting/}.
 #' 
 #' @references 
 #' \insertRef{McMahan2012b}{binGroup}
@@ -245,7 +245,7 @@ return(res)
 #' \code{\link{Array.Measures}} for calculating operating characteristics
 #' for informative array testing without master pooling.
 #' 
-#' \url{http://chrisbilder.com/grouptesting}
+#' \url{http://chrisbilder.com/grouptesting/}
 #' 
 #' @family Individual risk probability functions
 #' 

@@ -22,7 +22,7 @@
 #' Operating characteristics calculated are expected number of tests, pooling 
 #' sensitivity, pooling specificity, pooling positive predictive value, and 
 #' pooling negative predictive value for the algorithm. See Hitt et al. (2018) at
-#' \url{http://chrisbilder.com/grouptesting} or Kim et al. (2007) 
+#' \url{http://chrisbilder.com/grouptesting/} or Kim et al. (2007) 
 #' for additional details on the implementation of non-informative three-stage 
 #' hierarchical testing.
 #' 
@@ -87,7 +87,7 @@
 #' testing, and \code{\link{OTC}} for finding the optimal testing configuration 
 #' for a number of standard group testing algorithms.
 #'
-#' \url{http://chrisbilder.com/grouptesting}
+#' \url{http://chrisbilder.com/grouptesting/}
 #'
 #' @family OTC functions
 #'
@@ -211,25 +211,25 @@ NI.D3 <- function(p, Se, Sp, group.sz, obj.fn, weights=NULL){
     
     # find the best configuration for each initial group size I, out of all possible configurations
     save.ET[count,] <- save.it[save.it[,6]==min(save.it[,6]), c(1:5,6,14:ncol(save.it))]
-    if(class(try(save.MAR[count,] <- save.it[save.it[,7]==min(save.it[,7]), c(1:5,7,14:ncol(save.it))],silent=T))!="try-error"){
+    if(!inherits(try(save.MAR[count,] <- save.it[save.it[,7]==min(save.it[,7]), c(1:5,7,14:ncol(save.it))],silent=T), "try-error")){
       save.MAR[count,] <- save.it[save.it[,7]==min(save.it[,7]), c(1:5,7,14:ncol(save.it))]
     }
-    if(class(try(save.GR1[count,] <- save.it[save.it[,8]==min(save.it[,8]), c(1:5,8,14:ncol(save.it))],silent=T))!="try-error"){
+    if(!inherits(try(save.GR1[count,] <- save.it[save.it[,8]==min(save.it[,8]), c(1:5,8,14:ncol(save.it))],silent=T), "try-error")){
       save.GR1[count,] <- save.it[save.it[,8]==min(save.it[,8]), c(1:5,8,14:ncol(save.it))]
     }
-    if(class(try(save.GR2[count,] <- save.it[save.it[,9]==min(save.it[,9]), c(1:5,9,14:ncol(save.it))],silent=T))!="try-error"){
+    if(!inherits(try(save.GR2[count,] <- save.it[save.it[,9]==min(save.it[,9]), c(1:5,9,14:ncol(save.it))],silent=T), "try-error")){
       save.GR2[count,] <- save.it[save.it[,9]==min(save.it[,9]), c(1:5,9,14:ncol(save.it))]
     }
-    if(class(try(save.GR3[count,] <- save.it[save.it[,10]==min(save.it[,10]), c(1:5,10,14:ncol(save.it))],silent=T))!="try-error"){
+    if(!inherits(try(save.GR3[count,] <- save.it[save.it[,10]==min(save.it[,10]), c(1:5,10,14:ncol(save.it))],silent=T), "try-error")){
       save.GR3[count,] <- save.it[save.it[,10]==min(save.it[,10]), c(1:5,10,14:ncol(save.it))]
     }
-    if(class(try(save.GR4[count,] <- save.it[save.it[,11]==min(save.it[,11]), c(1:5,11,14:ncol(save.it))],silent=T))!="try-error"){
+    if(!inherits(try(save.GR4[count,] <- save.it[save.it[,11]==min(save.it[,11]), c(1:5,11,14:ncol(save.it))],silent=T), "try-error")){
       save.GR4[count,] <- save.it[save.it[,11]==min(save.it[,11]), c(1:5,11,14:ncol(save.it))]
     }
-    if(class(try( save.GR5[count,] <- save.it[save.it[,12]==min(save.it[,12]), c(1:5,12,14:ncol(save.it))],silent=T))!="try-error"){
+    if(!inherits(try( save.GR5[count,] <- save.it[save.it[,12]==min(save.it[,12]), c(1:5,12,14:ncol(save.it))],silent=T), "try-error")){
       save.GR5[count,] <- save.it[save.it[,12]==min(save.it[,12]), c(1:5,12,14:ncol(save.it))]
     }
-    if(class(try(save.GR6[count,] <- save.it[save.it[,13]==min(save.it[,13]), c(1:5,13,14:ncol(save.it))],silent=T))!="try-error"){
+    if(!inherits(try(save.GR6[count,] <- save.it[save.it[,13]==min(save.it[,13]), c(1:5,13,14:ncol(save.it))],silent=T), "try-error")){
       save.GR6[count,] <- save.it[save.it[,13]==min(save.it[,13]), c(1:5,13,14:ncol(save.it))]    
     }
     

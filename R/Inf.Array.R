@@ -32,7 +32,7 @@
 #' characteristics calculated are expected number of tests, pooling sensitivity, 
 #' pooling specificity, pooling positive predictive value, and pooling negative 
 #' predictive value for the algorithm. See Hitt et al. (2018)
-#' or McMahan et al. (2012) at \url{http://chrisbilder.com/grouptesting} 
+#' or McMahan et al. (2012) at \url{http://chrisbilder.com/grouptesting/} 
 #' for additional details on the implementaion of informative array 
 #' testing without master pooling.
 #' 
@@ -99,7 +99,7 @@
 #' pooling, and \code{\link{OTC}} for finding the optimal testing configuration for
 #' a number of standard group testing algorithms.
 #'
-#' \url{http://chrisbilder.com/grouptesting}
+#' \url{http://chrisbilder.com/grouptesting/}
 #'
 #' @family OTC functions
 #'

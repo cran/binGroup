@@ -65,11 +65,13 @@ of individual risk probabilities in a matrix for informative
 array testing without master pooling and \code{\link{beta.dist}}
 for the function on which \kbd{p.vec.func} is based on.
 
-\url{http://chrisbilder.com/grouptesting}
+\url{http://chrisbilder.com/grouptesting/}
 
-Other Individual risk probability functions: \code{\link{Informative.array.prob}},
-  \code{\link{beta.dist}}
+Other Individual risk probability functions: 
+\code{\link{Informative.array.prob}()},
+\code{\link{beta.dist}()}
 }
 \author{
 Brianna D. Hitt
 }
+\concept{Individual risk probability functions}

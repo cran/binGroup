@@ -84,14 +84,16 @@ individual risk probabilities for informative group testing and
 \code{\link{Informative.array.prob}} for arranging individual risk
 probabilities in a matrix for informative array testing.  
 
-\url{http://chrisbilder.com/grouptesting}
+\url{http://chrisbilder.com/grouptesting/}
 
-Other Operating characteristic functions: \code{\link{MasterPool.Array.Measures}},
-  \code{\link{hierarchical.desc2}},
-  \code{\link{inf.dorf.measures}}
+Other Operating characteristic functions: 
+\code{\link{MasterPool.Array.Measures}()},
+\code{\link{hierarchical.desc2}()},
+\code{\link{inf.dorf.measures}()}
 }
 \author{
 This function was originally written by Christopher S. McMahan for 
 McMahan et al. (2012). The function was obtained from 
-\url{http://chrisbilder.com/grouptesting}.
+\url{http://chrisbilder.com/grouptesting/}.
 }
+\concept{Operating characteristic functions}

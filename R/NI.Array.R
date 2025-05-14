@@ -26,7 +26,7 @@
 #' characteristics calculated are expected number of tests, pooling sensitivity, 
 #' pooling specificity, pooling positive predictive value, and pooling negative 
 #' predictive value for the algorithm. See Hitt et al. (2018) at
-#' \url{http://chrisbilder.com/grouptesting} or Kim et al. (2007) 
+#' \url{http://chrisbilder.com/grouptesting/} or Kim et al. (2007) 
 #' for additional details on the implementation of non-informative array
 #' testing without master pooling.
 #' 
@@ -89,7 +89,7 @@
 #' \code{\link{OTC}} for finding the optimal testing configuration for a number
 #' of standard group testing algorithms.
 #'
-#' \url{http://chrisbilder.com/grouptesting}
+#' \url{http://chrisbilder.com/grouptesting/}
 #'
 #' @family OTC functions
 #'

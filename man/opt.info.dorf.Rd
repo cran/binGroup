@@ -5,8 +5,15 @@
 \title{Find the characteristics of an informative two-stage 
 hierarchical (Dorfman) algorithm}
 \usage{
-opt.info.dorf(prob, se = 1, sp = 1, method = "OD", max.pool = 15,
-  thresh.pool = 8, threshold = NULL)
+opt.info.dorf(
+  prob,
+  se = 1,
+  sp = 1,
+  method = "OD",
+  max.pool = 15,
+  thresh.pool = 8,
+  threshold = NULL
+)
 }
 \arguments{
 \item{prob}{a vector of all subjects' infection probabilities.}
@@ -117,17 +124,19 @@ method="TOD", max.pool=5, threshold=0.015)
 \insertRef{McMahan2012a}{binGroup}
 }
 \seealso{
-\url{http://chrisbilder.com/grouptesting}
+\url{http://chrisbilder.com/grouptesting/}
 
-Other Informative Dorfman functions: \code{\link{accuracy.dorf}},
-  \code{\link{characteristics.pool}},
-  \code{\link{inf.dorf.measures}},
-  \code{\link{opt.pool.size}},
-  \code{\link{pool.specific.dorf}},
-  \code{\link{thresh.val.dorf}}
+Other Informative Dorfman functions: 
+\code{\link{accuracy.dorf}()},
+\code{\link{characteristics.pool}()},
+\code{\link{inf.dorf.measures}()},
+\code{\link{opt.pool.size}()},
+\code{\link{pool.specific.dorf}()},
+\code{\link{thresh.val.dorf}()}
 }
 \author{
 This function was originally written by Christopher S. 
 McMahan for McMahan et al. (2012). The function was obtained 
-from \url{http://chrisbilder.com/grouptesting}.
+from \url{http://chrisbilder.com/grouptesting/}.
 }
+\concept{Informative Dorfman functions}

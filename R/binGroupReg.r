@@ -459,7 +459,7 @@ EM.mp <- function (col.resp, row.resp, X, coln, rown, sqn, ret, sens,
     if (is.null(start)) {
         mod.fit <- try(gtreg.fit(col.resp, X, col.groupn,
             sens, spec, linkf))
-        if (class(mod.fit) == "try-error") {
+        if (inherits(mod.fit, "try-error")) {
             row.groupn <- rown[sqn == 1]
             if (len > 1) {
                 for (i in 2:len) {

@@ -27,7 +27,7 @@ classifications, described in Malinovsky et al. (2016)), and "\kbd{GR}"
 (a linear combination of the expected number of tests, the number of 
 misclassified negatives, and the number of misclassified positives, 
 described in Graff & Roeloffs (1972)). See Hitt et al. (2018) at
-\url{http://chrisbilder.com/grouptesting} for additional details.}
+\url{http://chrisbilder.com/grouptesting/} for additional details.}
 
 \item{weights}{a matrix of up to six sets of weights for the GR function. 
 Each set of weights is specified by a row of the matrix.}
@@ -70,7 +70,7 @@ by considering all possible testing configurations.
 Operating characteristics calculated are expected number of tests, pooling 
 sensitivity, pooling specificity, pooling positive predictive value, and 
 pooling negative predictive value for the algorithm. See Hitt et al. (2018) at
-\url{http://chrisbilder.com/grouptesting} or Kim et al. (2007) 
+\url{http://chrisbilder.com/grouptesting/} or Kim et al. (2007) 
 for additional details on the implementation of non-informative three-stage 
 hierarchical testing.
 
@@ -137,13 +137,18 @@ testing, \code{\link{Inf.Dorf}} for informative two-stage hierarchical
 testing, and \code{\link{OTC}} for finding the optimal testing configuration 
 for a number of standard group testing algorithms.
 
-\url{http://chrisbilder.com/grouptesting}
+\url{http://chrisbilder.com/grouptesting/}
 
-Other OTC functions: \code{\link{Inf.Array}},
-  \code{\link{Inf.D3}}, \code{\link{Inf.Dorf}},
-  \code{\link{NI.A2M}}, \code{\link{NI.Array}},
-  \code{\link{NI.Dorf}}, \code{\link{OTC}}
+Other OTC functions: 
+\code{\link{Inf.Array}()},
+\code{\link{Inf.D3}()},
+\code{\link{Inf.Dorf}()},
+\code{\link{NI.A2M}()},
+\code{\link{NI.Array}()},
+\code{\link{NI.Dorf}()},
+\code{\link{OTC}()}
 }
 \author{
 Brianna D. Hitt
 }
+\concept{OTC functions}

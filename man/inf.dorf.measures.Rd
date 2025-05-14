@@ -45,7 +45,7 @@ probabilities and a testing configuration.
 This function utilizes the equations given by McMahan et al. 
 (2012) for informative two-stage hierarchical (Dorfman) testing. 
 It also repurposes functions written by Christopher S. McMahan (see
-\url{http://chrisbilder.com/grouptesting})
+\url{http://chrisbilder.com/grouptesting/})
 for the implementation of informative Dorfman testing and directly 
 uses functions written for the calculation of the associated operating 
 characteristics. This function calculates the operating characteristics 
@@ -103,21 +103,26 @@ instead of a greedy algorithm. This function also used
 to calculate operating characteristics for the optimal set of 
 pool sizes.
 
-\url{http://chrisbilder.com/grouptesting}
+\url{http://chrisbilder.com/grouptesting/}
 
-Other Operating characteristic functions: \code{\link{Array.Measures}},
-  \code{\link{MasterPool.Array.Measures}},
-  \code{\link{hierarchical.desc2}}
+Other Operating characteristic functions: 
+\code{\link{Array.Measures}()},
+\code{\link{MasterPool.Array.Measures}()},
+\code{\link{hierarchical.desc2}()}
 
-Other Informative Dorfman functions: \code{\link{accuracy.dorf}},
-  \code{\link{characteristics.pool}},
-  \code{\link{opt.info.dorf}}, \code{\link{opt.pool.size}},
-  \code{\link{pool.specific.dorf}},
-  \code{\link{thresh.val.dorf}}
+Other Informative Dorfman functions: 
+\code{\link{accuracy.dorf}()},
+\code{\link{characteristics.pool}()},
+\code{\link{opt.info.dorf}()},
+\code{\link{opt.pool.size}()},
+\code{\link{pool.specific.dorf}()},
+\code{\link{thresh.val.dorf}()}
 }
 \author{
 The majority of this function was originally written by 
 Christopher S. McMahan for McMahan et al. (2012). The function was 
-obtained from \url{http://chrisbilder.com/grouptesting}. Minor modifications 
+obtained from \url{http://chrisbilder.com/grouptesting/}. Minor modifications 
 were made to the function for inclusion in the binGroup package.
 }
+\concept{Informative Dorfman functions}
+\concept{Operating characteristic functions}

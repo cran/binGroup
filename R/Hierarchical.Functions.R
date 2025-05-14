@@ -146,13 +146,13 @@ p.f.p.ord <- function(p, i, grp.sz, a, b) {
 #' 
 #' @author This function was originally written by Michael S. 
 #' Black for Black et al. (2015). The function was obtained 
-#' from \url{http://chrisbilder.com/grouptesting}.
+#' from \url{http://chrisbilder.com/grouptesting/}.
 #' 
 #' @references 
 #' \insertRef{Black2015}{binGroup}
 #' 
 #' @seealso 
-#' \url{http://chrisbilder.com/grouptesting}
+#' \url{http://chrisbilder.com/grouptesting/}
 #' 
 #' @seealso
 #' \code{\link{p.vec.func}} for generating a vector of individual
@@ -1929,7 +1929,7 @@ hierarchical.desc <- function(p, I2 = NULL, I3 = NULL, se = 1, sp = 1, order.p =
 #' 
 #' @author This function was originally written by Michael S. 
 #' Black for Black et al. (2015). The function was obtained from 
-#' \url{http://chrisbilder.com/grouptesting}. Minor modifications were made 
+#' \url{http://chrisbilder.com/grouptesting/}. Minor modifications were made 
 #' to the function for inclusion in the binGroup package.
 #' 
 #' @references 
@@ -1944,7 +1944,7 @@ hierarchical.desc <- function(p, I2 = NULL, I3 = NULL, se = 1, sp = 1, order.p =
 #' \code{\link{p.vec.func}} for generating a vector of 
 #' individual risk probabilities for informative group testing.  
 #' 
-#' \url{http://chrisbilder.com/grouptesting}
+#' \url{http://chrisbilder.com/grouptesting/}
 #' 
 #' @family Operating characteristic functions
 #' 

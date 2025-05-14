@@ -4,8 +4,7 @@
 \alias{hierarchical.desc2}
 \title{Operating characteristics for hierarchical group testing}
 \usage{
-hierarchical.desc2(p, I2 = NULL, I3 = NULL, se = 1, sp = 1,
-  order.p = TRUE)
+hierarchical.desc2(p, I2 = NULL, I3 = NULL, se = 1, sp = 1, order.p = TRUE)
 }
 \arguments{
 \item{p}{vector of probabilities corresponding to each individual's 
@@ -170,15 +169,17 @@ for informative two-stage hierarchical testing. See
 \code{\link{p.vec.func}} for generating a vector of 
 individual risk probabilities for informative group testing.  
 
-\url{http://chrisbilder.com/grouptesting}
+\url{http://chrisbilder.com/grouptesting/}
 
-Other Operating characteristic functions: \code{\link{Array.Measures}},
-  \code{\link{MasterPool.Array.Measures}},
-  \code{\link{inf.dorf.measures}}
+Other Operating characteristic functions: 
+\code{\link{Array.Measures}()},
+\code{\link{MasterPool.Array.Measures}()},
+\code{\link{inf.dorf.measures}()}
 }
 \author{
 This function was originally written by Michael S. 
 Black for Black et al. (2015). The function was obtained from 
-\url{http://chrisbilder.com/grouptesting}. Minor modifications were made 
+\url{http://chrisbilder.com/grouptesting/}. Minor modifications were made 
 to the function for inclusion in the binGroup package.
 }
+\concept{Operating characteristic functions}

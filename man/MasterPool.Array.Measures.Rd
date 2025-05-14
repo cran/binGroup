@@ -75,10 +75,12 @@ non-informative two-stage hierarchical testing, and
 \code{\link{inf.dorf.measures}} for informative two-stage hierarchical 
 testing.
 
-Other Operating characteristic functions: \code{\link{Array.Measures}},
-  \code{\link{hierarchical.desc2}},
-  \code{\link{inf.dorf.measures}}
+Other Operating characteristic functions: 
+\code{\link{Array.Measures}()},
+\code{\link{hierarchical.desc2}()},
+\code{\link{inf.dorf.measures}()}
 }
 \author{
 Brianna D. Hitt
 }
+\concept{Operating characteristic functions}

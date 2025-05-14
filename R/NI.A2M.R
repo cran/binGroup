@@ -131,7 +131,7 @@ beta1.y <- function(n, c, p){
   choose(n=(n-1), k=c)*((1 - (1 - p)^n)^c)*((1 - p)^(n^2 - n*c - 1)) + choose(n=(n-1), k=(c-1))*((1 - (1 - p)^n)^(c-1))*((1 - p)^(n^2 - n*c))*(1 - (1 - p)^(n-1)) - beta0.y(n=n, c=c, p=p)
 }
 
-sum.beta.gamma <- function(n,p,Se,Sp){
+sum_beta_gamma <- function(n,p,Se,Sp){
   sum <- 0
   for(c in 1:n){
     sum <- sum + beta0.y(n=n, c=c, p=p)*gamma0(n=n, c=c, Se=Se, Sp=Sp) + beta1.y(n=n, c=c, p=p)*gamma1(n=n, c=c, Se=Se, Sp=Sp)
@@ -144,7 +144,7 @@ mu.y <- function(n, p, Se, Sp){
 }
 
 nu.y <- function(n, p, Se, Sp){
-  (1 - Sp)*beta0.y(n=n, c=0, p=p)*gamma0(n=n, c=0, Se=Se, Sp=Sp) + Se*sum.beta.gamma(n=n, p=p, Se=Se, Sp=Sp)
+  (1 - Sp)*beta0.y(n=n, c=0, p=p)*gamma0(n=n, c=0, Se=Se, Sp=Sp) + Se*sum_beta_gamma(n=n, p=p, Se=Se, Sp=Sp)
 }
 
 
@@ -177,7 +177,7 @@ nu.y <- function(n, p, Se, Sp){
 #' are expected number of tests, pooling sensitivity, pooling specificity, 
 #' pooling positive predictive value, and pooling negative predictive value 
 #' for the algorithm. See Hitt et al. (2018) at
-#' \url{http://chrisbilder.com/grouptesting} or Kim et al. (2007) 
+#' \url{http://chrisbilder.com/grouptesting/} or Kim et al. (2007) 
 #' for additional details on the implementation of non-informative array
 #' testing with master pooling.
 #' 
@@ -246,7 +246,7 @@ nu.y <- function(n, p, Se, Sp){
 #' master pooling, and \code{\link{OTC}} for finding the optimal testing 
 #' configuration for a number of standard group testing algorithms.
 #'
-#' \url{http://chrisbilder.com/grouptesting}
+#' \url{http://chrisbilder.com/grouptesting/}
 #'
 #' @family OTC functions
 #'

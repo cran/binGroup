@@ -4,8 +4,17 @@
 \alias{OTC}
 \title{Find the optimal testing configuration}
 \usage{
-OTC(algorithm, p = NULL, probabilities = NULL, Se = 0.99, Sp = 0.99,
-  group.sz, obj.fn = c("ET", "MAR"), weights = NULL, alpha = 2)
+OTC(
+  algorithm,
+  p = NULL,
+  probabilities = NULL,
+  Se = 0.99,
+  Sp = 0.99,
+  group.sz,
+  obj.fn = c("ET", "MAR"),
+  weights = NULL,
+  alpha = 2
+)
 }
 \arguments{
 \item{algorithm}{character string defining the group testing algorithm to be used.
@@ -44,7 +53,7 @@ classifications, described in Malinovsky et al. (2016)), and "\kbd{GR}"
 (a linear combination of the expected number of tests, the number of 
 misclassified negatives, and the number of misclassified positives, 
 described in Graff & Roeloffs (1972)). See Hitt et al. (2018) at
-\url{http://chrisbilder.com/grouptesting} for additional details.}
+\url{http://chrisbilder.com/grouptesting/} for additional details.}
 
 \item{weights}{a matrix of up to six sets of weights for the GR function. 
 Each set of weights is specified by a row of the matrix.}
@@ -95,7 +104,7 @@ algorithms and calculate the associated operating characteristics.
 This function finds the OTC and computes the
 associated operating characteristics for standard group testing algorithms,
 as described in Hitt et al. (2018) at 
-\url{http://chrisbilder.com/grouptesting}.
+\url{http://chrisbilder.com/grouptesting/}.
 
 Available algorithms include two- and three-stage hierarchical testing and
 array testing with and without master pooling. Both non-informative and informative
@@ -273,13 +282,18 @@ hierarchical testing, \code{\link{Inf.D3}} for informative three-stage hierarchi
 \code{\link{NI.Array}} for non-informative array testing, \code{\link{Inf.Array}} for informative
 array testing, and \code{\link{NI.A2M}} for non-informative array testing with master pooling.
 
-\url{http://chrisbilder.com/grouptesting}
+\url{http://chrisbilder.com/grouptesting/}
 
-Other OTC functions: \code{\link{Inf.Array}},
-  \code{\link{Inf.D3}}, \code{\link{Inf.Dorf}},
-  \code{\link{NI.A2M}}, \code{\link{NI.Array}},
-  \code{\link{NI.D3}}, \code{\link{NI.Dorf}}
+Other OTC functions: 
+\code{\link{Inf.Array}()},
+\code{\link{Inf.D3}()},
+\code{\link{Inf.Dorf}()},
+\code{\link{NI.A2M}()},
+\code{\link{NI.Array}()},
+\code{\link{NI.D3}()},
+\code{\link{NI.Dorf}()}
 }
 \author{
 Brianna D. Hitt
 }
+\concept{OTC functions}

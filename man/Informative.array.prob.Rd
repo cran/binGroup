@@ -67,13 +67,15 @@ risk probabilities from an overall probability of disease and
 \code{\link{Array.Measures}} for calculating operating characteristics
 for informative array testing without master pooling.
 
-\url{http://chrisbilder.com/grouptesting}
+\url{http://chrisbilder.com/grouptesting/}
 
-Other Individual risk probability functions: \code{\link{beta.dist}},
-  \code{\link{p.vec.func}}
+Other Individual risk probability functions: 
+\code{\link{beta.dist}()},
+\code{\link{p.vec.func}()}
 }
 \author{
 This function was originally written by Christopher S. McMahan 
 for McMahan et al. (2012). The function was obtained from 
-\url{http://chrisbilder.com/grouptesting}.
+\url{http://chrisbilder.com/grouptesting/}.
 }
+\concept{Individual risk probability functions}
